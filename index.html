@@ -11,8 +11,8 @@
   <style>
     /* ── Design tokens ── */
     :root {
-      --p50:  #f0f7f8; --p100: #d8edf1; --p300: #a2cdd8;
-      --p500: #6daeba; --p700: #315161; --p900: #1a2e38;
+      --p50:  #f0f7f8; --p100: #d6e8ec; --p300: #a2cdd8;
+      --p500: #6daeba; --p700: #315161; --p800: #243f4c; --p900: #1a2e38;
       --n0: #fff; --n50: #f8fafb; --n100: #f0f2f3;
       --n300: #eaeced; --n400: #b8babb; --n500: #999a9b;
       --n700: #6b6c6d; --n800: #3e3f40; --n900: #1d1e1f;
@@ -33,7 +33,7 @@
         font-size:18px;vertical-align:middle;user-select:none}
 
     /* ── Header ── */
-    .header{height:72px;background:var(--n0);border-bottom:1px solid var(--n300);
+    .header{height:80px;background:var(--n0);border-bottom:1px solid var(--n300);
       display:flex;align-items:stretch;position:sticky;top:0;z-index:100;
       box-shadow:0 2px 8px rgba(0,0,0,.06)}
     .header-logo{display:flex;align-items:center;gap:4px;padding:0 20px 0 12px;
@@ -67,7 +67,7 @@
       display:none;opacity:0;transition:opacity .25s}
     .nav-overlay.open{display:block;opacity:1}
     .header-nav{display:flex;align-items:stretch;flex:1;overflow:hidden}
-    .nav-item{display:flex;align-items:center;gap:4px;padding:0 14px;font-size:13px;
+    .nav-item{display:flex;align-items:center;gap:4px;padding:0 16px;font-size:14px;
       font-weight:600;color:var(--n800);cursor:pointer;white-space:nowrap;
       border-bottom:3px solid transparent;border-top:3px solid transparent;transition:all .15s}
     .nav-item:hover{color:var(--p700);background:var(--p50)}
@@ -83,16 +83,17 @@
       font-weight:700;color:var(--n800);flex-shrink:0}
 
     /* ── Page ── */
-    .page{padding:32px 56px;max-width:1900px}
+    .page{padding:48px 47px;max-width:1920px}
     .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-    .page-title{font-size:32px;font-weight:700;color:var(--p700);letter-spacing:-.3px}
+    .page-title{font-size:36px;font-weight:700;color:var(--p700);letter-spacing:-.3px;line-height:48px}
     .toolbar{display:flex;align-items:center;gap:8px}
 
     /* ── Buttons ── */
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px var(--sp-l);
-      border-radius:var(--r-s);font-family:var(--font);font-size:13px;font-weight:600;
-      cursor:pointer;transition:all .15s;border:1px solid transparent;white-space:nowrap}
-    .btn .mi{font-size:16px}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:12px 20px;
+      border-radius:var(--r-s);font-family:var(--font);font-size:14px;font-weight:600;
+      cursor:pointer;transition:all .15s;border:1px solid transparent;white-space:nowrap;
+      height:48px;box-sizing:border-box}
+    .btn .mi{font-size:18px}
     .btn-primary{background:var(--p500);color:var(--n0);border-color:var(--p500)}
     .btn-primary:hover{background:#5a9daa;border-color:#5a9daa}
     .btn-outlined{background:var(--n0);color:var(--n900);border-color:var(--n400)}
@@ -102,12 +103,12 @@
 
     /* Split button */
     .split-btn{display:inline-flex;border-radius:var(--r-s);overflow:hidden}
-    .split-main{display:flex;align-items:center;gap:6px;padding:8px var(--sp-l);
+    .split-main{display:flex;align-items:center;gap:6px;padding:12px 20px;height:48px;box-sizing:border-box;
       background:var(--p500);color:var(--n0);border:none;font-family:var(--font);
-      font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
-    .split-main .mi{font-size:16px}
+      font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+    .split-main .mi{font-size:18px}
     .split-main:hover{background:#5a9daa}
-    .split-arrow{display:flex;align-items:center;width:32px;background:var(--p500);
+    .split-arrow{display:flex;align-items:center;width:40px;height:48px;box-sizing:border-box;background:var(--p500);
       color:var(--n0);border:none;border-left:1px solid rgba(255,255,255,.25);
       cursor:pointer;transition:background .15s;justify-content:center}
     .split-arrow:hover{background:#5a9daa}
@@ -134,16 +135,16 @@
 
     /* ── Segmented tabs ── */
     .seg{display:inline-flex;background:var(--n0);border:1px solid var(--n400);
-      border-radius:var(--r-s);padding:3px;gap:2px}
-    .seg-btn{display:flex;align-items:center;gap:6px;padding:5px 12px;
-      border-radius:var(--r-xs,2px);font-family:var(--font);font-size:13px;font-weight:600;
+      border-radius:var(--r-s);padding:3px;gap:2px;height:40px;align-items:center}
+    .seg-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;
+      border-radius:var(--r-xs,2px);font-family:var(--font);font-size:14px;font-weight:600;
       cursor:pointer;border:none;background:transparent;color:var(--n900);transition:all .15s;
       white-space:nowrap}
     .seg-btn:hover:not(.active){background:var(--n50)}
     .seg-btn.active{background:var(--p500);color:var(--n0)}
     .pill{font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px;min-width:18px;text-align:center}
-    .seg-btn.active .pill{background:rgba(255,255,255,.25);color:var(--n0)}
-    .seg-btn:not(.active) .pill{background:var(--n300);color:var(--n800)}
+    .seg-btn.active .pill{background:var(--p100);color:var(--p800)}
+    .seg-btn:not(.active) .pill{background:var(--p100);color:var(--p800)}
 
     /* ── Filter strip ── */
     .filter-strip{margin-bottom:var(--sp-m)}
@@ -152,9 +153,9 @@
     .fsp{flex:1;min-width:8px}
 
     /* Filter button (same height as search) */
-    .f-btn{display:inline-flex;align-items:center;gap:6px;padding:0 12px;height:34px;
+    .f-btn{display:inline-flex;align-items:center;gap:6px;padding:0 14px;height:40px;
       border:1px solid var(--n400);border-radius:var(--r-s);background:var(--n0);
-      font-family:var(--font);font-size:13px;font-weight:600;color:var(--n800);
+      font-family:var(--font);font-size:14px;font-weight:600;color:var(--n800);
       cursor:pointer;white-space:nowrap;transition:all .15s}
     .f-btn:hover{border-color:var(--p500);color:var(--p700);background:var(--p50)}
     .f-btn.has-val{border-color:var(--p500);color:var(--p700);background:var(--p50)}
@@ -165,19 +166,20 @@
 
     /* Filter panel (dropdown) */
     .f-panel{position:absolute;top:calc(100% + 4px);left:0;background:var(--n0);
-      border:1px solid var(--n300);border-radius:var(--r-m);
-      box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:200px;z-index:400;
-      display:none;padding:6px 0}
+      border-radius:var(--r-s);box-shadow:0 4px 16px rgba(17,19,19,.16);
+      min-width:200px;z-index:400;display:none;padding:16px 8px}
     .f-panel.open{display:block}
-    .f-opt{display:flex;align-items:center;gap:8px;padding:7px var(--sp-l);
-      font-size:13px;color:var(--n900);cursor:pointer;transition:background .1s}
+    .f-opt{display:flex;align-items:center;gap:8px;padding:8px 8px;
+      font-size:14px;font-weight:600;color:var(--n800);cursor:pointer;transition:background .1s;
+      border-radius:var(--r-s);letter-spacing:.14px;line-height:20px}
     .f-opt:hover{background:var(--n50)}
-    .f-opt.selected{color:var(--p700);font-weight:700}
+    .f-opt.selected{color:var(--p700)}
     .f-opt input[type=radio],
-    .f-opt input[type=checkbox]{accent-color:var(--p500);width:14px;height:14px;cursor:pointer}
+    .f-opt input[type=checkbox]{accent-color:var(--p500);width:20px;height:20px;cursor:pointer;
+      border:1px solid var(--n800);border-radius:var(--r-s);flex-shrink:0}
 
     /* ── Combined date picker ── */
-    .date-combo{display:inline-flex;align-items:stretch;height:34px;border:1px solid var(--n400);
+    .date-combo{display:inline-flex;align-items:stretch;height:40px;border:1px solid var(--n400);
       border-radius:var(--r-s);background:var(--n0);position:relative;overflow:hidden}
     .date-combo:hover{border-color:var(--p500)}
     .date-combo.active{border-color:var(--p500)}
@@ -197,44 +199,48 @@
     .dn-trigger .dn-caret{font-size:14px;color:var(--n400)}
 
     /* Date picker popover */
-    .dp-pop{position:fixed;top:0;left:0;background:var(--n0);border:1px solid var(--n300);
-      border-radius:var(--r-m);box-shadow:0 8px 28px rgba(0,0,0,.14);
-      width:260px;z-index:9001;display:none;padding:16px}
+    .dp-pop{position:fixed;top:0;left:0;background:var(--n0);
+      border-radius:var(--r-s);box-shadow:0 4px 16px rgba(17,19,19,.16);
+      width:266px;z-index:9001;display:none;padding:16px}
     .dp-pop.open{display:block}
-    .dp-pop-title{font-size:12px;font-weight:700;color:var(--n500);text-transform:uppercase;
-      letter-spacing:.5px;margin-bottom:8px}
-    .dp-input-wrap{display:flex;align-items:center;border:1px solid var(--n400);
-      border-radius:var(--r-s);overflow:hidden;height:36px;background:var(--n0);
+    .dp-pop-title{font-size:18px;font-weight:700;color:var(--p700);line-height:24px;
+      margin-bottom:12px}
+    .dp-pop-label{font-size:14px;font-weight:600;color:var(--p700);letter-spacing:.14px;
+      line-height:20px;margin-bottom:6px}
+    .dp-input-wrap{display:flex;align-items:stretch;border:1px solid var(--n400);
+      border-radius:var(--r-s);overflow:hidden;height:40px;background:var(--n0);
       transition:border-color .15s}
     .dp-input-wrap:focus-within{border-color:var(--p500)}
-    .dp-input-wrap input[type=date]{flex:1;border:none;padding:0 10px;font-size:13px;
-      font-family:var(--font);color:var(--n900);outline:none;background:transparent;
-      cursor:pointer}
-    .dp-input-wrap input[type=date]::-webkit-calendar-picker-indicator{
-      color:var(--p500);opacity:.8;cursor:pointer}
-    .dp-divider{display:flex;align-items:center;gap:8px;margin:14px 0 10px;font-size:11px;
-      font-weight:700;color:var(--n500);text-transform:uppercase;letter-spacing:.5px}
-    .dp-divider::before,.dp-divider::after{content:'';flex:1;height:1px;background:var(--n300)}
-    .dp-presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-    .dp-preset{padding:5px 12px;border:1px solid var(--n400);border-radius:20px;
-      font-family:var(--font);font-size:12px;font-weight:600;color:var(--n800);
-      background:var(--n0);cursor:pointer;transition:all .15s;white-space:nowrap}
+    .dp-input-wrap input[type=date]{flex:1;border:none;padding:0 8px;font-size:14px;
+      font-family:var(--font);font-weight:400;color:var(--n900);outline:none;
+      background:transparent;cursor:pointer;line-height:20px}
+    .dp-input-wrap input[type=date]::-webkit-calendar-picker-indicator{display:none}
+    .dp-input-ico{display:flex;align-items:center;justify-content:center;padding:0 8px;
+      background:var(--n50);border-left:1px solid var(--n300)}
+    .dp-input-ico .mi{font-size:24px;color:var(--n800)}
+    .dp-divider{height:1px;background:var(--n300);margin:12px 0}
+    .dp-presets{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+    .dp-preset{padding:4px 8px;border:1px solid var(--n500);border-radius:var(--r-s);
+      font-family:var(--font);font-size:14px;font-weight:600;color:var(--n800);
+      background:var(--n0);cursor:pointer;transition:all .15s;white-space:nowrap;
+      letter-spacing:.14px;line-height:20px}
     .dp-preset:hover{border-color:var(--p500);color:var(--p700);background:var(--p50)}
     .dp-preset.active{background:var(--p500);border-color:var(--p500);color:#fff}
     .dp-actions{display:flex;align-items:center;gap:8px;margin-top:4px}
-    .dp-apply{flex:1;height:34px;background:var(--p500);border:none;border-radius:var(--r-s);
-      font-family:var(--font);font-size:13px;font-weight:700;color:#fff;cursor:pointer;
-      transition:background .15s}
+    .dp-apply{flex:1;height:32px;background:var(--p500);border:none;border-radius:var(--r-s);
+      font-family:var(--font);font-size:12px;font-weight:600;color:#fff;cursor:pointer;
+      transition:background .15s;letter-spacing:.12px;line-height:16px}
     .dp-apply:hover{background:var(--p700)}
-    .dp-clear{height:34px;background:transparent;border:none;font-family:var(--font);
-      font-size:13px;font-weight:600;color:var(--p500);cursor:pointer;
-      padding:0 8px;transition:color .15s}
-    .dp-clear:hover{color:var(--p700)}
+    .dp-clear{flex:1;height:32px;background:var(--n0);border:1px solid var(--n400);
+      border-radius:var(--r-s);font-family:var(--font);font-size:12px;font-weight:600;
+      color:var(--n900);cursor:pointer;padding:0 12px;transition:all .15s;
+      letter-spacing:.12px;line-height:16px}
+    .dp-clear:hover{background:var(--n50)}
 
     /* Search */
     .search-box{display:flex;align-items:stretch;border:1px solid var(--n400);
-      border-radius:var(--r-s);background:var(--n0);overflow:hidden;height:34px}
-    .search-box input{flex:1;border:none;padding:0 10px;font-size:13px;
+      border-radius:var(--r-s);background:var(--n0);overflow:hidden;height:40px}
+    .search-box input{flex:1;border:none;padding:0 12px;font-size:14px;
       font-family:var(--font);color:var(--n900);outline:none;background:transparent;
       min-width:220px}
     .search-box input::placeholder{color:var(--n500)}
@@ -266,12 +272,12 @@
       overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
     .table-scroll{overflow-x:auto;overflow-y:visible}
 
-    table{width:100%;border-collapse:collapse;min-width:1760px;table-layout:fixed}
+    table{width:100%;border-collapse:separate;border-spacing:0;min-width:1760px;table-layout:fixed}
 
-    thead th{background:var(--n50);padding:8px 10px;text-align:left;font-size:12px;
-      font-weight:700;color:var(--p700);white-space:nowrap;border-bottom:1px solid var(--n300);
+    thead th{background:var(--n50);padding:8px 16px;text-align:left;font-size:14px;
+      font-weight:600;color:var(--p700);white-space:nowrap;border-bottom:1px solid var(--n300);
       border-right:1px solid var(--n300);cursor:pointer;user-select:none;overflow:hidden;
-      position:relative}
+      position:relative;letter-spacing:.14px;line-height:20px}
     thead th:last-child{border-right:none}
     thead th:hover{background:var(--p50)}
     .th-in{display:flex;align-items:center;gap:3px;overflow:hidden}
@@ -284,35 +290,52 @@
     .col-rz:hover,.col-rz.rz-active{border-right-color:var(--p500)}
 
     /* Column search row */
-    .col-row th{background:var(--n50);padding:4px 5px;
+    .col-row th{background:var(--n50);padding:8px 8px;
       border-bottom:2px solid var(--n300);border-right:1px solid var(--n300)}
     .col-row th:last-child{border-right:none}
-    .ci{width:100%;border:1px solid var(--n400);border-radius:var(--r-s);
-      padding:3px 6px;font-size:12px;font-family:var(--font);background:var(--n0);
-      color:var(--n900);outline:none}
+    .ci{width:100%;height:32px;border:1px solid var(--n400);border-radius:var(--r-s);
+      padding:4px 8px;font-size:14px;font-family:var(--font);background:var(--n0);
+      color:var(--n900);outline:none;box-sizing:border-box}
     .ci:focus{border-color:var(--p500)}
-    .ci::placeholder{color:var(--n400)}
-    .cs{width:100%;border:1px solid var(--n400);border-radius:var(--r-s);
-      padding:3px 6px;font-size:12px;font-family:var(--font);background:var(--n0);
-      color:var(--p700);font-weight:600;outline:none;cursor:pointer;appearance:none;
+    .ci::placeholder{color:var(--n500)}
+    .ci-search{display:flex;align-items:stretch;border:1px solid var(--n400);border-radius:var(--r-s);
+      background:var(--n0);overflow:hidden;height:32px}
+    .ci-search .ci{border:none;border-radius:0;height:100%;flex:1;min-width:0}
+    .ci-search .ci:focus{outline:none}
+    .ci-ico{display:flex;align-items:center;justify-content:center;padding:0 6px;
+      background:var(--n50);border-left:1px solid var(--n300);font-size:18px !important;
+      color:var(--n800);flex-shrink:0}
+    .cs{width:100%;height:32px;border:1px solid var(--n400);border-radius:var(--r-s);
+      padding:4px 8px;font-size:14px;font-family:var(--font);background:var(--n0);
+      color:var(--n900);font-weight:400;outline:none;cursor:pointer;appearance:none;
+      box-sizing:border-box;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-      background-repeat:no-repeat;background-position:right 5px center;padding-right:18px}
+      background-repeat:no-repeat;background-position:right 6px center;padding-right:20px}
 
-    /* Sticky columns */
-    .st0{position:sticky;left:0;z-index:6;background:inherit}
-    .st1{position:sticky;left:40px;z-index:6;background:inherit}
-    .st2{position:sticky;left:80px;z-index:6;background:inherit;box-shadow:2px 0 6px -2px rgba(0,0,0,.1)}
+    /* Sticky columns (only checkbox + action) */
+    .st0{position:sticky;left:0;z-index:6;background:var(--n0);border-right:1px solid var(--n300)}
+    .st1{position:sticky;left:40px;z-index:6;background:var(--n0);
+      border-right:2px solid var(--n300) !important;box-shadow:2px 0 6px -2px rgba(0,0,0,.1)}
+    thead th.st0,thead th.st1{background:var(--n50)}
+    .col-row th.st0,.col-row th.st1{background:var(--n50)}
+    tbody tr:hover td.st0,tbody tr:hover td.st1{background:var(--p50)}
+    tbody tr.selected td.st0,tbody tr.selected td.st1{background:#e2eff4}
+    /* Sticky cells get their own bottom border to fully mask row lines behind them */
+    tbody td.st0,tbody td.st1{border-bottom:1px solid var(--n300)}
+    tbody tr:last-child td.st0,tbody tr:last-child td.st1{border-bottom:none}
 
-    /* Data rows */
-    tbody tr{border-bottom:1px solid var(--n300);background:var(--n0);transition:background .1s;cursor:pointer}
-    tbody tr:last-child{border-bottom:none}
+    /* Data rows — border on cells, not on tr, so sticky columns fully cover lines */
+    tbody tr{border-bottom:none;background:var(--n0);transition:background .1s;cursor:pointer}
     tbody tr:hover{background:var(--p50)}
     tbody tr.selected{background:#e2eff4}
     tbody tr.vip-row{border-left:3px solid var(--vip-border)}
 
-    tbody td{padding:9px 10px;font-size:13px;color:var(--n900);vertical-align:middle;
-      border-right:1px solid var(--n300);overflow:hidden;white-space:nowrap;
-      text-overflow:ellipsis;max-width:0}
+    tbody tr{height:48px}
+    tbody td{padding:0 16px;font-size:16px;color:var(--n900);vertical-align:middle;
+      border-right:1px solid var(--n300);border-bottom:1px solid var(--n300);
+      overflow:hidden;white-space:nowrap;
+      text-overflow:ellipsis;max-width:0;line-height:48px}
+    tbody tr:last-child td{border-bottom:none}
     tbody td:last-child{border-right:none}
     /* Inner flex containers still need to clip */
     tbody td>*{min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -338,34 +361,35 @@
     .act-menu.open{display:block}
 
     /* Name cell */
-    .p-name{font-size:13px;font-weight:700;color:var(--p700);cursor:pointer;line-height:1.3}
-    .p-name:hover{text-decoration:underline}
+    .p-name{font-size:16px;font-weight:400;color:var(--n900);cursor:pointer;line-height:24px}
+    .p-name:hover{text-decoration:underline;color:var(--p700)}
 
     /* VIP */
+    .vip-cell{overflow:visible;text-overflow:clip;text-align:center}
     .vip-star{color:var(--vip-border);font-size:16px !important}
     .vip-dash{color:var(--n400);font-size:12px}
 
     /* Type (plain text) */
-    .type-txt{font-size:12px;color:var(--n700)}
+    .type-txt{font-size:16px;color:var(--n900);font-weight:400;line-height:24px}
 
     /* Status badge */
-    .sbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;
-      border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
-    .s-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-    .sv{background:#e1f5fe;color:#01579b} .sv .s-dot{background:#0288d1}
-    .sa{background:var(--ok-bg);color:var(--ok)} .sa .s-dot{background:#43a047}
-    .svo{background:var(--n100);color:var(--n700)} .svo .s-dot{background:var(--n500)}
-    .sn{background:var(--warn-bg);color:var(--warn)} .sn .s-dot{background:#ef6c00}
-    .sg{background:var(--err-bg);color:var(--err)} .sg .s-dot{background:#e53935}
+    .sbadge{display:inline-flex;align-items:center;justify-content:center;padding:4px 12px;
+      border-radius:4px;font-size:14px;font-weight:600;white-space:nowrap;
+      line-height:24px;letter-spacing:.14px;min-width:110px;text-align:center}
+    .sv{background:#e9f0f8;color:#2464bb}
+    .sa{background:#e9f8f3;color:#24bb86}
+    .svo{background:var(--n100);color:var(--n700)}
+    .sn{background:#f8f0e9;color:#bb6424}
+    .sg{background:#f8e9e9;color:#bb2424}
 
     /* Compliance icon */
     .cico{display:inline-flex;align-items:center;justify-content:center;
-      width:26px;height:26px;border-radius:50%}
-    .cico .mi{font-size:15px !important}
-    .c-ok{background:var(--ok-bg);color:var(--ok)}
-    .c-warn{background:var(--warn-bg);color:var(--warn)}
-    .c-err{background:var(--err-bg);color:var(--err)}
-    .c-na{background:var(--n100);color:var(--n500)}
+      width:40px;height:40px;border-radius:50%;cursor:pointer}
+    .cico .mi{font-size:24px !important}
+    .c-ok{color:#4bc79c}
+    .c-warn{color:#c84b5e}
+    .c-err{color:#c84b5e}
+    .c-na{color:#b8babb}
 
     /* Parking */
     .pk-row{display:flex;align-items:center;gap:3px;font-size:12px;font-weight:600}
@@ -374,9 +398,12 @@
     .pk-sub{font-size:11px;color:var(--n500);margin-top:1px}
 
     /* Pass */
-    .pass{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600}
-    .pass .mi{font-size:14px !important}
-    .pass-k{color:var(--info)} .pass-p{color:var(--ok)} .pass-n{color:var(--n400)}
+    .pass{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:400;line-height:24px}
+    .pass-dot{width:12px;height:12px;border-radius:360px;flex-shrink:0}
+    .pass-dot-n{background:#b8babb}
+    .pass-dot-k{background:#2464bb}
+    .pass-dot-p{background:#4bc79c}
+    .pass-n{color:var(--n500)} .pass-k{color:var(--n900)} .pass-p{color:var(--n900)}
 
     /* Contact cell */
     .ct-cell{display:flex;align-items:center;gap:4px}
@@ -388,25 +415,41 @@
     .ico-btn .mi{font-size:15px !important}
 
     /* Time */
-    .t-val{font-size:13px;font-weight:600;color:var(--n900)}
+    .t-val{font-size:14px;font-weight:600;color:var(--n900)}
     .t-sub{font-size:11px;color:var(--n500);margin-top:1px}
     .t-over .t-val{color:var(--err)}
 
     /* ── Pagination ── */
     .pag-bar{display:flex;align-items:center;justify-content:space-between;
-      padding:10px var(--sp-l);border-top:1px solid var(--n300);background:var(--n0)}
-    .pag-info{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--n800)}
-    .pag-sel{border:1px solid var(--n400);border-radius:var(--r-s);padding:3px 7px;
-      font-size:13px;font-family:var(--font);background:var(--n0);color:var(--n900);outline:none}
-    .pag-ctrl{display:flex;align-items:center;gap:3px}
-    .pg-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-      border:1px solid var(--n400);border-radius:var(--r-s);cursor:pointer;font-size:12px;
-      font-weight:700;color:var(--n800);background:var(--n0);transition:all .15s;
+      padding:20px 16px 8px;border-top:1px solid var(--n300);background:var(--n0)}
+    .pag-info{display:flex;align-items:center;gap:16px;font-size:14px;font-weight:600;
+      color:var(--n800);letter-spacing:.14px;line-height:20px}
+    .pag-sel{display:inline-flex;align-items:stretch;height:40px;border:1px solid var(--n400);
+      border-radius:var(--r-s);background:var(--n0);overflow:hidden;cursor:pointer;
       font-family:var(--font)}
+    .pag-sel-val{display:flex;align-items:center;padding:0 8px;font-size:14px;font-weight:400;
+      color:var(--n900);line-height:20px;min-width:32px;justify-content:center}
+    .pag-sel-ico{display:flex;align-items:center;justify-content:center;padding:0 8px;
+      background:var(--n50);border-left:1px solid var(--n300)}
+    .pag-sel-ico .mi{font-size:24px;color:var(--n800)}
+    .pag-sel-dd{position:absolute;bottom:calc(100% + 4px);left:0;background:var(--n0);
+      border:1px solid var(--n300);border-radius:var(--r-s);box-shadow:0 4px 16px rgba(17,19,19,.16);
+      z-index:400;display:none;min-width:88px}
+    .pag-sel-dd.open{display:block}
+    .pag-sel-opt{padding:8px 12px;font-size:14px;cursor:pointer;transition:background .1s;
+      font-family:var(--font);color:var(--n900)}
+    .pag-sel-opt:hover{background:var(--n50)}
+    .pag-sel-opt.active{color:var(--p700);font-weight:700}
+    .pag-ctrl{display:flex;align-items:center;gap:8px}
+    .pg-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+      border:1px solid var(--n400);border-radius:var(--r-s);cursor:pointer;font-size:14px;
+      font-weight:600;color:var(--n800);background:var(--n0);transition:all .15s;
+      font-family:var(--font);letter-spacing:.14px;line-height:20px}
     .pg-btn:hover{background:var(--n50)}
     .pg-btn.active{background:var(--p500);color:var(--n0);border-color:var(--p500)}
-    .pg-btn.dis{opacity:.35;pointer-events:none}
-    .pg-btn .mi{font-size:17px !important}
+    .pg-btn.dis{border-color:var(--n300);color:var(--n400);pointer-events:none}
+    .pg-btn .mi{font-size:24px !important}
+    .pg-btn.dis .mi{color:var(--n400)}
 
     /* ── Toast ── */
     .toast-host{position:fixed;top:80px;right:18px;z-index:1000;
@@ -443,7 +486,7 @@
       padding:12px 22px;border-top:1px solid var(--n300)}
 
     /* ── Detail panel ── */
-    .dp{position:fixed;right:-500px;top:72px;bottom:0;width:480px;background:var(--n0);
+    .dp{position:fixed;right:-500px;top:80px;bottom:0;width:480px;background:var(--n0);
       box-shadow:-4px 0 28px rgba(0,0,0,.1);z-index:250;display:flex;flex-direction:column;
       transition:right .25s ease;overflow:hidden}
     .dp.open{right:0}
@@ -493,6 +536,116 @@
     .proto-badge{position:fixed;bottom:18px;left:18px;background:var(--p700);color:var(--n0);
       padding:5px 12px;border-radius:100px;font-size:10px;font-weight:700;
       letter-spacing:.4px;opacity:.7;z-index:9999;pointer-events:none}
+
+    /* ── Agenda view ── */
+    .agenda-wrap{background:var(--n0);border:1px solid var(--n300);border-radius:var(--r-m);
+      overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+    .agenda-header{display:flex;align-items:center;padding:14px 20px;border-bottom:1px solid var(--n300);
+      font-size:14px;font-weight:700;color:var(--p700)}
+    .agenda-header-time{width:72px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--n500);
+      text-transform:uppercase;letter-spacing:.4px}
+    .agenda-header-content{flex:1;font-size:12px;font-weight:600;color:var(--n500);
+      text-transform:uppercase;letter-spacing:.4px}
+    .agenda-body{position:relative}
+    .agenda-slot{display:flex;min-height:64px;border-bottom:1px solid var(--n300);position:relative}
+    .agenda-slot:last-child{border-bottom:none}
+    .agenda-time{width:72px;flex-shrink:0;padding:10px 12px 10px 20px;font-size:13px;font-weight:600;
+      color:var(--n500);border-right:1px solid var(--n300);background:var(--n50)}
+    .agenda-events{flex:1;padding:6px 12px;display:flex;flex-direction:column;gap:6px}
+    .agenda-event{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:var(--r-s);
+      border-left:3px solid var(--p500);background:var(--p50);cursor:pointer;transition:box-shadow .15s}
+    .agenda-event:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .agenda-event.ae-verwacht{border-left-color:#2464bb;background:#e9f0f8}
+    .agenda-event.ae-aangekomen{border-left-color:#24bb86;background:#e9f8f3}
+    .agenda-event.ae-vertrokken{border-left-color:var(--n400);background:var(--n100)}
+    .agenda-event.ae-noshow{border-left-color:#bb6424;background:#f8f0e9}
+    .agenda-event.ae-geannuleerd{border-left-color:#bb2424;background:#f8e9e9}
+    .ae-time{font-size:12px;font-weight:700;color:var(--n700);min-width:42px}
+    .ae-name{font-size:14px;font-weight:600;color:var(--n900);min-width:160px}
+    .ae-company{font-size:13px;color:var(--n700);min-width:140px}
+    .ae-type{font-size:12px;color:var(--n500);min-width:80px}
+    .ae-status{margin-left:auto}
+    .agenda-empty{padding:10px 14px;color:var(--n400);font-size:13px;font-style:italic}
+    .agenda-now{position:absolute;left:72px;right:0;height:2px;background:var(--err);z-index:5;pointer-events:none}
+    .agenda-now::before{content:'';position:absolute;left:-5px;top:-4px;width:10px;height:10px;
+      border-radius:50%;background:var(--err)}
+
+    /* ── Week agenda ── */
+    .week-wrap{background:var(--n0);border:1px solid var(--n300);border-radius:var(--r-m);
+      overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+    .week-header{display:flex;border-bottom:2px solid var(--n300)}
+    .week-time-hdr{width:72px;flex-shrink:0;padding:12px 8px;font-size:11px;font-weight:700;
+      color:var(--n500);text-transform:uppercase;letter-spacing:.4px;background:var(--n50);
+      border-right:1px solid var(--n300)}
+    .week-day-hdr{flex:1;padding:10px 8px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--n700);border-right:1px solid var(--n300);background:var(--n50)}
+    .week-day-hdr:last-child{border-right:none}
+    .week-day-hdr.today{color:var(--p700);background:var(--p50)}
+    .week-day-hdr .wdh-date{font-size:11px;font-weight:600;color:var(--n500);margin-top:2px}
+    .week-day-hdr.today .wdh-date{color:var(--p500)}
+    .week-body{position:relative}
+    .week-row{display:flex;min-height:56px;border-bottom:1px solid var(--n300)}
+    .week-row:last-child{border-bottom:none}
+    .week-time-cell{width:72px;flex-shrink:0;padding:6px 8px;font-size:12px;font-weight:600;
+      color:var(--n500);border-right:1px solid var(--n300);background:var(--n50)}
+    .week-day-cell{flex:1;padding:4px;border-right:1px solid var(--n300);min-height:56px;
+      display:flex;flex-direction:column;gap:3px}
+    .week-day-cell:last-child{border-right:none}
+    .week-day-cell.today{background:rgba(109,174,186,.04)}
+    .week-ev{padding:4px 6px;border-radius:3px;font-size:11px;font-weight:600;cursor:pointer;
+      border-left:3px solid var(--p500);background:var(--p50);white-space:nowrap;overflow:hidden;
+      text-overflow:ellipsis;transition:box-shadow .15s;line-height:1.3}
+    .week-ev:hover{box-shadow:0 1px 4px rgba(0,0,0,.12)}
+    .week-ev.we-verwacht{border-left-color:#2464bb;background:#e9f0f8;color:#2464bb}
+    .week-ev.we-aangekomen{border-left-color:#24bb86;background:#e9f8f3;color:#1a8a5e}
+    .week-ev.we-vertrokken{border-left-color:var(--n400);background:var(--n100);color:var(--n700)}
+    .week-ev.we-noshow{border-left-color:#bb6424;background:#f8f0e9;color:#bb6424}
+    .week-ev.we-geannuleerd{border-left-color:#bb2424;background:#f8e9e9;color:#bb2424}
+    .week-ev-name{font-weight:700;font-size:11px}
+    .week-ev-meta{font-size:10px;opacity:.8}
+    .week-now{position:absolute;left:72px;right:0;height:2px;background:var(--err);z-index:5;pointer-events:none}
+    .week-now::before{content:'';position:absolute;left:-5px;top:-4px;width:10px;height:10px;
+      border-radius:50%;background:var(--err)}
+
+    /* ── Fixture toolbar ── */
+    .fixture-bar{position:fixed;bottom:18px;right:18px;background:var(--n800);color:var(--n0);
+      padding:8px 14px;border-radius:8px;display:flex;align-items:center;gap:8px;
+      font-size:12px;font-weight:700;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.35);
+      letter-spacing:.3px}
+    .fixture-lbl{opacity:.6;text-transform:uppercase;font-size:10px}
+    .fixture-btn{padding:5px 14px;border-radius:4px;border:1px solid rgba(255,255,255,.25);
+      background:transparent;color:var(--n0);cursor:pointer;font-family:var(--font);
+      font-size:12px;font-weight:700;transition:all .15s}
+    .fixture-btn:hover{background:rgba(255,255,255,.12)}
+    .fixture-btn.active{background:var(--p500);border-color:var(--p500)}
+
+    /* ── Summary cards (v4) ── */
+    .summary-cards{display:flex;gap:16px;margin-bottom:24px}
+    .sum-card{flex:1;background:var(--n0);border:1px solid var(--n300);border-radius:var(--r-s);
+      padding:10px 16px}
+    .sum-card-label{font-size:12px;color:var(--n800);font-weight:600;margin-bottom:4px;
+      letter-spacing:.12px;line-height:16px}
+    .sum-card-value{font-size:56px;font-weight:700;line-height:64px;letter-spacing:-.56px}
+
+    /* ── Date nav (v2/v3/v4) ── */
+    .date-nav{display:inline-flex;align-items:center;gap:0;height:40px;border:1px solid var(--n400);
+      border-radius:var(--r-s);background:var(--n0);overflow:hidden}
+    .date-nav-btn{display:flex;align-items:center;justify-content:center;width:36px;height:100%;
+      border:none;background:transparent;cursor:pointer;color:var(--n700);transition:background .1s}
+    .date-nav-btn:hover{background:var(--n50)}
+    .date-nav-btn .mi{font-size:18px}
+    .date-nav-label{padding:0 12px;font-size:14px;font-weight:600;color:var(--n900);
+      white-space:nowrap;border-left:1px solid var(--n300);border-right:1px solid var(--n300)}
+
+    /* ── View toggle (v2) ── */
+    .view-toggle{display:inline-flex;border:1px solid var(--n400);border-radius:var(--r-s);
+      overflow:hidden;height:40px}
+    .vt-btn{display:flex;align-items:center;justify-content:center;width:40px;height:100%;
+      border:none;background:var(--n0);cursor:pointer;color:var(--n500);transition:all .15s}
+    .vt-btn:hover{background:var(--n50);color:var(--n700)}
+    .vt-btn.active{background:var(--p500);color:var(--n0)}
+    .vt-btn+.vt-btn{border-left:1px solid var(--n300)}
+    .vt-btn .mi{font-size:18px}
   </style>
 </head>
 <body>
@@ -563,105 +716,27 @@
     </div>
   </div>
 
-  <!-- ── FILTER STRIP ── -->
-  <div class="filter-strip mb12">
+  <!-- ── FILTER STRIP (dynamically generated by renderFilterStrip) ── -->
+  <div class="filter-strip mb12" id="filterArea"></div>
 
-    <!-- Row 1: Tabs + Status filter + Compliance filter + Parkeren filter + Search -->
-    <div class="filter-row" style="margin-bottom:8px">
-      <!-- Segmented tabs -->
-      <div class="seg">
-        <button class="seg-btn active" onclick="setTab('alle',this)">Alle <span class="pill" id="cnt-alle">12</span></button>
-        <button class="seg-btn" onclick="setTab('bezoekers',this)">Bezoekers <span class="pill" id="cnt-bez">8</span></button>
-        <button class="seg-btn" onclick="setTab('contractors',this)">Contractors <span class="pill" id="cnt-con">4</span></button>
-      </div>
-
-      <div class="fsp"></div>
-
-      <!-- Status filter -->
-      <div class="dd-wrap" id="wrap-status">
-        <button class="f-btn" id="btn-status" onclick="toggleFilterPanel('fp-status',event)">
-          <span id="lbl-status">Status</span>
-          <span class="mi" style="font-size:14px;color:var(--n400)">expand_more</span>
-        </button>
-        <div class="f-panel" id="fp-status">
-          <div class="f-opt selected" onclick="setStatusFilter('')" data-val="">
-            <input type="radio" name="sf" checked /> Alle statussen</div>
-          <div class="f-opt" onclick="setStatusFilter('Verwacht')" data-val="Verwacht">
-            <input type="radio" name="sf" /> Verwacht</div>
-          <div class="f-opt" onclick="setStatusFilter('Aangekomen')" data-val="Aangekomen">
-            <input type="radio" name="sf" /> Nu binnen (Aangekomen)</div>
-          <div class="f-opt" onclick="setStatusFilter('Vertrokken')" data-val="Vertrokken">
-            <input type="radio" name="sf" /> Vertrokken</div>
-          <div class="f-opt" onclick="setStatusFilter('No-show')" data-val="No-show">
-            <input type="radio" name="sf" /> No-show</div>
-          <div class="f-opt" onclick="setStatusFilter('Geannuleerd')" data-val="Geannuleerd">
-            <input type="radio" name="sf" /> Geannuleerd</div>
-        </div>
-      </div>
-
-      <!-- Compliance filter -->
-      <div class="dd-wrap" id="wrap-compliance">
-        <button class="f-btn" id="btn-compliance" onclick="toggleFilterPanel('fp-compliance',event)">
-          <span id="lbl-compliance">Compliance</span>
-          <span class="mi" style="font-size:14px;color:var(--n400)">expand_more</span>
-        </button>
-        <div class="f-panel" id="fp-compliance" style="min-width:230px">
-          <div class="f-opt" onclick="toggleCompliance('dossier',this)">
-            <input type="checkbox" id="cf-dossier" /> Dossier onvolledig</div>
-          <div class="f-opt" onclick="toggleCompliance('elearning',this)">
-            <input type="checkbox" id="cf-elearning" /> E-learning niet behaald</div>
-        </div>
-      </div>
-
-      <!-- Parkeren filter -->
-      <div class="dd-wrap" id="wrap-park">
-        <button class="f-btn" id="btn-park" onclick="toggleFilterPanel('fp-park',event)">
-          <span id="lbl-park">Parkeren</span>
-          <span class="mi" style="font-size:14px;color:var(--n400)">expand_more</span>
-        </button>
-        <div class="f-panel" id="fp-park">
-          <div class="f-opt selected" onclick="setParkFilter('')" data-val="">
-            <input type="radio" name="pf" checked /> Alle</div>
-          <div class="f-opt" onclick="setParkFilter('nodig')" data-val="nodig">
-            <input type="radio" name="pf" /> Parkeren benodigd</div>
-          <div class="f-opt" onclick="setParkFilter('gereserveerd')" data-val="gereserveerd">
-            <input type="radio" name="pf" /> Gereserveerd</div>
-          <div class="f-opt" onclick="setParkFilter('niet-gereserveerd')" data-val="niet-gereserveerd">
-            <input type="radio" name="pf" /> Niet gereserveerd</div>
-        </div>
-      </div>
-
-      <!-- Date filter pill -->
-      <div class="dd-wrap" id="wrap-date">
-        <button class="f-btn has-val" id="dnTrigger" onclick="toggleDpPop(event)">
-          <span id="dateLabel">Vandaag</span>
-          <span class="mi" style="font-size:14px;color:var(--n400)">expand_more</span>
-        </button>
-      </div>
-
-      <!-- Date picker popover (portal, appended to body via JS) -->
-      <div class="dp-pop" id="dpPop">
-        <div class="dp-pop-title">Datum</div>
-        <div class="dp-input-wrap">
-          <input type="date" id="dpInput" value="2026-04-01" onchange="dpInputChange(this.value)" />
-        </div>
-        <div class="dp-divider">of selecteer</div>
-        <div class="dp-presets">
-          <button class="dp-preset active" id="dpp-vandaag" onclick="dpPreset('vandaag')">Vandaag</button>
-          <button class="dp-preset" id="dpp-morgen"  onclick="dpPreset('morgen')">Morgen</button>
-          <button class="dp-preset" id="dpp-week"    onclick="dpPreset('week')">Deze week</button>
-        </div>
-        <div class="dp-actions">
-          <button class="dp-apply" onclick="dpApply()">Toepassen</button>
-          <button class="dp-clear" onclick="dpClear()">Legen</button>
-        </div>
-      </div>
-
-      <!-- Search -->
-      <div class="search-box">
-        <input id="gSearch" type="text" placeholder="Zoek naam, bedrijf, referentie…" oninput="render()" />
-        <div class="search-icon"><span class="mi">search</span></div>
-      </div>
+  <!-- Date picker popover (portaled to body via JS) -->
+  <div class="dp-pop" id="dpPop">
+    <div class="dp-pop-title">Filter</div>
+    <div class="dp-pop-label">Kies datum</div>
+    <div class="dp-input-wrap">
+      <input type="date" id="dpInput" value="2026-04-08" onchange="dpInputChange(this.value)" />
+      <div class="dp-input-ico"><span class="mi">today</span></div>
+    </div>
+    <div style="margin-top:12px"><div class="dp-pop-label">Selecteer</div></div>
+    <div class="dp-presets">
+      <button class="dp-preset active" id="dpp-vandaag" onclick="dpPreset('vandaag')">Vandaag</button>
+      <button class="dp-preset" id="dpp-morgen"  onclick="dpPreset('morgen')">Morgen</button>
+      <button class="dp-preset" id="dpp-week"    onclick="dpPreset('week')">Deze week</button>
+    </div>
+    <div class="dp-divider"></div>
+    <div class="dp-actions">
+      <button class="dp-clear" onclick="dpClear()">Resetten</button>
+      <button class="dp-apply" onclick="dpApply()">Toepassen</button>
     </div>
   </div>
 
@@ -685,49 +760,51 @@
         <colgroup>
           <col style="width:40px">   <!-- checkbox -->
           <col style="width:40px">   <!-- action -->
-          <col style="width:180px">  <!-- naam -->
+          <col style="width:180px">  <!-- naam persoon -->
           <col style="width:46px">   <!-- vip -->
-          <col style="width:90px">   <!-- type -->
+          <col style="width:100px">  <!-- personstype -->
           <col style="width:110px">  <!-- contractor type -->
           <col style="width:150px">  <!-- bedrijf -->
-          <col style="width:160px">  <!-- locatie -->
+          <col style="width:160px">  <!-- locatie(s) -->
+          <col style="width:110px">  <!-- aankomstdatum -->
           <col style="width:90px">   <!-- aankomsttijd -->
-          <col style="width:130px">  <!-- status -->
+          <col style="width:155px">  <!-- status -->
           <col style="width:100px">  <!-- ingecheckt -->
           <col style="width:100px">  <!-- uitgecheckt -->
-          <col style="width:130px">  <!-- passtatus -->
-          <col style="width:170px">  <!-- contactpersoon -->
-          <col style="width:76px">   <!-- dossier -->
-          <col style="width:84px">   <!-- e-learning -->
-          <col style="width:150px">  <!-- parkeren -->
-          <col style="width:160px">  <!-- bezoekreden -->
+          <col style="width:140px">  <!-- passtatus -->
+          <col style="width:160px">  <!-- parkeren -->
+          <col style="width:104px">  <!-- dossier -->
+          <col style="width:128px">  <!-- e-learning -->
+          <col style="width:160px">  <!-- contactpersoon -->
+          <col style="width:200px">  <!-- bezoekreden -->
         </colgroup>
         <thead>
           <tr>
             <th class="st0 chk-cell"><input type="checkbox" class="chk" id="selAll" onchange="toggleAll(this)" /></th>
             <th class="st1 act-cell"></th>
-            <th class="st2"><div class="th-in">Naam <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,2)"></div></th>
-            <th style="text-align:center"><div class="th-in" style="justify-content:center">VIP</div><div class="col-rz" onmousedown="rzStart(event,3)"></div></th>
-            <th><div class="th-in">Type <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,4)"></div></th>
-            <th><div class="th-in">Contractor type <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,5)"></div></th>
-            <th><div class="th-in">Bedrijf <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,6)"></div></th>
-            <th><div class="th-in">Locatie <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,7)"></div></th>
-            <th><div class="th-in">Verwacht <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,8)"></div></th>
-            <th><div class="th-in">Status <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,9)"></div></th>
-            <th><div class="th-in">Ingecheckt <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,10)"></div></th>
-            <th><div class="th-in">Uitgecheckt <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,11)"></div></th>
-            <th><div class="th-in">Passtatus <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,12)"></div></th>
-            <th><div class="th-in">Contactpersoon <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,13)"></div></th>
-            <th style="text-align:center" data-tip="Dossiervolledigheid"><div class="th-in" style="justify-content:center">Dossier</div><div class="col-rz" onmousedown="rzStart(event,14)"></div></th>
-            <th style="text-align:center"><div class="th-in" style="justify-content:center">E-learning</div><div class="col-rz" onmousedown="rzStart(event,15)"></div></th>
-            <th><div class="th-in">Parkeren <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,16)"></div></th>
+            <th class=""><div class="th-in">Naam persoon <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th style="text-align:center"><div class="th-in" style="justify-content:center">VIP</div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Personstype <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Contractortype <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Bedrijf <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Locatie(s) <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Aankomstdatum <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Aankomsttijd <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Status <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Ingecheckt <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Uitgecheckt <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Passtatus <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Parkeren <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Dossier <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">E-Learning <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
+            <th><div class="th-in">Contactpersoon <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event)"></div></th>
             <th><div class="th-in">Bezoekreden <span class="sort-i mi">unfold_more</span></div></th>
           </tr>
           <!-- Column search row -->
           <tr class="col-row">
             <th class="st0"></th>
             <th class="st1"></th>
-            <th class="st2"><input class="ci" id="c-naam"    type="text" placeholder="Zoeken…" oninput="render()" /></th>
+            <th class=""><div class="ci-search"><input class="ci ci-s" id="c-naam" type="text" placeholder="Zoeken" oninput="render()" /><span class="mi ci-ico">search</span></div></th>
             <th>
               <select class="cs" id="c-vip" onchange="render()">
                 <option value="">Alle</option>
@@ -742,22 +819,23 @@
                 <option value="Contractor">Contractor</option>
               </select>
             </th>
-            <th><input class="ci" id="c-ctype"   type="text" placeholder="Zoeken…" oninput="render()" /></th>
-            <th><input class="ci" id="c-bedrijf" type="text" placeholder="Zoeken…" oninput="render()" /></th>
-            <th><input class="ci" id="c-locatie" type="text" placeholder="Zoeken…" oninput="render()" /></th>
-            <th><input class="ci" id="c-tijd" type="text" placeholder="bijv. 09:00" oninput="render()" /></th>
+            <th><div class="ci-search"><input class="ci ci-s" id="c-ctype" type="text" placeholder="Zoeken" oninput="render()" /><span class="mi ci-ico">search</span></div></th>
+            <th><div class="ci-search"><input class="ci ci-s" id="c-bedrijf" type="text" placeholder="Zoeken" oninput="render()" /><span class="mi ci-ico">search</span></div></th>
+            <th><div class="ci-search"><input class="ci ci-s" id="c-locatie" type="text" placeholder="Zoeken" oninput="render()" /><span class="mi ci-ico">search</span></div></th>
+            <th><div class="ci-search"><input class="ci ci-s" id="c-datum" type="text" placeholder="08-04-2026" oninput="render()" /><span class="mi ci-ico">today</span></div></th>
+            <th><div class="ci-search"><input class="ci ci-s" id="c-tijd" type="text" placeholder="Alle" oninput="render()" /><span class="mi ci-ico">schedule</span></div></th>
             <th>
               <select class="cs" id="c-status" onchange="render()">
                 <option value="">Alle</option>
                 <option value="Verwacht">Verwacht</option>
                 <option value="Aangekomen">Aangekomen</option>
                 <option value="Vertrokken">Vertrokken</option>
-                <option value="No-show">No-show</option>
+                <option value="No-show">No show</option>
                 <option value="Geannuleerd">Geannuleerd</option>
               </select>
             </th>
-            <th><input class="ci" id="c-incheckt" type="text" placeholder="bijv. 09:00" oninput="render()" /></th>
-            <th><input class="ci" id="c-uitcheckt" type="text" placeholder="bijv. 10:00" oninput="render()" /></th>
+            <th><div class="ci-search"><input class="ci ci-s" id="c-incheckt" type="text" placeholder="Alle" oninput="render()" /><span class="mi ci-ico">schedule</span></div></th>
+            <th><div class="ci-search"><input class="ci ci-s" id="c-uitcheckt" type="text" placeholder="Alle" oninput="render()" /><span class="mi ci-ico">schedule</span></div></th>
             <th>
               <select class="cs" id="c-pas" onchange="render()">
                 <option value="">Alle</option>
@@ -766,7 +844,14 @@
                 <option value="geprint">Geprint</option>
               </select>
             </th>
-            <th><input class="ci" id="c-contact" type="text" placeholder="Zoeken…" oninput="render()" /></th>
+            <th>
+              <select class="cs" id="c-parkeren" onchange="render()">
+                <option value="">Alle</option>
+                <option value="nodig">Benodigd</option>
+                <option value="gereserveerd">Gereserveerd</option>
+                <option value="niet-gereserveerd">Niet gereserveerd</option>
+              </select>
+            </th>
             <th>
               <select class="cs" id="c-dossier" onchange="render()">
                 <option value="">Alle</option>
@@ -781,15 +866,8 @@
                 <option value="niet-behaald">Niet behaald</option>
               </select>
             </th>
-            <th>
-              <select class="cs" id="c-parkeren" onchange="render()">
-                <option value="">Alle</option>
-                <option value="nodig">Benodigd</option>
-                <option value="gereserveerd">Gereserveerd</option>
-                <option value="niet-gereserveerd">Niet gereserveerd</option>
-              </select>
-            </th>
-            <th><input class="ci" id="c-reden" type="text" placeholder="Zoeken…" oninput="render()" /></th>
+            <th><div class="ci-search"><input class="ci ci-s" id="c-contact" type="text" placeholder="Zoeken" oninput="render()" /><span class="mi ci-ico">search</span></div></th>
+            <th><div class="ci-search"><input class="ci ci-s" id="c-reden" type="text" placeholder="Zoeken" oninput="render()" /><span class="mi ci-ico">search</span></div></th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -798,10 +876,20 @@
 
     <div class="pag-bar">
       <div class="pag-info">
-        <select class="pag-sel"><option>20</option><option>50</option><option>100</option></select>
-        <span id="pagInfo">resultaten per pagina &nbsp;|&nbsp; 1–12 van 12</span>
+        <div class="dd-wrap" style="position:relative">
+          <div class="pag-sel" id="pagSelBtn" onclick="toggleDD('pagSelDD',event)">
+            <span class="pag-sel-val" id="pagSelVal">10</span>
+            <span class="pag-sel-ico"><span class="mi">expand_more</span></span>
+          </div>
+          <div class="pag-sel-dd" id="pagSelDD">
+            <div class="pag-sel-opt active" onclick="setPageSize(10)">10</div>
+            <div class="pag-sel-opt" onclick="setPageSize(20)">20</div>
+            <div class="pag-sel-opt" onclick="setPageSize(50)">50</div>
+          </div>
+        </div>
+        <span id="pagInfo">resultaten per pagina &nbsp;|&nbsp; 1–10 van 20</span>
       </div>
-      <div class="pag-ctrl">
+      <div class="pag-ctrl" id="pagCtrl">
         <button class="pg-btn dis"><span class="mi">first_page</span></button>
         <button class="pg-btn dis"><span class="mi">chevron_left</span></button>
         <button class="pg-btn active">1</button>
@@ -843,85 +931,124 @@
 
 <!-- ══ TOAST HOST ══ -->
 <div class="toast-host" id="toastHost"></div>
-<div class="proto-badge">Prototype v0.1</div>
+<div class="proto-badge">Prototype</div>
+<div class="fixture-bar">
+  <span class="fixture-lbl">Variant</span>
+  <button class="fixture-btn active" data-v="1" onclick="setVariant(1)">v1</button>
+  <button class="fixture-btn" data-v="2" onclick="setVariant(2)">v2</button>
+  <button class="fixture-btn" data-v="3" onclick="setVariant(3)">v3</button>
+  <button class="fixture-btn" data-v="4" onclick="setVariant(4)">v4</button>
+</div>
 
 <script>
 /* ──────────────────────────────────────────
    DATA
    ────────────────────────────────────────── */
 const DATA = [
-  {id:1,naam:'Sophie van der Berg',bedrijf:'KPMG Nederland',type:'Bezoeker',contractorType:null,
-   bezoekreden:'Partneroverleg Q2',locatie:'HQ Amsterdam — Zaal 4B',aankomsttijd:'09:00',
-   status:'Aangekomen',contactpersoon:'Mark Dekker',contactTel:'+31 20 123 4567',
+  {id:1,naam:'Sophie van der Berg',bedrijf:'CleanPro Services BV',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Partneroverleg Q2',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'11:00',
+   status:'Verwacht',contactpersoon:'Mark Dekker',contactTel:'+31 20 123 4567',
    vip:true,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
-   parkeren:{nodig:true,gereserveerd:true,plek:'P2-18'},passtatus:'geprint',
-   checkinTime:'08:55',checkoutTime:null},
-  {id:2,naam:'Thomas Jansen',bedrijf:'ABN AMRO',type:'Bezoeker',contractorType:null,
-   bezoekreden:'Contractbespreking',locatie:'HQ Amsterdam — Zaal 2A',aankomsttijd:'10:00',
-   status:'Verwacht',contactpersoon:'Lisa Smit',contactTel:'+31 20 234 5678',
-   vip:false,dossier:'onvolledig',dossierMissing:['Legitimatiebewijs ontbreekt','Foto niet geüpload'],
-   elearning:'niet-vereist',parkeren:{nodig:false,gereserveerd:false,plek:null},
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:2,naam:'Thomas Janssen',bedrijf:'CleanPro Services BV',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Contractbespreking',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'11:00',
+   status:'Aangekomen',contactpersoon:'Lisa Smit',contactTel:'+31 20 234 5678',
+   vip:true,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geprint',checkinTime:'10:50',checkoutTime:null},
+  {id:3,naam:'Kevin Mulder',bedrijf:'TechServ B.v.',type:'Contractor',contractorType:'Onderhoud',
+   bezoekreden:'Periodiek onderhoud installaties',locatie:'Locatie Zuid',aankomsttijd:'12:00',
+   status:'Verwacht',contactpersoon:'Pieter de Vries',contactTel:'+31 20 345 6789',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:true,gereserveerd:true,plek:'P1-05'},passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:4,naam:'Ali El Amrani',bedrijf:'TechServ B.v.',type:'Contractor',contractorType:'Onderhoud',
+   bezoekreden:'Periodiek onderhoud installaties',locatie:'Locatie Zuid',aankomsttijd:'12:00',
+   status:'Verwacht',contactpersoon:'Pieter de Vries',contactTel:'+31 20 345 6789',
+   vip:false,dossier:'onvolledig',dossierMissing:['VCA certificaat verlopen'],
+   elearning:'niet-behaald',parkeren:{nodig:false,gereserveerd:false,plek:null},
    passtatus:'geen',checkinTime:null,checkoutTime:null},
-  {id:3,naam:'Kevin Mulder',bedrijf:'TechServ BV',type:'Contractor',contractorType:'Onderhoud',
-   bezoekreden:'Airco onderhoud verdieping 3',locatie:'HQ Amsterdam — Serverruimte B3',aankomsttijd:'08:00',
-   status:'Aangekomen',contactpersoon:'Pieter de Vries',contactTel:'+31 20 345 6789',
-   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
-   parkeren:{nodig:true,gereserveerd:true,plek:'P1-05'},passtatus:'gekoppeld',
-   checkinTime:'07:58',checkoutTime:null},
-  {id:4,naam:'Nadia El Amrani',bedrijf:'CleanPro Services',type:'Contractor',contractorType:'Schoonmaak',
-   bezoekreden:'Dagelijkse schoonmaak',locatie:'HQ Amsterdam — Alle verdiepingen',aankomsttijd:'07:00',
-   status:'Vertrokken',contactpersoon:'Facility Desk',contactTel:'+31 20 456 7890',
-   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
-   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'gekoppeld',
-   checkinTime:'07:05',checkoutTime:'10:30'},
-  {id:5,naam:'Frank Visser',bedrijf:'Deloitte NL',type:'Bezoeker',contractorType:null,
-   bezoekreden:'Audit intake gesprek',locatie:'HQ Amsterdam — Board Room',aankomsttijd:'11:00',
+  {id:5,naam:'Frank Fisser',bedrijf:'DataSec Solutions',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Security audit intake',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'12:30',
    status:'Verwacht',contactpersoon:'Anna Bakker',contactTel:'+31 20 567 8901',
-   vip:true,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
-   parkeren:{nodig:true,gereserveerd:false,plek:null},passtatus:'geen',
-   checkinTime:null,checkoutTime:null},
-  {id:6,naam:'Ravi Sharma',bedrijf:'DataSec Solutions',type:'Contractor',contractorType:'IT Security',
-   bezoekreden:'Penetratietest netwerk',locatie:'HQ Amsterdam — IT Ruimte A1',aankomsttijd:'09:30',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:true,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:6,naam:'Iris Wolters',bedrijf:'SAP Nederland',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Demo ERP systeem',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'08:00',
+   status:'No-show',contactpersoon:'Mark Dekker',contactTel:'+31 20 789 0123',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:7,naam:'Bruno Carvalho',bedrijf:'LasroPlus B.V.',type:'Contractor',contractorType:'Lasser',
+   bezoekreden:'Lassen constructie hal B',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'09:00',
+   status:'Geannuleerd',contactpersoon:'Joost Hendriks',contactTel:'+31 20 678 9012',
+   vip:false,dossier:'onvolledig',dossierMissing:['Verzekeringsbewijs ontbreekt'],
+   elearning:'niet-behaald',parkeren:{nodig:false,gereserveerd:false,plek:null},
+   passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:8,naam:'Charlotte de Wit',bedrijf:'CleanPro Services BV',type:'Contractor',contractorType:'Schoonmaken',
+   bezoekreden:'Dagelijkse schoonmaak',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'09:00',
+   status:'Aangekomen',contactpersoon:'Facility Desk',contactTel:'+31 20 456 7890',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'gekoppeld',checkinTime:'09:05',checkoutTime:null},
+  {id:9,naam:'Bas van Leeuwen',bedrijf:'Blis Digital',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Lobbyoverleg digitalisering',locatie:'Kantoor buitenterrein',aankomsttijd:'10:00',
+   status:'Vertrokken',contactpersoon:'Mark Dekker',contactTel:'+31 20 333 4444',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:'09:50',checkoutTime:'11:05'},
+  {id:10,naam:'Hakan Özturk',bedrijf:'Blis Digital',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Lobbyoverleg digitalisering',locatie:'Kantoor buitenterrein',aankomsttijd:'10:00',
+   status:'Vertrokken',contactpersoon:'Mark Dekker',contactTel:'+31 20 333 4444',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:'09:50',checkoutTime:'11:05'},
+  {id:11,naam:'Ravi Sharma',bedrijf:'DataSec Solutions',type:'Contractor',contractorType:'IT Security',
+   bezoekreden:'Penetratietest netwerk',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'09:30',
    status:'Verwacht',contactpersoon:'Joost Hendriks',contactTel:'+31 20 678 9012',
    vip:false,dossier:'onvolledig',dossierMissing:['VCA certificaat verlopen'],
    elearning:'niet-behaald',parkeren:{nodig:false,gereserveerd:false,plek:null},
    passtatus:'geen',checkinTime:null,checkoutTime:null},
-  {id:7,naam:'Iris Wolters',bedrijf:'ING Direct',type:'Bezoeker',contractorType:null,
-   bezoekreden:'Kennismakingsgesprek',locatie:'HQ Amsterdam — Zaal 1C',aankomsttijd:'13:30',
-   status:'Verwacht',contactpersoon:'Mark Dekker',contactTel:'+31 20 789 0123',
+  {id:12,naam:'Nadia El Amrani',bedrijf:'CleanPro Services BV',type:'Contractor',contractorType:'Schoonmaak',
+   bezoekreden:'Dagelijkse schoonmaak',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'07:00',
+   status:'Vertrokken',contactpersoon:'Facility Desk',contactTel:'+31 20 456 7890',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:'07:05',checkoutTime:'10:30'},
+  {id:13,naam:'Omar Hassan',bedrijf:'NetSafe NV',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Security briefing',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'09:00',
+   status:'Verwacht',contactpersoon:'Lisa Smit',contactTel:'+31 20 012 3456',
    vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
-   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',
-   checkinTime:null,checkoutTime:null},
-  {id:8,naam:'Bruno Carvalho',bedrijf:'ElektroPlus',type:'Contractor',contractorType:'Elektra',
-   bezoekreden:'Noodstroominstallatie controle',locatie:'HQ Amsterdam — Kelder',aankomsttijd:'14:00',
-   status:'No-show',contactpersoon:'Pieter de Vries',contactTel:'+31 20 890 1234',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:14,naam:'Lena Bauer',bedrijf:'ElektroPlus',type:'Contractor',contractorType:'Elektra',
+   bezoekreden:'Noodstroominstallatie controle',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'14:00',
+   status:'Verwacht',contactpersoon:'Pieter de Vries',contactTel:'+31 20 890 1234',
    vip:false,dossier:'onvolledig',dossierMissing:['Verzekeringsbewijs ontbreekt'],
    elearning:'niet-behaald',parkeren:{nodig:true,gereserveerd:false,plek:null},
    passtatus:'geen',checkinTime:null,checkoutTime:null},
-  {id:9,naam:'Charlotte de Wit',bedrijf:'Rabobank',type:'Bezoeker',contractorType:null,
-   bezoekreden:'Investeerdersbijeenkomst',locatie:'HQ Amsterdam — Zaal 4A',aankomsttijd:'15:00',
-   status:'Verwacht',contactpersoon:'Anna Bakker',contactTel:'+31 20 901 2345',
-   vip:true,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
-   parkeren:{nodig:true,gereserveerd:true,plek:'P2-07'},passtatus:'geen',
-   checkinTime:null,checkoutTime:null},
-  {id:10,naam:'Omar Hassan',bedrijf:'NetSafe NV',type:'Bezoeker',contractorType:null,
-   bezoekreden:'Security briefing',locatie:'HQ Amsterdam — Zaal 2B',aankomsttijd:'09:00',
-   status:'Geannuleerd',contactpersoon:'Lisa Smit',contactTel:'+31 20 012 3456',
+  {id:15,naam:'Pieter van Dam',bedrijf:'SecureForce BV',type:'Contractor',contractorType:'Beveiliging',
+   bezoekreden:'Beveiligingsronde',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'08:00',
+   status:'Aangekomen',contactpersoon:'Anna Bakker',contactTel:'+31 20 567 8901',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:true,gereserveerd:true,plek:'P2-18'},passtatus:'gekoppeld',checkinTime:'07:55',checkoutTime:null},
+  {id:16,naam:'Maria Santos',bedrijf:'Compass Group',type:'Contractor',contractorType:'Catering',
+   bezoekreden:'Cateringservice',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'07:00',
+   status:'Vertrokken',contactpersoon:'Facility Desk',contactTel:'+31 20 456 7890',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:'07:10',checkoutTime:'14:30'},
+  {id:17,naam:'Jan de Boer',bedrijf:'TechServ B.v.',type:'Contractor',contractorType:'Onderhoud',
+   bezoekreden:'HVAC jaarlijks onderhoud',locatie:'Locatie Zuid',aankomsttijd:'13:00',
+   status:'Verwacht',contactpersoon:'Pieter de Vries',contactTel:'+31 20 345 6789',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:18,naam:'Elena Popescu',bedrijf:'CleanPro Services BV',type:'Contractor',contractorType:'Schoonmaak',
+   bezoekreden:'Dagelijkse schoonmaak',locatie:'Locatie Zuid',aankomsttijd:'07:00',
+   status:'Vertrokken',contactpersoon:'Facility Desk',contactTel:'+31 20 456 7890',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:'07:05',checkoutTime:'15:00'},
+  {id:19,naam:'Ahmed Yilmaz',bedrijf:'DataSec Solutions',type:'Contractor',contractorType:'IT',
+   bezoekreden:'Netwerkconfiguratie update',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'10:00',
+   status:'Verwacht',contactpersoon:'Joost Hendriks',contactTel:'+31 20 678 9012',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:20,naam:'Sandra Visser',bedrijf:'ING Direct',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Investeerdersbijeenkomst',locatie:'Hoofdkantoor Schiphol',aankomsttijd:'15:00',
+   status:'Verwacht',contactpersoon:'Anna Bakker',contactTel:'+31 20 567 8901',
    vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
-   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',
-   checkinTime:null,checkoutTime:null},
-  {id:11,naam:'Lena Bauer',bedrijf:'SAP Netherlands',type:'Bezoeker',contractorType:null,
-   bezoekreden:'Demo ERP systeem',locatie:'HQ Amsterdam — Demo Ruimte',aankomsttijd:'10:30',
-   status:'Verwacht',contactpersoon:'Joost Hendriks',contactTel:'+31 20 111 2222',
-   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
-   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',
-   checkinTime:null,checkoutTime:null},
-  {id:12,naam:'Bas van Leeuwen',bedrijf:'VNO-NCW',type:'Bezoeker',contractorType:null,
-   bezoekreden:'Lobbyoverleg',locatie:'HQ Amsterdam — Directiekamer',aankomsttijd:'16:00',
-   status:'Verwacht',contactpersoon:'Mark Dekker',contactTel:'+31 20 333 4444',
-   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
-   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',
-   checkinTime:null,checkoutTime:null},
+   parkeren:{nodig:true,gereserveerd:true,plek:'P2-07'},passtatus:'geen',checkinTime:null,checkoutTime:null},
 ];
 
 /* ──────────────────────────────────────────
@@ -932,8 +1059,9 @@ let statusFilter    = '';
 let complianceFilter= {dossier:false, elearning:false};
 let parkFilter      = '';
 let selected        = new Set();
-let curDate         = new Date(2026,3,1);
-const TODAY         = new Date(2026,3,1);
+let currentPage     = 1;
+let curDate         = new Date(2026,3,8);
+const TODAY         = new Date(2026,3,8);
 const DAYS          = ['zo','ma','di','wo','do','vr','za'];
 const MONTHS        = ['januari','februari','maart','april','mei','juni','juli',
                        'augustus','september','oktober','november','december'];
@@ -942,73 +1070,97 @@ const MONTHS        = ['januari','februari','maart','april','mei','juni','juli',
    RENDER HELPERS
    ────────────────────────────────────────── */
 function statusCls(s){return{Verwacht:'sv',Aangekomen:'sa',Vertrokken:'svo','No-show':'sn',Geannuleerd:'sg'}[s]||'sv'}
-function statusBadge(s){return`<span class="sbadge ${statusCls(s)}"><span class="s-dot"></span>${s}</span>`}
+const STATUS_LBL={'No-show':'No show'};
+function statusBadge(s){return`<span class="sbadge ${statusCls(s)}">${STATUS_LBL[s]||s}</span>`}
+function fmtDatumShort(d){const dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0');return`${dd}-${mm}-${d.getFullYear()}`}
 
 function dossierCell(p){
   if(p.dossier==='compleet')
     return`<span class="cico c-ok" data-tip="Dossier compleet"><span class="mi">check_circle</span></span>`;
   const tip=(p.dossierMissing||['Ontbrekende informatie']).join(' · ');
-  return`<span class="cico c-err" data-tip="${tip}"><span class="mi">error</span></span>`;
+  return`<span class="cico c-warn" data-tip="${tip}"><span class="mi">warning</span></span>`;
 }
 function elearningCell(p){
-  if(p.elearning==='niet-vereist') return`<span class="cico c-na" data-tip="Niet vereist"><span class="mi">remove</span></span>`;
+  if(p.elearning==='niet-vereist') return`<span class="cico c-na" data-tip="Niet vereist"><span class="mi">remove_circle</span></span>`;
   if(p.elearning==='behaald')      return`<span class="cico c-ok" data-tip="E-learning behaald"><span class="mi">check_circle</span></span>`;
-  return`<span class="cico c-err" data-tip="E-learning niet behaald"><span class="mi">error</span></span>`;
+  return`<span class="cico c-warn" data-tip="E-learning niet behaald"><span class="mi">warning</span></span>`;
 }
 function parkCell(p){
   const pk=p.parkeren;
   if(!pk.nodig) return`<span class="muted">—</span>`;
   if(pk.gereserveerd){
-    return`<div class="pk-row pk-ok"><span class="mi">check_circle</span>${pk.plek||''}</div>`;
+    return`<div style="display:flex;align-items:center;gap:8px"><span class="cico c-ok" style="width:24px;height:24px"><span class="mi">check_circle</span></span><span style="font-size:16px;color:var(--n900)">${pk.plek||''}</span></div>`;
   }
-  return`<span style="font-size:12px;color:var(--n500)">Niet gereserveerd</span>`;
+  return`<span style="font-size:16px;color:var(--n500)">Niet gereserveerd</span>`;
 }
 function passCell(s){
-  if(s==='geen')      return`<div class="pass pass-n"><span class="mi">badge</span><span style="color:var(--n500);font-weight:600">Niet gekoppeld</span></div>`;
-  if(s==='gekoppeld') return`<div class="pass pass-k"><span class="mi">badge</span>Gekoppeld</div>`;
-  return`<div class="pass pass-p"><span class="mi">print</span>Geprint</div>`;
+  if(s==='geen')      return`<div class="pass pass-n"><span class="pass-dot pass-dot-n"></span>Niet gekoppeld</div>`;
+  if(s==='gekoppeld') return`<div class="pass pass-k"><span class="pass-dot pass-dot-k"></span>Gekoppeld</div>`;
+  return`<div class="pass pass-p"><span class="pass-dot pass-dot-p"></span>Geprint</div>`;
 }
 
 function actionMenu(p){
-  const canIn  = p.status==='Verwacht';
-  const canOut = p.status==='Aangekomen';
-  const canNS  = p.status==='Verwacht';
-  const canAnn = ['Verwacht','Aangekomen'].includes(p.status);
-  return`<div class="act-wrap">
-    <button class="act-ico" onclick="toggleActMenu(${p.id},event)" data-tip="Acties">
-      <span class="mi">more_horiz</span>
-    </button>
+  const s=p.status;
+  const btn=`<button class="act-ico" onclick="toggleActMenu(${p.id},event)" data-tip="Acties"><span class="mi">more_horiz</span></button>`;
+
+  if(s==='Verwacht') return`<div class="act-wrap">${btn}
     <div class="act-menu dd-menu" id="am-${p.id}">
-      ${canIn ?`<div class="dd-item action-primary" onclick="openCheckin(${p.id});closeDD()"><span class="mi">login</span>Inchecken</div>`:''}
-      ${canOut?`<div class="dd-item action-primary" onclick="doCheckout(${p.id});closeDD()"><span class="mi">logout</span>Uitchecken</div>`:''}
+      <div class="dd-item action-primary" onclick="openCheckin(${p.id});closeDD()"><span class="mi">login</span>Inchecken</div>
+      <div class="dd-item" onclick="doNoshow(${p.id});closeDD()"><span class="mi">person_off</span>No-show</div>
+      <div class="dd-item danger" onclick="doAnnuleer(${p.id});closeDD()"><span class="mi">cancel</span>Annuleren</div>
       <div class="dd-divider"></div>
-      <div class="dd-item" onclick="openDP(${p.id});closeDD()"><span class="mi">folder_open</span>Dossier bekijken</div>
       <div class="dd-item" onclick="doPasKoppelen(${p.id});closeDD()"><span class="mi">badge</span>Pas koppelen</div>
-      <div class="dd-item" onclick="doPasPrinten(${p.id});closeDD()"><span class="mi">print</span>Pas activeren / printen</div>
+      <div class="dd-item" onclick="toast('info','Pas activeren','Pas activeren voor ${p.naam}…');closeDD()"><span class="mi">badge</span>Pas activeren</div>
+      <div class="dd-item" onclick="doPasPrinten(${p.id});closeDD()"><span class="mi">print</span>Pas printen</div>
       <div class="dd-divider"></div>
-      <div class="dd-section-label">Contact</div>
-      <div class="dd-item" onclick="doContact(${p.id},'bellen');closeDD()"><span class="mi">phone</span>Bellen</div>
+      <div class="dd-item" onclick="doContact(${p.id},'bellen');closeDD()"><span class="mi">phone</span>Bel persoon</div>
+      <div class="dd-item" onclick="openDP(${p.id});closeDD()"><span class="mi">folder_open</span>Bekijk dossier</div>
       <div class="dd-item" onclick="doContact(${p.id},'bericht');closeDD()"><span class="mi">message</span>Contactpersoon informeren</div>
-      ${canNS ?`<div class="dd-divider"></div><div class="dd-item danger" onclick="doNoshow(${p.id});closeDD()"><span class="mi">person_off</span>No-show markeren</div>`:''}
-      ${canAnn?`<div class="dd-item danger" onclick="doAnnuleer(${p.id});closeDD()"><span class="mi">cancel</span>Annuleren</div>`:''}
     </div>
   </div>`;
+
+  if(s==='Aangekomen') return`<div class="act-wrap">${btn}
+    <div class="act-menu dd-menu" id="am-${p.id}">
+      <div class="dd-item action-primary" onclick="doCheckout(${p.id});closeDD()"><span class="mi">logout</span>Uitchecken</div>
+      <div class="dd-divider"></div>
+      <div class="dd-item" onclick="doPasOntkoppelen(${p.id});closeDD()"><span class="mi">link_off</span>Pas ontkoppelen</div>
+      <div class="dd-divider"></div>
+      <div class="dd-item" onclick="doContact(${p.id},'bellen');closeDD()"><span class="mi">phone</span>Bel persoon</div>
+      <div class="dd-item" onclick="openDP(${p.id});closeDD()"><span class="mi">folder_open</span>Bekijk dossier</div>
+      <div class="dd-item" onclick="doContact(${p.id},'bericht');closeDD()"><span class="mi">message</span>Contactpersoon informeren</div>
+    </div>
+  </div>`;
+
+  if(s==='No-show') return`<div class="act-wrap">${btn}
+    <div class="act-menu dd-menu" id="am-${p.id}">
+      <div class="dd-item action-primary" onclick="doUndoNoshow(${p.id});closeDD()"><span class="mi">undo</span>No-show ongedaan maken</div>
+      <div class="dd-item" onclick="openCheckin(${p.id});closeDD()"><span class="mi">login</span>Alsnog inchecken</div>
+      <div class="dd-divider"></div>
+      <div class="dd-item" onclick="doContact(${p.id},'bellen');closeDD()"><span class="mi">phone</span>Bel persoon</div>
+      <div class="dd-item" onclick="openDP(${p.id});closeDD()"><span class="mi">folder_open</span>Bekijk dossier</div>
+      <div class="dd-item" onclick="doContact(${p.id},'bericht');closeDD()"><span class="mi">message</span>Contactpersoon informeren</div>
+    </div>
+  </div>`;
+
+  if(s==='Geannuleerd') return`<div class="act-wrap">${btn}
+    <div class="act-menu dd-menu" id="am-${p.id}">
+      <div class="dd-item action-primary" onclick="doUndoAnnuleer(${p.id});closeDD()"><span class="mi">undo</span>Annulering ongedaan maken</div>
+    </div>
+  </div>`;
+
+  if(s==='Vertrokken') return`<div class="act-wrap">${btn}
+    <div class="act-menu dd-menu" id="am-${p.id}">
+      <div class="dd-item" onclick="doContact(${p.id},'bellen');closeDD()"><span class="mi">phone</span>Bel persoon</div>
+      <div class="dd-item" onclick="openDP(${p.id});closeDD()"><span class="mi">folder_open</span>Bekijk dossier</div>
+      <div class="dd-item" onclick="doContact(${p.id},'bericht');closeDD()"><span class="mi">message</span>Contactpersoon informeren</div>
+    </div>
+  </div>`;
+
+  return`<div class="act-wrap">${btn}<div class="act-menu dd-menu" id="am-${p.id}"></div></div>`;
 }
 
 function contactCell(p){
-  return`<div class="ct-cell">
-    <span class="ct-name">${p.contactpersoon}</span>
-    <div class="dd-wrap">
-      <button class="ico-btn" data-tip="Contact" onclick="toggleActMenu('ct-${p.id}',event)">
-        <span class="mi">more_horiz</span>
-      </button>
-      <div class="act-menu dd-menu" id="ct-${p.id}" style="min-width:190px;left:auto;right:0">
-        <div class="dd-item" onclick="doContact(${p.id},'bellen');closeDD()"><span class="mi">phone</span>Bellen</div>
-        <div class="dd-item" onclick="doContact(${p.id},'email');closeDD()"><span class="mi">email</span>E-mail sturen</div>
-        <div class="dd-item" onclick="doContact(${p.id},'bericht');closeDD()"><span class="mi">message</span>Bericht sturen</div>
-      </div>
-    </div>
-  </div>`;
+  return`<span style="font-size:16px">${p.contactpersoon}</span>`;
 }
 
 /* ──────────────────────────────────────────
@@ -1036,6 +1188,7 @@ function filtered(){
   const cb=gv('c-bedrijf').toLowerCase(); if(cb) d=d.filter(p=>p.bedrijf.toLowerCase().includes(cb));
   const cr=gv('c-reden').toLowerCase();   if(cr) d=d.filter(p=>p.bezoekreden.toLowerCase().includes(cr));
   const cl=gv('c-locatie').toLowerCase(); if(cl) d=d.filter(p=>p.locatie.toLowerCase().includes(cl));
+  const cdat=gv('c-datum');              if(cdat) d=d.filter(()=>fmtDatumShort(curDate).includes(cdat));
   const cc=gv('c-contact').toLowerCase(); if(cc) d=d.filter(p=>p.contactpersoon.toLowerCase().includes(cc));
   const cp=gv('c-pas');                   if(cp) d=d.filter(p=>p.passtatus===cp);
   const ctijd=gv('c-tijd');               if(ctijd) d=d.filter(p=>p.aankomsttijd.includes(ctijd));
@@ -1051,17 +1204,41 @@ function filtered(){
   return d;
 }
 
+let PAGE_SIZE = 10;
+function setPageSize(n){
+  PAGE_SIZE=n;currentPage=1;
+  document.getElementById('pagSelVal').textContent=n;
+  document.querySelectorAll('.pag-sel-opt').forEach(o=>o.classList.toggle('active',+o.textContent===n));
+  closeDD();render();
+}
 function render(){
   const rows=filtered();
-  document.getElementById('cnt-alle').textContent=DATA.length;
-  document.getElementById('cnt-bez').textContent=DATA.filter(p=>p.type==='Bezoeker').length;
-  document.getElementById('cnt-con').textContent=DATA.filter(p=>p.type==='Contractor').length;
+  const ea=document.getElementById('cnt-alle'); if(ea) ea.textContent=DATA.length;
+  const eb=document.getElementById('cnt-bez');  if(eb) eb.textContent=DATA.filter(p=>p.type==='Bezoeker').length;
+  const ec=document.getElementById('cnt-con');  if(ec) ec.textContent=DATA.filter(p=>p.type==='Contractor').length;
+
+  const totalPages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE));
+  if(currentPage>totalPages) currentPage=totalPages;
+  const start=(currentPage-1)*PAGE_SIZE;
+  const pageRows=rows.slice(start,start+PAGE_SIZE);
+
   document.getElementById('pagInfo').textContent=
-    `resultaten per pagina\u00a0|\u00a01\u2013${rows.length} van ${rows.length}`;
+    `resultaten per pagina\u00a0|\u00a0${rows.length?start+1:0}\u2013${Math.min(start+PAGE_SIZE,rows.length)} van ${rows.length}`;
+
+  // Pagination controls
+  const ctrl=document.getElementById('pagCtrl');
+  let btns=`<button class="pg-btn${currentPage===1?' dis':''}" onclick="goPage(1)"><span class="mi">first_page</span></button>`;
+  btns+=`<button class="pg-btn${currentPage===1?' dis':''}" onclick="goPage(${currentPage-1})"><span class="mi">chevron_left</span></button>`;
+  for(let i=1;i<=totalPages;i++){
+    btns+=`<button class="pg-btn${i===currentPage?' active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  btns+=`<button class="pg-btn${currentPage===totalPages?' dis':''}" onclick="goPage(${currentPage+1})"><span class="mi">chevron_right</span></button>`;
+  btns+=`<button class="pg-btn${currentPage===totalPages?' dis':''}" onclick="goPage(${totalPages})"><span class="mi">last_page</span></button>`;
+  ctrl.innerHTML=btns;
 
   const tb=document.getElementById('tbody');
-  if(!rows.length){
-    tb.innerHTML=`<tr><td colspan="16"><div class="empty-state">
+  if(!pageRows.length){
+    tb.innerHTML=`<tr><td colspan="19"><div class="empty-state">
       <span class="mi" style="font-size:40px">search_off</span>
       <div class="es-title">Geen resultaten</div>
       <div class="es-sub">Geen personen gevonden voor de huidige filters.</div>
@@ -1069,7 +1246,8 @@ function render(){
     return;
   }
 
-  tb.innerHTML=rows.map(p=>{
+  const emptyTime=`<span style="color:var(--n400);letter-spacing:1px">----</span>`;
+  tb.innerHTML=pageRows.map(p=>{
     const isSel=selected.has(p.id);
     return`<tr id="tr-${p.id}" class="${isSel?'selected':''} ${p.vip?'vip-row':''}"
         onclick="handleRowClick(event,${p.id})">
@@ -1080,28 +1258,35 @@ function render(){
       <td class="act-cell st1" onclick="event.stopPropagation()">
         ${actionMenu(p)}
       </td>
-      <td class="st2">
+      <td class="">
         <div class="p-name" onclick="openDP(${p.id});event.stopPropagation()">${p.naam}</div>
       </td>
-      <td style="text-align:center">
+      <td class="vip-cell">
         ${p.vip?`<span class="mi vip-star" data-tip="VIP">star</span>`:`<span class="vip-dash">—</span>`}
       </td>
       <td><span class="type-txt">${p.type}</span></td>
       <td><span class="type-txt">${p.contractorType||'<span class="muted">—</span>'}</span></td>
-      <td style="font-size:13px">${p.bedrijf}</td>
-      <td style="font-size:12px;color:var(--n700)">${p.locatie}</td>
-      <td><div class="t-val ${p.status==='No-show'?'t-over':''}">${p.aankomsttijd}</div></td>
+      <td>${p.bedrijf}</td>
+      <td>${p.locatie}</td>
+      <td>${fmtDatumShort(curDate)}</td>
+      <td>${p.aankomsttijd}</td>
       <td>${statusBadge(p.status)}</td>
-      <td><span class="t-val">${p.checkinTime||'<span class="muted">—</span>'}</span></td>
-      <td><span class="t-val">${p.checkoutTime||'<span class="muted">—</span>'}</span></td>
+      <td>${p.checkinTime||emptyTime}</td>
+      <td>${p.checkoutTime||emptyTime}</td>
       <td>${passCell(p.passtatus)}</td>
-      <td onclick="event.stopPropagation()">${contactCell(p)}</td>
+      <td>${parkCell(p)}</td>
       <td style="text-align:center">${dossierCell(p)}</td>
       <td style="text-align:center">${elearningCell(p)}</td>
-      <td>${parkCell(p)}</td>
-      <td style="font-size:12px;color:var(--n700)">${p.bezoekreden}</td>
+      <td onclick="event.stopPropagation()">${contactCell(p)}</td>
+      <td>${p.bezoekreden}</td>
     </tr>`;
   }).join('');
+}
+function goPage(p){
+  const rows=filtered();
+  const total=Math.max(1,Math.ceil(rows.length/PAGE_SIZE));
+  currentPage=Math.max(1,Math.min(p,total));
+  render();
 }
 
 /* ──────────────────────────────────────────
@@ -1109,7 +1294,8 @@ function render(){
    ────────────────────────────────────────── */
 function setTab(tab,btn){
   activeTab=tab;
-  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('active'));
+  currentPage=1;
+  btn.closest('.seg').querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   selected.clear(); updateBulkBar(); render();
 }
@@ -1132,7 +1318,7 @@ function setStatusFilter(val){
   const btn=document.getElementById('btn-status');
   const lbl=document.getElementById('lbl-status');
   if(val){
-    const labels={Verwacht:'Verwacht',Aangekomen:'Nu binnen',Vertrokken:'Vertrokken','No-show':'No-show',Geannuleerd:'Geannuleerd'};
+    const labels={Verwacht:'Verwacht',Aangekomen:'Aangekomen',Vertrokken:'Vertrokken','No-show':'No show',Geannuleerd:'Geannuleerd'};
     lbl.textContent=labels[val]||val;
     btn.classList.add('has-val');
   }else{
@@ -1186,20 +1372,21 @@ const PRESET_LABELS={vandaag:'Vandaag',morgen:'Morgen',week:'Deze week'};
 
 function dpSyncUI(){
   const lbl = dpActivePreset ? PRESET_LABELS[dpActivePreset] : fmtDate(curDate);
-  document.getElementById('dateLabel').textContent = lbl;
-  document.getElementById('dpInput').value = fmtISO(curDate);
+  const dl=document.getElementById('dateLabel'); if(dl) dl.textContent = lbl;
+  const di=document.getElementById('dpInput'); if(di) di.value = fmtISO(curDate);
   ['vandaag','morgen','week'].forEach(p=>{
-    document.getElementById('dpp-'+p).classList.toggle('active', p===dpActivePreset);
+    const el=document.getElementById('dpp-'+p); if(el) el.classList.toggle('active', p===dpActivePreset);
   });
-  // keep button highlighted when a value is set
-  document.getElementById('dnTrigger').classList.add('has-val');
+  const dt=document.getElementById('dnTrigger'); if(dt) dt.classList.add('has-val');
+  const dnl=document.getElementById('dateNavLabel'); if(dnl) dnl.textContent=fmtDatumShort(curDate);
 }
 
 function dpPreset(p){
   dpActivePreset=p;
-  curDate=new Date(2026,3,1); // reset to "today"
+  curDate=new Date(2026,3,8); // reset to "today"
   if(p==='morgen') curDate.setDate(curDate.getDate()+1);
   dpSyncUI();
+  if(activeView==='agenda') renderView();
 }
 
 function dpInputChange(val){
@@ -1238,7 +1425,7 @@ function dpApply(){
 
 function dpClear(){
   dpActivePreset='vandaag';
-  curDate=new Date(2026,3,1);
+  curDate=new Date(2026,3,8);
   dpSyncUI();
   document.getElementById('dpPop').classList.remove('open');
 }
@@ -1248,6 +1435,7 @@ function shiftDate(dir){
   curDate=new Date(curDate); curDate.setDate(curDate.getDate()+dir);
   dpActivePreset='';
   dpSyncUI();
+  render();
 }
 
 /* ──────────────────────────────────────────
@@ -1348,9 +1536,27 @@ function doNoshow(id){
 }
 function doAnnuleer(id){
   const p=DATA.find(x=>x.id===id);
-  if(!confirm(`Registratie van ${p.naam} annuleren?`)) return;
   p.status='Geannuleerd'; render();
+  if(document.getElementById('dp').classList.contains('open')) openDP(id);
   toast('info','Geannuleerd',`Registratie van ${p.naam} is geannuleerd.`);
+}
+function doUndoNoshow(id){
+  const p=DATA.find(x=>x.id===id);
+  p.status='Verwacht'; render();
+  if(document.getElementById('dp').classList.contains('open')) openDP(id);
+  toast('ok','No-show ongedaan',`Status van ${p.naam} is teruggezet naar Verwacht.`);
+}
+function doUndoAnnuleer(id){
+  const p=DATA.find(x=>x.id===id);
+  p.status='Verwacht'; render();
+  if(document.getElementById('dp').classList.contains('open')) openDP(id);
+  toast('ok','Annulering ongedaan',`Status van ${p.naam} is teruggezet naar Verwacht.`);
+}
+function doPasOntkoppelen(id){
+  const p=DATA.find(x=>x.id===id);
+  p.passtatus='geen'; render();
+  if(document.getElementById('dp').classList.contains('open')) openDP(id);
+  toast('info','Pas ontkoppeld',`Pas van ${p.naam} is ontkoppeld.`);
 }
 function doContact(id,method){
   const p=DATA.find(x=>x.id===id);
@@ -1432,15 +1638,19 @@ function openDP(id){
       <div class="fw-row"><span style="font-size:13px">Parkeren</span>${parkCell(p)}</div>
     </div>`;
 
-  const canIn =p.status==='Verwacht';
-  const canOut=p.status==='Aangekomen';
+  const ds=p.status;
   document.getElementById('dpActs').innerHTML=`
-    ${canIn ?`<button class="btn btn-primary" onclick="openCheckin(${p.id})"><span class="mi">login</span>Inchecken</button>`:''}
-    ${canOut?`<button class="btn btn-primary" onclick="doCheckout(${p.id})"><span class="mi">logout</span>Uitchecken</button>`:''}
+    ${ds==='Verwacht'?`<button class="btn btn-primary" onclick="openCheckin(${p.id})"><span class="mi">login</span>Inchecken</button>`:''}
+    ${ds==='Aangekomen'?`<button class="btn btn-primary" onclick="doCheckout(${p.id})"><span class="mi">logout</span>Uitchecken</button>`:''}
+    ${ds==='No-show'?`<button class="btn btn-primary" onclick="doUndoNoshow(${p.id})"><span class="mi">undo</span>No-show ongedaan maken</button>
+      <button class="btn btn-outlined" onclick="openCheckin(${p.id})"><span class="mi">login</span>Alsnog inchecken</button>`:''}
+    ${ds==='Geannuleerd'?`<button class="btn btn-primary" onclick="doUndoAnnuleer(${p.id})"><span class="mi">undo</span>Annulering ongedaan maken</button>`:''}
     <button class="btn btn-outlined" onclick="toast('info','Dossier','Volledig dossier van ${p.naam} wordt geopend…')">
       <span class="mi">open_in_new</span>Volledig dossier</button>
-    <button class="btn btn-outlined" onclick="doPasKoppelen(${p.id})">
-      <span class="mi">badge</span>Pas koppelen</button>`;
+    ${ds==='Verwacht'||ds==='No-show'?`<button class="btn btn-outlined" onclick="doPasKoppelen(${p.id})"><span class="mi">badge</span>Pas koppelen</button>`:''}
+    ${ds==='Aangekomen'?`<button class="btn btn-outlined" onclick="doPasOntkoppelen(${p.id})"><span class="mi">link_off</span>Pas ontkoppelen</button>`:''}
+    <button class="btn btn-outlined" onclick="doContact(${p.id},'bellen')"><span class="mi">phone</span>Bel persoon</button>
+    <button class="btn btn-outlined" onclick="doContact(${p.id},'bericht')"><span class="mi">message</span>Contactpersoon informeren</button>`;
 
   document.getElementById('dp').classList.add('open');
 }
@@ -1502,10 +1712,12 @@ function closeNav(){
 /* ──────────────────────────────────────────
    COLUMN RESIZE
    ────────────────────────────────────────── */
-function rzStart(e,colIdx){
+function rzStart(e){
   e.preventDefault(); e.stopPropagation();
   const handle=e.currentTarget;
   handle.classList.add('rz-active');
+  const th=handle.closest('th');
+  const colIdx=Array.from(th.parentElement.children).indexOf(th);
   const cols=document.querySelectorAll('colgroup col');
   const col=cols[colIdx];
   const startX=e.clientX;
@@ -1546,7 +1758,323 @@ function toast(type,title,msg){
   setTimeout(()=>el.remove(),5000);
 }
 
+/* ──────────────────────────────────────────
+   VARIANT SYSTEM
+   ────────────────────────────────────────── */
+let currentVariant = 1;
+let activeView = 'list';
+
+function varTabs(full){
+  const bc=DATA.filter(p=>p.type==='Bezoeker').length;
+  const cc=DATA.filter(p=>p.type==='Contractor').length;
+  if(full) return`<div class="seg">
+    <button class="seg-btn${activeTab==='alle'?' active':''}" onclick="setTab('alle',this)">Alle <span class="pill" id="cnt-alle">${DATA.length}</span></button>
+    <button class="seg-btn${activeTab==='bezoekers'?' active':''}" onclick="setTab('bezoekers',this)">Bezoekers <span class="pill" id="cnt-bez">${bc}</span></button>
+    <button class="seg-btn${activeTab==='contractors'?' active':''}" onclick="setTab('contractors',this)">Contractors <span class="pill" id="cnt-con">${cc}</span></button>
+  </div>`;
+  return`<div class="seg">
+    <button class="seg-btn${activeTab!=='contractors'?' active':''}" onclick="setTab('bezoekers',this)">Bezoekers <span class="pill" id="cnt-bez">${bc}</span></button>
+    <button class="seg-btn${activeTab==='contractors'?' active':''}" onclick="setTab('contractors',this)">Contractors <span class="pill" id="cnt-con">${cc}</span></button>
+  </div>`;
+}
+
+function varVandaag(){
+  return`<div class="dd-wrap" id="wrap-date">
+    <button class="f-btn has-val" id="dnTrigger" onclick="toggleDpPop(event)">
+      <span id="dateLabel">Vandaag</span>
+      <span class="mi" style="font-size:18px;color:var(--n400)">arrow_drop_down</span>
+    </button>
+  </div>`;
+}
+
+function varDateNav(){
+  return`<div class="date-nav">
+    <button class="date-nav-btn" onclick="shiftDate(-1)"><span class="mi">chevron_left</span></button>
+    <span class="date-nav-label" id="dateNavLabel">${fmtDatumShort(curDate)}</span>
+    <button class="date-nav-btn" onclick="shiftDate(1)"><span class="mi">chevron_right</span></button>
+  </div>`;
+}
+
+function varFilters(){
+  return`<div class="dd-wrap" id="wrap-status">
+    <button class="f-btn${statusFilter?' has-val':''}" id="btn-status" onclick="toggleFilterPanel('fp-status',event)">
+      <span id="lbl-status">${statusFilter?({Verwacht:'Verwacht',Aangekomen:'Aangekomen',Vertrokken:'Vertrokken','No-show':'No show',Geannuleerd:'Geannuleerd'}[statusFilter]||statusFilter):'Status'}</span>
+      <span class="mi" style="font-size:18px;color:var(--n400)">arrow_drop_down</span>
+    </button>
+    <div class="f-panel" id="fp-status">
+      <div class="f-opt" onclick="setStatusFilter(statusFilter==='Verwacht'?'':'Verwacht')" data-val="Verwacht"><input type="checkbox"${statusFilter==='Verwacht'?' checked':''} /> Verwacht</div>
+      <div class="f-opt" onclick="setStatusFilter(statusFilter==='Aangekomen'?'':'Aangekomen')" data-val="Aangekomen"><input type="checkbox"${statusFilter==='Aangekomen'?' checked':''} /> Aangekomen</div>
+      <div class="f-opt" onclick="setStatusFilter(statusFilter==='No-show'?'':'No-show')" data-val="No-show"><input type="checkbox"${statusFilter==='No-show'?' checked':''} /> No-show</div>
+      <div class="f-opt" onclick="setStatusFilter(statusFilter==='Geannuleerd'?'':'Geannuleerd')" data-val="Geannuleerd"><input type="checkbox"${statusFilter==='Geannuleerd'?' checked':''} /> Geannuleerd</div>
+      <div class="f-opt" onclick="setStatusFilter(statusFilter==='Vertrokken'?'':'Vertrokken')" data-val="Vertrokken"><input type="checkbox"${statusFilter==='Vertrokken'?' checked':''} /> Vertrokken</div>
+    </div>
+  </div>
+  <div class="dd-wrap" id="wrap-compliance">
+    <button class="f-btn${complianceFilter.dossier||complianceFilter.elearning?' has-val':''}" id="btn-compliance" onclick="toggleFilterPanel('fp-compliance',event)">
+      <span id="lbl-compliance">${(complianceFilter.dossier||complianceFilter.elearning)?'Compliance ('+[complianceFilter.dossier,complianceFilter.elearning].filter(Boolean).length+')':'Compliance'}</span>
+      <span class="mi" style="font-size:18px;color:var(--n400)">arrow_drop_down</span>
+    </button>
+    <div class="f-panel" id="fp-compliance" style="min-width:224px">
+      <div class="f-opt" onclick="toggleCompliance('dossier-v',this)"><input type="checkbox" id="cf-dossier-v" /> Dossier volledig</div>
+      <div class="f-opt${complianceFilter.dossier?' selected':''}" onclick="toggleCompliance('dossier',this)"><input type="checkbox" id="cf-dossier"${complianceFilter.dossier?' checked':''} /> Dossier onvolledig</div>
+      <div class="f-opt" onclick="toggleCompliance('elearning-v',this)"><input type="checkbox" id="cf-elearning-v" /> E-learning voltooid</div>
+      <div class="f-opt${complianceFilter.elearning?' selected':''}" onclick="toggleCompliance('elearning',this)"><input type="checkbox" id="cf-elearning"${complianceFilter.elearning?' checked':''} /> E-learning niet voltooid</div>
+    </div>
+  </div>
+  <div class="dd-wrap" id="wrap-park">
+    <button class="f-btn${parkFilter?' has-val':''}" id="btn-park" onclick="toggleFilterPanel('fp-park',event)">
+      <span id="lbl-park">${parkFilter?({nodig:'Benodigd',gereserveerd:'Gereserveerd','niet-gereserveerd':'Niet gereserveerd'}[parkFilter]||parkFilter):'Parkeren'}</span>
+      <span class="mi" style="font-size:18px;color:var(--n400)">arrow_drop_down</span>
+    </button>
+    <div class="f-panel" id="fp-park" style="min-width:224px">
+      <div class="f-opt${parkFilter==='gereserveerd'?' selected':''}" onclick="setParkFilter(parkFilter==='gereserveerd'?'':'gereserveerd')" data-val="gereserveerd"><input type="checkbox"${parkFilter==='gereserveerd'?' checked':''} /> Gereserveerd</div>
+      <div class="f-opt${parkFilter==='niet-gereserveerd'?' selected':''}" onclick="setParkFilter(parkFilter==='niet-gereserveerd'?'':'niet-gereserveerd')" data-val="niet-gereserveerd"><input type="checkbox"${parkFilter==='niet-gereserveerd'?' checked':''} /> Niet gereserveerd</div>
+    </div>
+  </div>`;
+}
+
+function varSearch(){
+  const q=document.getElementById('gSearch')?document.getElementById('gSearch').value:'';
+  return`<div class="search-box">
+    <input id="gSearch" type="text" placeholder="Zoek op naam, bedrijf, referentie..." oninput="render()" value="${q}" />
+    <div class="search-icon"><span class="mi">search</span></div>
+  </div>`;
+}
+
+function varViewToggle(){
+  return`<div class="view-toggle">
+    <button class="vt-btn${activeView==='list'?' active':''}" data-tip="Lijstweergave" onclick="switchView('list')"><span class="mi">list</span></button>
+    <button class="vt-btn${activeView==='agenda'?' active':''}" data-tip="Agendaweergave" onclick="switchView('agenda')"><span class="mi">today</span></button>
+  </div>`;
+}
+
+function varSummaryCards(){
+  const counts={Verwacht:0,Aangekomen:0,Geannuleerd:0,'No-show':0,Vertrokken:0};
+  DATA.forEach(p=>{if(counts[p.status]!==undefined)counts[p.status]++});
+  const nc=DATA.filter(p=>p.dossier==='onvolledig'||p.elearning==='niet-behaald').length;
+  return`<div class="summary-cards">
+    <div class="sum-card"><div class="sum-card-label">Vandaag verwacht</div><div class="sum-card-value" style="color:#6daeba">${DATA.length}</div></div>
+    <div class="sum-card"><div class="sum-card-label">Verwacht</div><div class="sum-card-value" style="color:#4b80c7">${counts.Verwacht}</div></div>
+    <div class="sum-card"><div class="sum-card-label">Aangekomen</div><div class="sum-card-value" style="color:#6daeba">${counts.Aangekomen}</div></div>
+    <div class="sum-card"><div class="sum-card-label">Geannuleerd</div><div class="sum-card-value" style="color:#bc243b">${counts.Geannuleerd}</div></div>
+    <div class="sum-card"><div class="sum-card-label">No show</div><div class="sum-card-value" style="color:#e48900">${counts['No-show']}</div></div>
+    <div class="sum-card"><div class="sum-card-label">Vertrokken</div><div class="sum-card-value" style="color:#999a9b">${counts.Vertrokken}</div></div>
+    <div class="sum-card"><div class="sum-card-label">Niet compliant</div><div class="sum-card-value" style="color:#bc243b">${nc}</div></div>
+  </div>`;
+}
+
+function renderFilterStrip(){
+  const area=document.getElementById('filterArea');
+  const v=currentVariant;
+  let html='';
+
+  if(v===1){
+    html=`<div class="filter-row" style="margin-bottom:8px">
+      ${varTabs(true)}<div class="fsp"></div>
+      ${varVandaag()}${varFilters()}${varSearch()}
+    </div>`;
+  }
+
+  if(v===2){
+    html=`<div class="filter-row" style="margin-bottom:12px">
+      ${varTabs(true)}<div class="fsp"></div>
+      ${varFilters()}${varSearch()}
+    </div>
+    <div style="height:1px;background:var(--n300);margin-bottom:12px"></div>
+    <div class="filter-row" style="margin-bottom:8px">
+      ${varDateNav()}<div class="fsp"></div>
+      ${varVandaag()}${varViewToggle()}
+    </div>`;
+  }
+
+  if(v===3){
+    html=`<div class="filter-row" style="margin-bottom:8px">
+      <div class="seg" id="seg-view">
+        <button class="seg-btn${activeView==='list'?' active':''}" onclick="switchView('list')">Lijst</button>
+        <button class="seg-btn${activeView==='agenda'?' active':''}" onclick="switchView('agenda')">Agenda</button>
+      </div>
+      ${varDateNav()}${varVandaag()}<div class="fsp"></div>
+      ${varFilters()}${varSearch()}
+    </div>`;
+  }
+
+  if(v===4){
+    html=`${varSummaryCards()}
+    <div class="filter-row" style="margin-bottom:8px">
+      ${varDateNav()}${varVandaag()}<div class="fsp"></div>
+      ${varFilters()}${varSearch()}
+    </div>`;
+  }
+
+  area.innerHTML=html;
+  dpSyncUI();
+}
+
+function setVariant(n){
+  currentVariant=n;
+  activeView='list';
+  document.querySelectorAll('.fixture-btn').forEach(b=>b.classList.toggle('active',+b.dataset.v===n));
+  renderFilterStrip();
+  renderView();
+}
+
+function switchView(view){
+  activeView=view;
+  renderFilterStrip();
+  renderView();
+}
+
+function renderView(){
+  if(activeView==='agenda'){
+    renderAgenda();
+  }else{
+    document.querySelector('.table-wrap').style.display='';
+    const ag=document.getElementById('agendaView');
+    if(ag) ag.remove();
+    render();
+  }
+}
+
+function renderAgenda(){
+  document.querySelector('.table-wrap').style.display='none';
+  let ag=document.getElementById('agendaView');
+  if(ag) ag.remove();
+
+  const v=currentVariant;
+  // v3 always uses week agenda; v2 uses week agenda when "Deze week" is selected, otherwise day
+  if(v===3 || (v===2 && dpActivePreset==='week')){
+    renderWeekAgenda();
+  }else{
+    renderDayAgenda();
+  }
+}
+
+function renderDayAgenda(){
+  const rows=filtered();
+  const hours=[];
+  for(let h=7;h<=17;h++) hours.push(h);
+
+  const statusCssMap={Verwacht:'ae-verwacht',Aangekomen:'ae-aangekomen',Vertrokken:'ae-vertrokken','No-show':'ae-noshow',Geannuleerd:'ae-geannuleerd'};
+
+  let slotsHtml=hours.map(h=>{
+    const hStr=String(h).padStart(2,'0')+':00';
+    const events=rows.filter(p=>parseInt(p.aankomsttijd.split(':')[0])===h);
+    const evHtml=events.length?events.map(p=>`
+      <div class="agenda-event ${statusCssMap[p.status]||''}" onclick="openDP(${p.id})">
+        <span class="ae-time">${p.aankomsttijd}</span>
+        <span class="ae-name">${p.naam}${p.vip?' <span class="mi vip-star" style="font-size:14px">star</span>':''}</span>
+        <span class="ae-company">${p.bedrijf}</span>
+        <span class="ae-type">${p.type}</span>
+        <span class="ae-status">${statusBadge(p.status)}</span>
+      </div>`).join(''):`<div class="agenda-empty">Geen afspraken</div>`;
+    return`<div class="agenda-slot">
+      <div class="agenda-time">${hStr}</div>
+      <div class="agenda-events">${evHtml}</div>
+    </div>`;
+  }).join('');
+
+  const nowH=10,nowM=30,slotHeight=64;
+  const nowOffset=((nowH-7)+nowM/60)*slotHeight;
+
+  const ag=document.createElement('div');
+  ag.id='agendaView';
+  ag.innerHTML=`<div class="agenda-wrap">
+    <div class="agenda-header">
+      <div class="agenda-header-time">Tijd</div>
+      <div class="agenda-header-content">Afspraken — ${fmtDatumShort(curDate)}</div>
+    </div>
+    <div class="agenda-body">
+      <div class="agenda-now" style="top:${nowOffset}px"></div>
+      ${slotsHtml}
+    </div>
+  </div>`;
+  document.querySelector('.table-wrap').insertAdjacentElement('afterend',ag);
+}
+
+function renderWeekAgenda(){
+  const rows=filtered();
+  const hours=[];
+  for(let h=7;h<=17;h++) hours.push(h);
+
+  // Build week days (mon-fri around curDate)
+  const d=new Date(curDate);
+  const dow=d.getDay()||7; // 1=mon..7=sun
+  const mon=new Date(d); mon.setDate(d.getDate()-(dow-1));
+  const weekDays=[];
+  const dayNames=['Ma','Di','Wo','Do','Vr'];
+  for(let i=0;i<5;i++){
+    const wd=new Date(mon); wd.setDate(mon.getDate()+i);
+    weekDays.push(wd);
+  }
+  const todayStr=fmtDatumShort(curDate);
+
+  // Distribute DATA across week days (simulate: assign each person to a day based on id)
+  const weekData={};
+  weekDays.forEach((wd,i)=>{
+    const key=fmtDatumShort(wd);
+    // Today gets the real filtered data; other days get a subset for realism
+    if(key===todayStr){
+      weekData[key]=rows;
+    }else{
+      // Simulate: pick some people for other days
+      const offset=i*3;
+      weekData[key]=DATA.filter((_,idx)=>(idx+offset)%5===i).map(p=>({
+        ...p,
+        status:['Verwacht','Aangekomen','Vertrokken'][Math.floor(Math.random()*3)]
+      }));
+    }
+  });
+
+  const weCssMap={Verwacht:'we-verwacht',Aangekomen:'we-aangekomen',Vertrokken:'we-vertrokken','No-show':'we-noshow',Geannuleerd:'we-geannuleerd'};
+
+  // Header
+  let hdrHtml=`<div class="week-time-hdr">Tijd</div>`;
+  weekDays.forEach((wd,i)=>{
+    const key=fmtDatumShort(wd);
+    const isToday=key===todayStr;
+    const dd=String(wd.getDate()).padStart(2,'0');
+    const mm=String(wd.getMonth()+1).padStart(2,'0');
+    hdrHtml+=`<div class="week-day-hdr${isToday?' today':''}">
+      ${dayNames[i]}<div class="wdh-date">${dd}-${mm}</div>
+    </div>`;
+  });
+
+  // Rows
+  let rowsHtml=hours.map(h=>{
+    const hStr=String(h).padStart(2,'0')+':00';
+    let cellsHtml=`<div class="week-time-cell">${hStr}</div>`;
+    weekDays.forEach(wd=>{
+      const key=fmtDatumShort(wd);
+      const isToday=key===todayStr;
+      const dayData=weekData[key]||[];
+      const events=dayData.filter(p=>parseInt(p.aankomsttijd.split(':')[0])===h);
+      const evHtml=events.map(p=>`
+        <div class="week-ev ${weCssMap[p.status]||''}" onclick="openDP(${p.id})" title="${p.naam} — ${p.bedrijf} (${p.status})">
+          <div class="week-ev-name">${p.aankomsttijd} ${p.naam}</div>
+          <div class="week-ev-meta">${p.bedrijf}</div>
+        </div>`).join('');
+      cellsHtml+=`<div class="week-day-cell${isToday?' today':''}">${evHtml}</div>`;
+    });
+    return`<div class="week-row">${cellsHtml}</div>`;
+  }).join('');
+
+  const nowH=10,nowM=30,slotHeight=56;
+  const nowOffset=((nowH-7)+nowM/60)*slotHeight;
+
+  const ag=document.createElement('div');
+  ag.id='agendaView';
+  ag.innerHTML=`<div class="week-wrap">
+    <div class="week-header">${hdrHtml}</div>
+    <div class="week-body">
+      <div class="week-now" style="top:${nowOffset}px"></div>
+      ${rowsHtml}
+    </div>
+  </div>`;
+  document.querySelector('.table-wrap').insertAdjacentElement('afterend',ag);
+}
+
 /* ── INIT ── */
+renderFilterStrip();
 render();
 </script>
 </body>
