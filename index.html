@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YIM – Verwachte Personen (Prototype)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <style>
+    /* ── Design tokens ── */
+    :root {
+      --p50:  #f0f7f8; --p100: #d8edf1; --p300: #a2cdd8;
+      --p500: #6daeba; --p700: #315161; --p900: #1a2e38;
+      --n0: #fff; --n50: #f8fafb; --n100: #f0f2f3;
+      --n300: #eaeced; --n400: #b8babb; --n500: #999a9b;
+      --n700: #6b6c6d; --n800: #3e3f40; --n900: #1d1e1f;
+      --ok:   #2e7d32; --ok-bg:   #e8f5e9;
+      --warn: #e65100; --warn-bg: #fff3e0;
+      --err:  #c62828; --err-bg:  #ffebee;
+      --info: #01579b; --info-bg: #e1f5fe;
+      --vip:  #92400e; --vip-bg:  #fef3c7; --vip-border: #f59e0b;
+      --sp-xs:4px; --sp-s:8px; --sp-m:12px; --sp-l:16px; --sp-xxl:24px;
+      --r-s:4px; --r-m:8px; --r-l:12px; --r-xl:360px;
+      --font:'Nunito',sans-serif;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);font-size:14px;color:var(--n900);background:var(--n50);min-height:100vh}
+    .mi{font-family:'Material Icons Round';font-style:normal;display:inline-block;
+        line-height:1;text-transform:none;letter-spacing:normal;white-space:nowrap;
+        font-size:18px;vertical-align:middle;user-select:none}
+
+    /* ── Header ── */
+    .header{height:72px;background:var(--n0);border-bottom:1px solid var(--n300);
+      display:flex;align-items:stretch;position:sticky;top:0;z-index:100;
+      box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .header-logo{display:flex;align-items:center;gap:4px;padding:0 20px 0 12px;
+      border-right:1px solid var(--n300);min-width:auto}
+    .logo{font-size:26px;font-weight:800;color:var(--p700);letter-spacing:-1px;line-height:1}
+    .logo em{color:var(--p500);font-style:normal}
+    .hamburger{display:flex;align-items:center;justify-content:center;width:36px;height:36px;
+      border-radius:var(--r-s);border:none;background:transparent;cursor:pointer;
+      color:var(--n700);transition:background .15s;flex-shrink:0}
+    .hamburger:hover{background:var(--n50)}
+    .hamburger .mi{font-size:22px}
+    /* Mobile nav drawer */
+    .nav-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:var(--n0);
+      box-shadow:4px 0 24px rgba(0,0,0,.15);z-index:9999;transform:translateX(-100%);
+      transition:transform .25s ease;padding:0}
+    .nav-drawer.open{transform:translateX(0)}
+    .nav-drawer-header{display:flex;align-items:center;justify-content:space-between;
+      padding:0 16px;height:72px;border-bottom:1px solid var(--n300)}
+    .nav-drawer-close{display:flex;align-items:center;justify-content:center;
+      width:36px;height:36px;border-radius:50%;border:none;background:transparent;
+      cursor:pointer;color:var(--n700)}
+    .nav-drawer-close:hover{background:var(--n50)}
+    .nav-drawer-items{padding:8px 0;overflow-y:auto}
+    .nav-drawer-item{display:flex;align-items:center;gap:8px;padding:12px 20px;
+      font-size:14px;font-weight:600;color:var(--n800);cursor:pointer;transition:background .1s}
+    .nav-drawer-item:hover{background:var(--n50);color:var(--p700)}
+    .nav-drawer-item.active{color:var(--p700);background:var(--p50)}
+    .nav-drawer-item .mi{font-size:18px;color:var(--n500)}
+    .nav-drawer-item.active .mi{color:var(--p500)}
+    .nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:9998;
+      display:none;opacity:0;transition:opacity .25s}
+    .nav-overlay.open{display:block;opacity:1}
+    .header-nav{display:flex;align-items:stretch;flex:1;overflow:hidden}
+    .nav-item{display:flex;align-items:center;gap:4px;padding:0 14px;font-size:13px;
+      font-weight:600;color:var(--n800);cursor:pointer;white-space:nowrap;
+      border-bottom:3px solid transparent;border-top:3px solid transparent;transition:all .15s}
+    .nav-item:hover{color:var(--p700);background:var(--p50)}
+    .nav-item.active{color:var(--p700);border-bottom-color:var(--p500);background:var(--p50)}
+    .nav-item .mi{font-size:16px;color:var(--n500)}
+    .header-util{display:flex;align-items:stretch;margin-left:auto}
+    .util-item{display:flex;align-items:center;gap:8px;padding:0 16px;font-size:13px;
+      font-weight:600;color:var(--n800);cursor:pointer;border-left:1px solid var(--n300);
+      transition:background .15s}
+    .util-item:hover{background:var(--n50)}
+    .avatar{width:34px;height:34px;border-radius:var(--r-xl);background:var(--n300);
+      display:flex;align-items:center;justify-content:center;font-size:11px;
+      font-weight:700;color:var(--n800);flex-shrink:0}
+
+    /* ── Page ── */
+    .page{padding:32px 56px;max-width:1900px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .page-title{font-size:32px;font-weight:700;color:var(--p700);letter-spacing:-.3px}
+    .toolbar{display:flex;align-items:center;gap:8px}
+
+    /* ── Buttons ── */
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px var(--sp-l);
+      border-radius:var(--r-s);font-family:var(--font);font-size:13px;font-weight:600;
+      cursor:pointer;transition:all .15s;border:1px solid transparent;white-space:nowrap}
+    .btn .mi{font-size:16px}
+    .btn-primary{background:var(--p500);color:var(--n0);border-color:var(--p500)}
+    .btn-primary:hover{background:#5a9daa;border-color:#5a9daa}
+    .btn-outlined{background:var(--n0);color:var(--n900);border-color:var(--n400)}
+    .btn-outlined:hover{background:var(--n50)}
+    .btn-sm{padding:5px 10px;font-size:12px}
+    .btn-sm .mi{font-size:14px}
+
+    /* Split button */
+    .split-btn{display:inline-flex;border-radius:var(--r-s);overflow:hidden}
+    .split-main{display:flex;align-items:center;gap:6px;padding:8px var(--sp-l);
+      background:var(--p500);color:var(--n0);border:none;font-family:var(--font);
+      font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+    .split-main .mi{font-size:16px}
+    .split-main:hover{background:#5a9daa}
+    .split-arrow{display:flex;align-items:center;width:32px;background:var(--p500);
+      color:var(--n0);border:none;border-left:1px solid rgba(255,255,255,.25);
+      cursor:pointer;transition:background .15s;justify-content:center}
+    .split-arrow:hover{background:#5a9daa}
+
+    /* ── Dropdown ── */
+    .dd-wrap{position:relative}
+    .dd-menu{position:absolute;top:calc(100% + 4px);right:0;background:var(--n0);
+      border:1px solid var(--n300);border-radius:var(--r-m);
+      box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:220px;z-index:400;
+      overflow:hidden;display:none}
+    .dd-menu.open{display:block}
+    .dd-item{display:flex;align-items:center;gap:10px;padding:9px var(--sp-l);
+      font-size:13px;color:var(--n900);cursor:pointer;transition:background .1s}
+    .dd-item:hover{background:var(--n50)}
+    .dd-item .mi{font-size:17px;color:var(--n500)}
+    .dd-item.danger{color:var(--err)}
+    .dd-item.danger .mi{color:var(--err)}
+    .dd-item.danger:hover{background:var(--err-bg)}
+    .dd-item.action-primary{color:var(--p700);font-weight:700}
+    .dd-item.action-primary .mi{color:var(--p500)}
+    .dd-divider{height:1px;background:var(--n300);margin:4px 0}
+    .dd-section-label{padding:6px var(--sp-l) 2px;font-size:10px;font-weight:700;
+      text-transform:uppercase;letter-spacing:.6px;color:var(--n500)}
+
+    /* ── Segmented tabs ── */
+    .seg{display:inline-flex;background:var(--n0);border:1px solid var(--n400);
+      border-radius:var(--r-s);padding:3px;gap:2px}
+    .seg-btn{display:flex;align-items:center;gap:6px;padding:5px 12px;
+      border-radius:var(--r-xs,2px);font-family:var(--font);font-size:13px;font-weight:600;
+      cursor:pointer;border:none;background:transparent;color:var(--n900);transition:all .15s;
+      white-space:nowrap}
+    .seg-btn:hover:not(.active){background:var(--n50)}
+    .seg-btn.active{background:var(--p500);color:var(--n0)}
+    .pill{font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px;min-width:18px;text-align:center}
+    .seg-btn.active .pill{background:rgba(255,255,255,.25);color:var(--n0)}
+    .seg-btn:not(.active) .pill{background:var(--n300);color:var(--n800)}
+
+    /* ── Filter strip ── */
+    .filter-strip{margin-bottom:var(--sp-m)}
+    .filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+    .fsp{flex:1;min-width:8px}
+
+    /* Filter button (same height as search) */
+    .f-btn{display:inline-flex;align-items:center;gap:6px;padding:0 12px;height:34px;
+      border:1px solid var(--n400);border-radius:var(--r-s);background:var(--n0);
+      font-family:var(--font);font-size:13px;font-weight:600;color:var(--n800);
+      cursor:pointer;white-space:nowrap;transition:all .15s}
+    .f-btn:hover{border-color:var(--p500);color:var(--p700);background:var(--p50)}
+    .f-btn.has-val{border-color:var(--p500);color:var(--p700);background:var(--p50)}
+    .f-btn .mi{font-size:16px;color:var(--n500)}
+    .f-btn.has-val .mi{color:var(--p500)}
+    .f-count{background:var(--p500);color:var(--n0);font-size:10px;font-weight:800;
+      padding:1px 6px;border-radius:10px}
+
+    /* Filter panel (dropdown) */
+    .f-panel{position:absolute;top:calc(100% + 4px);left:0;background:var(--n0);
+      border:1px solid var(--n300);border-radius:var(--r-m);
+      box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:200px;z-index:400;
+      display:none;padding:6px 0}
+    .f-panel.open{display:block}
+    .f-opt{display:flex;align-items:center;gap:8px;padding:7px var(--sp-l);
+      font-size:13px;color:var(--n900);cursor:pointer;transition:background .1s}
+    .f-opt:hover{background:var(--n50)}
+    .f-opt.selected{color:var(--p700);font-weight:700}
+    .f-opt input[type=radio],
+    .f-opt input[type=checkbox]{accent-color:var(--p500);width:14px;height:14px;cursor:pointer}
+
+    /* ── Combined date picker ── */
+    .date-combo{display:inline-flex;align-items:stretch;height:34px;border:1px solid var(--n400);
+      border-radius:var(--r-s);background:var(--n0);position:relative;overflow:hidden}
+    .date-combo:hover{border-color:var(--p500)}
+    .date-combo.active{border-color:var(--p500)}
+    .dn-btn{display:flex;align-items:center;padding:0 8px;border:none;background:transparent;
+      cursor:pointer;color:var(--n600);transition:background .1s;border-radius:0}
+    .dn-btn:first-child{border-radius:var(--r-s) 0 0 var(--r-s)}
+    .dn-btn:last-child{border-radius:0 var(--r-s) var(--r-s) 0}
+    .dn-btn:hover{background:var(--n50)}
+    .dn-btn .mi{font-size:18px}
+    .dn-trigger{display:flex;align-items:center;gap:6px;padding:0 10px;
+      border:none;border-left:1px solid var(--n300);border-right:1px solid var(--n300);
+      background:transparent;cursor:pointer;font-family:var(--font);font-size:13px;
+      font-weight:600;color:var(--n900);white-space:nowrap;transition:background .1s}
+    .dn-trigger:hover{background:var(--p50);color:var(--p700)}
+    .date-combo.active .dn-trigger{color:var(--p700)}
+    .dn-trigger .mi{font-size:15px;color:var(--p500)}
+    .dn-trigger .dn-caret{font-size:14px;color:var(--n400)}
+
+    /* Date picker popover */
+    .dp-pop{position:fixed;top:0;left:0;background:var(--n0);border:1px solid var(--n300);
+      border-radius:var(--r-m);box-shadow:0 8px 28px rgba(0,0,0,.14);
+      width:260px;z-index:9001;display:none;padding:16px}
+    .dp-pop.open{display:block}
+    .dp-pop-title{font-size:12px;font-weight:700;color:var(--n500);text-transform:uppercase;
+      letter-spacing:.5px;margin-bottom:8px}
+    .dp-input-wrap{display:flex;align-items:center;border:1px solid var(--n400);
+      border-radius:var(--r-s);overflow:hidden;height:36px;background:var(--n0);
+      transition:border-color .15s}
+    .dp-input-wrap:focus-within{border-color:var(--p500)}
+    .dp-input-wrap input[type=date]{flex:1;border:none;padding:0 10px;font-size:13px;
+      font-family:var(--font);color:var(--n900);outline:none;background:transparent;
+      cursor:pointer}
+    .dp-input-wrap input[type=date]::-webkit-calendar-picker-indicator{
+      color:var(--p500);opacity:.8;cursor:pointer}
+    .dp-divider{display:flex;align-items:center;gap:8px;margin:14px 0 10px;font-size:11px;
+      font-weight:700;color:var(--n500);text-transform:uppercase;letter-spacing:.5px}
+    .dp-divider::before,.dp-divider::after{content:'';flex:1;height:1px;background:var(--n300)}
+    .dp-presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+    .dp-preset{padding:5px 12px;border:1px solid var(--n400);border-radius:20px;
+      font-family:var(--font);font-size:12px;font-weight:600;color:var(--n800);
+      background:var(--n0);cursor:pointer;transition:all .15s;white-space:nowrap}
+    .dp-preset:hover{border-color:var(--p500);color:var(--p700);background:var(--p50)}
+    .dp-preset.active{background:var(--p500);border-color:var(--p500);color:#fff}
+    .dp-actions{display:flex;align-items:center;gap:8px;margin-top:4px}
+    .dp-apply{flex:1;height:34px;background:var(--p500);border:none;border-radius:var(--r-s);
+      font-family:var(--font);font-size:13px;font-weight:700;color:#fff;cursor:pointer;
+      transition:background .15s}
+    .dp-apply:hover{background:var(--p700)}
+    .dp-clear{height:34px;background:transparent;border:none;font-family:var(--font);
+      font-size:13px;font-weight:600;color:var(--p500);cursor:pointer;
+      padding:0 8px;transition:color .15s}
+    .dp-clear:hover{color:var(--p700)}
+
+    /* Search */
+    .search-box{display:flex;align-items:stretch;border:1px solid var(--n400);
+      border-radius:var(--r-s);background:var(--n0);overflow:hidden;height:34px}
+    .search-box input{flex:1;border:none;padding:0 10px;font-size:13px;
+      font-family:var(--font);color:var(--n900);outline:none;background:transparent;
+      min-width:220px}
+    .search-box input::placeholder{color:var(--n500)}
+    .search-icon{background:var(--n50);padding:0 9px;display:flex;align-items:center;
+      color:var(--n500);border-left:1px solid var(--n300)}
+    .search-icon .mi{font-size:18px}
+
+    /* ── Bulk bar ── */
+    .bulk-bar{display:flex;align-items:center;gap:10px;background:var(--p700);
+      color:var(--n0);border-radius:var(--r-s);padding:8px var(--sp-l);
+      margin-bottom:8px;flex-wrap:wrap}
+    .bulk-info{font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;margin-right:4px}
+    .bulk-info .mi{font-size:16px}
+    .bulk-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;
+      border-radius:var(--r-s);font-family:var(--font);font-size:12px;font-weight:600;
+      cursor:pointer;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+      color:var(--n0);transition:all .15s}
+    .bulk-btn:hover{background:rgba(255,255,255,.28)}
+    .bulk-btn .mi{font-size:14px}
+    .bsp{flex:1}
+    .bulk-close{display:flex;align-items:center;justify-content:center;width:28px;height:28px;
+      border-radius:50%;background:transparent;border:none;cursor:pointer;color:var(--n0);
+      opacity:.7;transition:opacity .15s}
+    .bulk-close:hover{opacity:1;background:rgba(255,255,255,.1)}
+    .bulk-close .mi{font-size:18px}
+
+    /* ── Table ── */
+    .table-wrap{background:var(--n0);border:1px solid var(--n300);border-radius:var(--r-m);
+      overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+    .table-scroll{overflow-x:auto;overflow-y:visible}
+
+    table{width:100%;border-collapse:collapse;min-width:1760px;table-layout:fixed}
+
+    thead th{background:var(--n50);padding:8px 10px;text-align:left;font-size:12px;
+      font-weight:700;color:var(--p700);white-space:nowrap;border-bottom:1px solid var(--n300);
+      border-right:1px solid var(--n300);cursor:pointer;user-select:none;overflow:hidden;
+      position:relative}
+    thead th:last-child{border-right:none}
+    thead th:hover{background:var(--p50)}
+    .th-in{display:flex;align-items:center;gap:3px;overflow:hidden}
+    .sort-i{color:var(--n400);font-size:13px !important;flex-shrink:0}
+    thead th:hover .sort-i{color:var(--p500)}
+
+    /* Column resize handle */
+    .col-rz{position:absolute;right:0;top:0;bottom:0;width:5px;cursor:col-resize;z-index:2;
+      border-right:2px solid transparent;transition:border-color .15s}
+    .col-rz:hover,.col-rz.rz-active{border-right-color:var(--p500)}
+
+    /* Column search row */
+    .col-row th{background:var(--n50);padding:4px 5px;
+      border-bottom:2px solid var(--n300);border-right:1px solid var(--n300)}
+    .col-row th:last-child{border-right:none}
+    .ci{width:100%;border:1px solid var(--n400);border-radius:var(--r-s);
+      padding:3px 6px;font-size:12px;font-family:var(--font);background:var(--n0);
+      color:var(--n900);outline:none}
+    .ci:focus{border-color:var(--p500)}
+    .ci::placeholder{color:var(--n400)}
+    .cs{width:100%;border:1px solid var(--n400);border-radius:var(--r-s);
+      padding:3px 6px;font-size:12px;font-family:var(--font);background:var(--n0);
+      color:var(--p700);font-weight:600;outline:none;cursor:pointer;appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;background-position:right 5px center;padding-right:18px}
+
+    /* Sticky columns */
+    .st0{position:sticky;left:0;z-index:6;background:inherit}
+    .st1{position:sticky;left:40px;z-index:6;background:inherit}
+    .st2{position:sticky;left:80px;z-index:6;background:inherit;box-shadow:2px 0 6px -2px rgba(0,0,0,.1)}
+
+    /* Data rows */
+    tbody tr{border-bottom:1px solid var(--n300);background:var(--n0);transition:background .1s;cursor:pointer}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover{background:var(--p50)}
+    tbody tr.selected{background:#e2eff4}
+    tbody tr.vip-row{border-left:3px solid var(--vip-border)}
+
+    tbody td{padding:9px 10px;font-size:13px;color:var(--n900);vertical-align:middle;
+      border-right:1px solid var(--n300);overflow:hidden;white-space:nowrap;
+      text-overflow:ellipsis;max-width:0}
+    tbody td:last-child{border-right:none}
+    /* Inner flex containers still need to clip */
+    tbody td>*{min-width:0;overflow:hidden;text-overflow:ellipsis}
+
+    /* ── Cell helpers ── */
+    .chk-cell{padding:0 8px !important;width:40px;text-align:center}
+    .chk{width:15px;height:15px;cursor:pointer;accent-color:var(--p500)}
+
+    /* Action icon cell */
+    .act-cell{width:40px;padding:0 4px !important;text-align:center}
+    .act-wrap{position:relative;display:inline-flex;justify-content:center}
+    .act-ico{display:inline-flex;align-items:center;justify-content:center;
+      width:28px;height:28px;border-radius:var(--r-s);border:none;background:transparent;
+      color:var(--n500);cursor:pointer;transition:all .15s}
+    .act-ico:hover{background:var(--n100);color:var(--n800)}
+    .act-ico .mi{font-size:18px}
+
+    /* Row action menu */
+    .act-menu{position:fixed;top:0;left:0;background:var(--n0);
+      border:1px solid var(--n300);border-radius:var(--r-m);
+      box-shadow:0 6px 20px rgba(0,0,0,.12);min-width:200px;z-index:9000;
+      overflow:hidden;display:none}
+    .act-menu.open{display:block}
+
+    /* Name cell */
+    .p-name{font-size:13px;font-weight:700;color:var(--p700);cursor:pointer;line-height:1.3}
+    .p-name:hover{text-decoration:underline}
+
+    /* VIP */
+    .vip-star{color:var(--vip-border);font-size:16px !important}
+    .vip-dash{color:var(--n400);font-size:12px}
+
+    /* Type (plain text) */
+    .type-txt{font-size:12px;color:var(--n700)}
+
+    /* Status badge */
+    .sbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;
+      border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
+    .s-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    .sv{background:#e1f5fe;color:#01579b} .sv .s-dot{background:#0288d1}
+    .sa{background:var(--ok-bg);color:var(--ok)} .sa .s-dot{background:#43a047}
+    .svo{background:var(--n100);color:var(--n700)} .svo .s-dot{background:var(--n500)}
+    .sn{background:var(--warn-bg);color:var(--warn)} .sn .s-dot{background:#ef6c00}
+    .sg{background:var(--err-bg);color:var(--err)} .sg .s-dot{background:#e53935}
+
+    /* Compliance icon */
+    .cico{display:inline-flex;align-items:center;justify-content:center;
+      width:26px;height:26px;border-radius:50%}
+    .cico .mi{font-size:15px !important}
+    .c-ok{background:var(--ok-bg);color:var(--ok)}
+    .c-warn{background:var(--warn-bg);color:var(--warn)}
+    .c-err{background:var(--err-bg);color:var(--err)}
+    .c-na{background:var(--n100);color:var(--n500)}
+
+    /* Parking */
+    .pk-row{display:flex;align-items:center;gap:3px;font-size:12px;font-weight:600}
+    .pk-row .mi{font-size:14px !important}
+    .pk-ok{color:var(--ok)} .pk-warn{color:var(--warn)}
+    .pk-sub{font-size:11px;color:var(--n500);margin-top:1px}
+
+    /* Pass */
+    .pass{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600}
+    .pass .mi{font-size:14px !important}
+    .pass-k{color:var(--info)} .pass-p{color:var(--ok)} .pass-n{color:var(--n400)}
+
+    /* Contact cell */
+    .ct-cell{display:flex;align-items:center;gap:4px}
+    .ct-name{font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ico-btn{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;
+      justify-content:center;cursor:pointer;border:none;background:transparent;
+      color:var(--n500);transition:all .15s;flex-shrink:0}
+    .ico-btn:hover{background:var(--n300);color:var(--n900)}
+    .ico-btn .mi{font-size:15px !important}
+
+    /* Time */
+    .t-val{font-size:13px;font-weight:600;color:var(--n900)}
+    .t-sub{font-size:11px;color:var(--n500);margin-top:1px}
+    .t-over .t-val{color:var(--err)}
+
+    /* ── Pagination ── */
+    .pag-bar{display:flex;align-items:center;justify-content:space-between;
+      padding:10px var(--sp-l);border-top:1px solid var(--n300);background:var(--n0)}
+    .pag-info{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--n800)}
+    .pag-sel{border:1px solid var(--n400);border-radius:var(--r-s);padding:3px 7px;
+      font-size:13px;font-family:var(--font);background:var(--n0);color:var(--n900);outline:none}
+    .pag-ctrl{display:flex;align-items:center;gap:3px}
+    .pg-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+      border:1px solid var(--n400);border-radius:var(--r-s);cursor:pointer;font-size:12px;
+      font-weight:700;color:var(--n800);background:var(--n0);transition:all .15s;
+      font-family:var(--font)}
+    .pg-btn:hover{background:var(--n50)}
+    .pg-btn.active{background:var(--p500);color:var(--n0);border-color:var(--p500)}
+    .pg-btn.dis{opacity:.35;pointer-events:none}
+    .pg-btn .mi{font-size:17px !important}
+
+    /* ── Toast ── */
+    .toast-host{position:fixed;top:80px;right:18px;z-index:1000;
+      display:flex;flex-direction:column;gap:7px;pointer-events:none}
+    .toast{background:var(--n0);border-radius:var(--r-m);
+      box-shadow:0 4px 20px rgba(0,0,0,.14);padding:11px 14px;
+      display:flex;align-items:flex-start;gap:10px;min-width:280px;max-width:380px;
+      border-left:4px solid var(--p500);animation:toastIn .2s ease;pointer-events:all}
+    .toast.t-ok{border-left-color:var(--ok)}
+    .toast.t-err{border-left-color:var(--err)}
+    .toast.t-warn{border-left-color:var(--warn)}
+    .toast.t-info{border-left-color:var(--info)}
+    .t-ico .mi{font-size:19px !important}
+    .toast.t-ok .t-ico{color:var(--ok)} .toast.t-err .t-ico{color:var(--err)}
+    .toast.t-warn .t-ico{color:var(--warn)} .toast.t-info .t-ico{color:var(--info)}
+    .t-body{flex:1}
+    .t-title{font-size:13px;font-weight:700;margin-bottom:2px}
+    .t-msg{font-size:12px;color:var(--n500);line-height:1.4}
+    @keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+    /* ── Modal ── */
+    .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.38);
+      display:none;align-items:center;justify-content:center;z-index:500}
+    .modal-ov.open{display:flex}
+    .modal{background:var(--n0);border-radius:var(--r-l);
+      box-shadow:0 12px 40px rgba(0,0,0,.22);width:500px;max-width:96vw;
+      animation:mIn .2s ease}
+    @keyframes mIn{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .m-head{display:flex;align-items:center;justify-content:space-between;
+      padding:18px 22px 14px;border-bottom:1px solid var(--n300)}
+    .m-title{font-size:17px;font-weight:700;color:var(--p700)}
+    .m-body{padding:18px 22px}
+    .m-foot{display:flex;justify-content:flex-end;gap:8px;
+      padding:12px 22px;border-top:1px solid var(--n300)}
+
+    /* ── Detail panel ── */
+    .dp{position:fixed;right:-500px;top:72px;bottom:0;width:480px;background:var(--n0);
+      box-shadow:-4px 0 28px rgba(0,0,0,.1);z-index:250;display:flex;flex-direction:column;
+      transition:right .25s ease;overflow:hidden}
+    .dp.open{right:0}
+    .dp-head{padding:16px 18px 12px;border-bottom:1px solid var(--n300)}
+    .dp-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .dp-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--n500)}
+    .dp-person{display:flex;align-items:center;gap:12px}
+    .dp-name{font-size:17px;font-weight:700;color:var(--p700);line-height:1.2}
+    .dp-meta{font-size:12px;color:var(--n500);margin-top:3px}
+    .dp-scroll{flex:1;overflow-y:auto;padding:16px 18px}
+    .dp-sec{margin-bottom:18px}
+    .dp-sec-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;
+      color:var(--n500);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--n300)}
+    .dp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .dp-fl{font-size:11px;color:var(--n500);font-weight:600;margin-bottom:2px}
+    .dp-fv{font-size:13px;color:var(--n900);font-weight:600}
+    .dp-acts{padding:12px 18px;border-top:1px solid var(--n300);display:flex;flex-wrap:wrap;gap:7px}
+
+    /* Misc */
+    .alert{display:flex;align-items:flex-start;gap:7px;padding:8px 12px;
+      border-radius:var(--r-s);font-size:12px;margin-bottom:8px}
+    .alert .mi{font-size:15px !important;flex-shrink:0;margin-top:1px}
+    .a-warn{background:var(--warn-bg);color:var(--warn);border-left:3px solid var(--warn)}
+    .a-err{background:var(--err-bg);color:var(--err);border-left:3px solid var(--err)}
+    .a-info{background:var(--info-bg);color:var(--info);border-left:3px solid var(--info)}
+    .muted{color:var(--n500);font-size:12px}
+    .fw-row{display:flex;align-items:center;justify-content:space-between}
+    textarea{width:100%;resize:none;border:1px solid var(--n400);border-radius:var(--r-s);
+      padding:7px;font-family:var(--font);font-size:13px;color:var(--n900);outline:none}
+    textarea:focus{border-color:var(--p500)}
+    label{font-size:13px;color:var(--n800);display:flex;align-items:center;gap:7px;cursor:pointer}
+    .mt8{margin-top:8px} .mt12{margin-top:12px} .mt16{margin-top:16px} .mb12{margin-bottom:12px}
+
+    [data-tip]{position:relative}
+    [data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);
+      left:50%;transform:translateX(-50%);background:var(--n800);color:var(--n0);
+      padding:3px 8px;border-radius:var(--r-s);font-size:11px;white-space:nowrap;
+      pointer-events:none;opacity:0;transition:opacity .15s;z-index:9999}
+    [data-tip]:hover::after{opacity:1}
+
+    .empty-state{padding:56px 24px;display:flex;flex-direction:column;
+      align-items:center;gap:8px;color:var(--n500)}
+    .empty-state .mi{font-size:40px !important;opacity:.3}
+    .es-title{font-size:14px;font-weight:700;color:var(--n800)}
+    .es-sub{font-size:12px;text-align:center}
+
+    .proto-badge{position:fixed;bottom:18px;left:18px;background:var(--p700);color:var(--n0);
+      padding:5px 12px;border-radius:100px;font-size:10px;font-weight:700;
+      letter-spacing:.4px;opacity:.7;z-index:9999;pointer-events:none}
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV DRAWER ══ -->
+<div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-header">
+    <div class="logo">Y<em>i</em>M</div>
+    <button class="nav-drawer-close" onclick="closeNav()"><span class="mi">close</span></button>
+  </div>
+  <div class="nav-drawer-items">
+    <div class="nav-drawer-item"><span class="mi">badge</span>Accreditaties</div>
+    <div class="nav-drawer-item"><span class="mi">how_to_reg</span>Aanmeldingen</div>
+    <div class="nav-drawer-item active"><span class="mi">groups</span>Verwachte personen</div>
+    <div class="nav-drawer-item"><span class="mi">fact_check</span>Aanwezigheidsregistratie</div>
+    <div class="nav-drawer-item"><span class="mi">person</span>Personen</div>
+    <div class="nav-drawer-item"><span class="mi">verified</span>Credentials</div>
+    <div class="nav-drawer-item"><span class="mi">bar_chart</span>Rapporten</div>
+    <div class="nav-drawer-item"><span class="mi">settings</span>Beheer</div>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header class="header">
+  <div class="header-logo">
+    <button class="hamburger" onclick="openNav()" title="Menu"><span class="mi">menu</span></button>
+    <div class="logo">Y<em>i</em>M</div>
+  </div>
+  <nav class="header-nav"></nav>
+  <div class="header-util">
+    <div class="util-item"><div class="avatar">KO</div>Kim van Olderen<span class="mi">expand_more</span></div>
+    <div class="util-item">NL <span class="mi">expand_more</span></div>
+  </div>
+</header>
+
+<!-- ══ PAGE ══ -->
+<div class="page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h1 class="page-title">Verwachte personen</h1>
+    <div class="toolbar">
+      <button class="btn btn-outlined" onclick="toast('info','Instellingen','Kies welke kolommen zichtbaar zijn.')">
+        Instellingen <span class="mi" style="font-size:16px">expand_more</span>
+      </button>
+      <div class="dd-wrap">
+        <div class="split-btn">
+          <button class="split-main" onclick="toast('info','Nieuwe registratie','Registratiewizard wordt geopend…')">
+            Nieuwe registratie
+          </button>
+          <button class="split-arrow" onclick="toggleDD('ddNew',event)">
+            <span class="mi">expand_more</span>
+          </button>
+        </div>
+        <div class="dd-menu" id="ddNew">
+          <div class="dd-item" onclick="closeDD();toast('info','Nieuwe bezoeker','Registratiewizard bezoeker wordt geopend…')">
+            <span class="mi">person_add</span> Nieuwe bezoeker registreren</div>
+          <div class="dd-item" onclick="closeDD();toast('info','Nieuwe contractor','Registratiewizard contractor wordt geopend…')">
+            <span class="mi">engineering</span> Nieuwe contractor registreren</div>
+          <div class="dd-divider"></div>
+          <div class="dd-item" onclick="closeDD();toast('info','XLSX upload','Upload scherm bezoekers wordt geopend…')">
+            <span class="mi">upload_file</span> Bezoekers uploaden (XLSX)</div>
+          <div class="dd-item" onclick="closeDD();toast('info','XLSX upload','Upload scherm contractors wordt geopend…')">
+            <span class="mi">upload_file</span> Contractors uploaden (XLSX)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FILTER STRIP ── -->
+  <div class="filter-strip mb12">
+
+    <!-- Row 1: Tabs + Status filter + Compliance filter + Parkeren filter + Search -->
+    <div class="filter-row" style="margin-bottom:8px">
+      <!-- Segmented tabs -->
+      <div class="seg">
+        <button class="seg-btn active" onclick="setTab('alle',this)">Alle <span class="pill" id="cnt-alle">12</span></button>
+        <button class="seg-btn" onclick="setTab('bezoekers',this)">Bezoekers <span class="pill" id="cnt-bez">8</span></button>
+        <button class="seg-btn" onclick="setTab('contractors',this)">Contractors <span class="pill" id="cnt-con">4</span></button>
+      </div>
+
+      <div class="fsp"></div>
+
+      <!-- Status filter -->
+      <div class="dd-wrap" id="wrap-status">
+        <button class="f-btn" id="btn-status" onclick="toggleFilterPanel('fp-status',event)">
+          <span id="lbl-status">Status</span>
+          <span class="mi" style="font-size:14px;color:var(--n400)">expand_more</span>
+        </button>
+        <div class="f-panel" id="fp-status">
+          <div class="f-opt selected" onclick="setStatusFilter('')" data-val="">
+            <input type="radio" name="sf" checked /> Alle statussen</div>
+          <div class="f-opt" onclick="setStatusFilter('Verwacht')" data-val="Verwacht">
+            <input type="radio" name="sf" /> Verwacht</div>
+          <div class="f-opt" onclick="setStatusFilter('Aangekomen')" data-val="Aangekomen">
+            <input type="radio" name="sf" /> Nu binnen (Aangekomen)</div>
+          <div class="f-opt" onclick="setStatusFilter('Vertrokken')" data-val="Vertrokken">
+            <input type="radio" name="sf" /> Vertrokken</div>
+          <div class="f-opt" onclick="setStatusFilter('No-show')" data-val="No-show">
+            <input type="radio" name="sf" /> No-show</div>
+          <div class="f-opt" onclick="setStatusFilter('Geannuleerd')" data-val="Geannuleerd">
+            <input type="radio" name="sf" /> Geannuleerd</div>
+        </div>
+      </div>
+
+      <!-- Compliance filter -->
+      <div class="dd-wrap" id="wrap-compliance">
+        <button class="f-btn" id="btn-compliance" onclick="toggleFilterPanel('fp-compliance',event)">
+          <span id="lbl-compliance">Compliance</span>
+          <span class="mi" style="font-size:14px;color:var(--n400)">expand_more</span>
+        </button>
+        <div class="f-panel" id="fp-compliance" style="min-width:230px">
+          <div class="f-opt" onclick="toggleCompliance('dossier',this)">
+            <input type="checkbox" id="cf-dossier" /> Dossier onvolledig</div>
+          <div class="f-opt" onclick="toggleCompliance('elearning',this)">
+            <input type="checkbox" id="cf-elearning" /> E-learning niet behaald</div>
+        </div>
+      </div>
+
+      <!-- Parkeren filter -->
+      <div class="dd-wrap" id="wrap-park">
+        <button class="f-btn" id="btn-park" onclick="toggleFilterPanel('fp-park',event)">
+          <span id="lbl-park">Parkeren</span>
+          <span class="mi" style="font-size:14px;color:var(--n400)">expand_more</span>
+        </button>
+        <div class="f-panel" id="fp-park">
+          <div class="f-opt selected" onclick="setParkFilter('')" data-val="">
+            <input type="radio" name="pf" checked /> Alle</div>
+          <div class="f-opt" onclick="setParkFilter('nodig')" data-val="nodig">
+            <input type="radio" name="pf" /> Parkeren benodigd</div>
+          <div class="f-opt" onclick="setParkFilter('gereserveerd')" data-val="gereserveerd">
+            <input type="radio" name="pf" /> Gereserveerd</div>
+          <div class="f-opt" onclick="setParkFilter('niet-gereserveerd')" data-val="niet-gereserveerd">
+            <input type="radio" name="pf" /> Niet gereserveerd</div>
+        </div>
+      </div>
+
+      <!-- Date filter pill -->
+      <div class="dd-wrap" id="wrap-date">
+        <button class="f-btn has-val" id="dnTrigger" onclick="toggleDpPop(event)">
+          <span id="dateLabel">Vandaag</span>
+          <span class="mi" style="font-size:14px;color:var(--n400)">expand_more</span>
+        </button>
+      </div>
+
+      <!-- Date picker popover (portal, appended to body via JS) -->
+      <div class="dp-pop" id="dpPop">
+        <div class="dp-pop-title">Datum</div>
+        <div class="dp-input-wrap">
+          <input type="date" id="dpInput" value="2026-04-01" onchange="dpInputChange(this.value)" />
+        </div>
+        <div class="dp-divider">of selecteer</div>
+        <div class="dp-presets">
+          <button class="dp-preset active" id="dpp-vandaag" onclick="dpPreset('vandaag')">Vandaag</button>
+          <button class="dp-preset" id="dpp-morgen"  onclick="dpPreset('morgen')">Morgen</button>
+          <button class="dp-preset" id="dpp-week"    onclick="dpPreset('week')">Deze week</button>
+        </div>
+        <div class="dp-actions">
+          <button class="dp-apply" onclick="dpApply()">Toepassen</button>
+          <button class="dp-clear" onclick="dpClear()">Legen</button>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="search-box">
+        <input id="gSearch" type="text" placeholder="Zoek naam, bedrijf, referentie…" oninput="render()" />
+        <div class="search-icon"><span class="mi">search</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BULK BAR ── -->
+  <div class="bulk-bar" id="bulkBar" style="display:none">
+    <div class="bulk-info"><span class="mi">check_box</span><span id="bulkCnt">0</span> geselecteerd</div>
+    <button class="bulk-btn" onclick="doBulk('checkin')"><span class="mi">login</span> Inchecken</button>
+    <button class="bulk-btn" onclick="doBulk('checkout')"><span class="mi">logout</span> Uitchecken</button>
+    <button class="bulk-btn" onclick="doBulk('noshow')"><span class="mi">person_off</span> No-show</button>
+    <button class="bulk-btn" onclick="doBulk('annuleren')"><span class="mi">cancel</span> Annuleren</button>
+    <button class="bulk-btn" onclick="doBulk('pas-koppelen')"><span class="mi">badge</span> Pas koppelen</button>
+    <button class="bulk-btn" onclick="doBulk('pas-printen')"><span class="mi">print</span> Pas printen</button>
+    <div class="bsp"></div>
+    <button class="bulk-close" onclick="clearSel()"><span class="mi">close</span></button>
+  </div>
+
+  <!-- ── TABLE ── -->
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table>
+        <colgroup>
+          <col style="width:40px">   <!-- checkbox -->
+          <col style="width:40px">   <!-- action -->
+          <col style="width:180px">  <!-- naam -->
+          <col style="width:46px">   <!-- vip -->
+          <col style="width:90px">   <!-- type -->
+          <col style="width:110px">  <!-- contractor type -->
+          <col style="width:150px">  <!-- bedrijf -->
+          <col style="width:160px">  <!-- locatie -->
+          <col style="width:90px">   <!-- aankomsttijd -->
+          <col style="width:130px">  <!-- status -->
+          <col style="width:100px">  <!-- ingecheckt -->
+          <col style="width:100px">  <!-- uitgecheckt -->
+          <col style="width:130px">  <!-- passtatus -->
+          <col style="width:170px">  <!-- contactpersoon -->
+          <col style="width:76px">   <!-- dossier -->
+          <col style="width:84px">   <!-- e-learning -->
+          <col style="width:150px">  <!-- parkeren -->
+          <col style="width:160px">  <!-- bezoekreden -->
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="st0 chk-cell"><input type="checkbox" class="chk" id="selAll" onchange="toggleAll(this)" /></th>
+            <th class="st1 act-cell"></th>
+            <th class="st2"><div class="th-in">Naam <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,2)"></div></th>
+            <th style="text-align:center"><div class="th-in" style="justify-content:center">VIP</div><div class="col-rz" onmousedown="rzStart(event,3)"></div></th>
+            <th><div class="th-in">Type <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,4)"></div></th>
+            <th><div class="th-in">Contractor type <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,5)"></div></th>
+            <th><div class="th-in">Bedrijf <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,6)"></div></th>
+            <th><div class="th-in">Locatie <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,7)"></div></th>
+            <th><div class="th-in">Verwacht <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,8)"></div></th>
+            <th><div class="th-in">Status <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,9)"></div></th>
+            <th><div class="th-in">Ingecheckt <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,10)"></div></th>
+            <th><div class="th-in">Uitgecheckt <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,11)"></div></th>
+            <th><div class="th-in">Passtatus <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,12)"></div></th>
+            <th><div class="th-in">Contactpersoon <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,13)"></div></th>
+            <th style="text-align:center" data-tip="Dossiervolledigheid"><div class="th-in" style="justify-content:center">Dossier</div><div class="col-rz" onmousedown="rzStart(event,14)"></div></th>
+            <th style="text-align:center"><div class="th-in" style="justify-content:center">E-learning</div><div class="col-rz" onmousedown="rzStart(event,15)"></div></th>
+            <th><div class="th-in">Parkeren <span class="sort-i mi">unfold_more</span></div><div class="col-rz" onmousedown="rzStart(event,16)"></div></th>
+            <th><div class="th-in">Bezoekreden <span class="sort-i mi">unfold_more</span></div></th>
+          </tr>
+          <!-- Column search row -->
+          <tr class="col-row">
+            <th class="st0"></th>
+            <th class="st1"></th>
+            <th class="st2"><input class="ci" id="c-naam"    type="text" placeholder="Zoeken…" oninput="render()" /></th>
+            <th>
+              <select class="cs" id="c-vip" onchange="render()">
+                <option value="">Alle</option>
+                <option value="ja">VIP</option>
+                <option value="nee">Geen VIP</option>
+              </select>
+            </th>
+            <th>
+              <select class="cs" id="c-type" onchange="render()">
+                <option value="">Alle</option>
+                <option value="Bezoeker">Bezoeker</option>
+                <option value="Contractor">Contractor</option>
+              </select>
+            </th>
+            <th><input class="ci" id="c-ctype"   type="text" placeholder="Zoeken…" oninput="render()" /></th>
+            <th><input class="ci" id="c-bedrijf" type="text" placeholder="Zoeken…" oninput="render()" /></th>
+            <th><input class="ci" id="c-locatie" type="text" placeholder="Zoeken…" oninput="render()" /></th>
+            <th><input class="ci" id="c-tijd" type="text" placeholder="bijv. 09:00" oninput="render()" /></th>
+            <th>
+              <select class="cs" id="c-status" onchange="render()">
+                <option value="">Alle</option>
+                <option value="Verwacht">Verwacht</option>
+                <option value="Aangekomen">Aangekomen</option>
+                <option value="Vertrokken">Vertrokken</option>
+                <option value="No-show">No-show</option>
+                <option value="Geannuleerd">Geannuleerd</option>
+              </select>
+            </th>
+            <th><input class="ci" id="c-incheckt" type="text" placeholder="bijv. 09:00" oninput="render()" /></th>
+            <th><input class="ci" id="c-uitcheckt" type="text" placeholder="bijv. 10:00" oninput="render()" /></th>
+            <th>
+              <select class="cs" id="c-pas" onchange="render()">
+                <option value="">Alle</option>
+                <option value="geen">Niet gekoppeld</option>
+                <option value="gekoppeld">Gekoppeld</option>
+                <option value="geprint">Geprint</option>
+              </select>
+            </th>
+            <th><input class="ci" id="c-contact" type="text" placeholder="Zoeken…" oninput="render()" /></th>
+            <th>
+              <select class="cs" id="c-dossier" onchange="render()">
+                <option value="">Alle</option>
+                <option value="volledig">Volledig</option>
+                <option value="onvolledig">Onvolledig</option>
+              </select>
+            </th>
+            <th>
+              <select class="cs" id="c-elearning" onchange="render()">
+                <option value="">Alle</option>
+                <option value="behaald">Behaald</option>
+                <option value="niet-behaald">Niet behaald</option>
+              </select>
+            </th>
+            <th>
+              <select class="cs" id="c-parkeren" onchange="render()">
+                <option value="">Alle</option>
+                <option value="nodig">Benodigd</option>
+                <option value="gereserveerd">Gereserveerd</option>
+                <option value="niet-gereserveerd">Niet gereserveerd</option>
+              </select>
+            </th>
+            <th><input class="ci" id="c-reden" type="text" placeholder="Zoeken…" oninput="render()" /></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="pag-bar">
+      <div class="pag-info">
+        <select class="pag-sel"><option>20</option><option>50</option><option>100</option></select>
+        <span id="pagInfo">resultaten per pagina &nbsp;|&nbsp; 1–12 van 12</span>
+      </div>
+      <div class="pag-ctrl">
+        <button class="pg-btn dis"><span class="mi">first_page</span></button>
+        <button class="pg-btn dis"><span class="mi">chevron_left</span></button>
+        <button class="pg-btn active">1</button>
+        <button class="pg-btn dis"><span class="mi">chevron_right</span></button>
+        <button class="pg-btn dis"><span class="mi">last_page</span></button>
+      </div>
+    </div>
+  </div>
+</div><!-- /page -->
+
+<!-- ══ DETAIL PANEL ══ -->
+<aside class="dp" id="dp">
+  <div class="dp-head">
+    <div class="dp-bar">
+      <span class="dp-lbl">Persoonsdossier</span>
+      <button class="ico-btn" style="background:var(--n50);width:28px;height:28px;" onclick="closeDP()">
+        <span class="mi">close</span></button>
+    </div>
+    <div class="dp-person" id="dpPerson"></div>
+  </div>
+  <div class="dp-scroll" id="dpScroll"></div>
+  <div class="dp-acts" id="dpActs"></div>
+</aside>
+
+<!-- ══ CHECK-IN MODAL ══ -->
+<div class="modal-ov" id="mCheckin">
+  <div class="modal">
+    <div class="m-head">
+      <div class="m-title" id="mTitle">Inchecken bevestigen</div>
+      <button class="ico-btn" onclick="closeModal('mCheckin')"><span class="mi">close</span></button>
+    </div>
+    <div class="m-body" id="mBody"></div>
+    <div class="m-foot">
+      <button class="btn btn-outlined" onclick="closeModal('mCheckin')">Annuleren</button>
+      <button class="btn btn-primary" id="mConfirm"><span class="mi">login</span> Inchecken</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST HOST ══ -->
+<div class="toast-host" id="toastHost"></div>
+<div class="proto-badge">Prototype v0.1</div>
+
+<script>
+/* ──────────────────────────────────────────
+   DATA
+   ────────────────────────────────────────── */
+const DATA = [
+  {id:1,naam:'Sophie van der Berg',bedrijf:'KPMG Nederland',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Partneroverleg Q2',locatie:'HQ Amsterdam — Zaal 4B',aankomsttijd:'09:00',
+   status:'Aangekomen',contactpersoon:'Mark Dekker',contactTel:'+31 20 123 4567',
+   vip:true,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:true,gereserveerd:true,plek:'P2-18'},passtatus:'geprint',
+   checkinTime:'08:55',checkoutTime:null},
+  {id:2,naam:'Thomas Jansen',bedrijf:'ABN AMRO',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Contractbespreking',locatie:'HQ Amsterdam — Zaal 2A',aankomsttijd:'10:00',
+   status:'Verwacht',contactpersoon:'Lisa Smit',contactTel:'+31 20 234 5678',
+   vip:false,dossier:'onvolledig',dossierMissing:['Legitimatiebewijs ontbreekt','Foto niet geüpload'],
+   elearning:'niet-vereist',parkeren:{nodig:false,gereserveerd:false,plek:null},
+   passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:3,naam:'Kevin Mulder',bedrijf:'TechServ BV',type:'Contractor',contractorType:'Onderhoud',
+   bezoekreden:'Airco onderhoud verdieping 3',locatie:'HQ Amsterdam — Serverruimte B3',aankomsttijd:'08:00',
+   status:'Aangekomen',contactpersoon:'Pieter de Vries',contactTel:'+31 20 345 6789',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:true,gereserveerd:true,plek:'P1-05'},passtatus:'gekoppeld',
+   checkinTime:'07:58',checkoutTime:null},
+  {id:4,naam:'Nadia El Amrani',bedrijf:'CleanPro Services',type:'Contractor',contractorType:'Schoonmaak',
+   bezoekreden:'Dagelijkse schoonmaak',locatie:'HQ Amsterdam — Alle verdiepingen',aankomsttijd:'07:00',
+   status:'Vertrokken',contactpersoon:'Facility Desk',contactTel:'+31 20 456 7890',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'behaald',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'gekoppeld',
+   checkinTime:'07:05',checkoutTime:'10:30'},
+  {id:5,naam:'Frank Visser',bedrijf:'Deloitte NL',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Audit intake gesprek',locatie:'HQ Amsterdam — Board Room',aankomsttijd:'11:00',
+   status:'Verwacht',contactpersoon:'Anna Bakker',contactTel:'+31 20 567 8901',
+   vip:true,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:true,gereserveerd:false,plek:null},passtatus:'geen',
+   checkinTime:null,checkoutTime:null},
+  {id:6,naam:'Ravi Sharma',bedrijf:'DataSec Solutions',type:'Contractor',contractorType:'IT Security',
+   bezoekreden:'Penetratietest netwerk',locatie:'HQ Amsterdam — IT Ruimte A1',aankomsttijd:'09:30',
+   status:'Verwacht',contactpersoon:'Joost Hendriks',contactTel:'+31 20 678 9012',
+   vip:false,dossier:'onvolledig',dossierMissing:['VCA certificaat verlopen'],
+   elearning:'niet-behaald',parkeren:{nodig:false,gereserveerd:false,plek:null},
+   passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:7,naam:'Iris Wolters',bedrijf:'ING Direct',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Kennismakingsgesprek',locatie:'HQ Amsterdam — Zaal 1C',aankomsttijd:'13:30',
+   status:'Verwacht',contactpersoon:'Mark Dekker',contactTel:'+31 20 789 0123',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',
+   checkinTime:null,checkoutTime:null},
+  {id:8,naam:'Bruno Carvalho',bedrijf:'ElektroPlus',type:'Contractor',contractorType:'Elektra',
+   bezoekreden:'Noodstroominstallatie controle',locatie:'HQ Amsterdam — Kelder',aankomsttijd:'14:00',
+   status:'No-show',contactpersoon:'Pieter de Vries',contactTel:'+31 20 890 1234',
+   vip:false,dossier:'onvolledig',dossierMissing:['Verzekeringsbewijs ontbreekt'],
+   elearning:'niet-behaald',parkeren:{nodig:true,gereserveerd:false,plek:null},
+   passtatus:'geen',checkinTime:null,checkoutTime:null},
+  {id:9,naam:'Charlotte de Wit',bedrijf:'Rabobank',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Investeerdersbijeenkomst',locatie:'HQ Amsterdam — Zaal 4A',aankomsttijd:'15:00',
+   status:'Verwacht',contactpersoon:'Anna Bakker',contactTel:'+31 20 901 2345',
+   vip:true,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:true,gereserveerd:true,plek:'P2-07'},passtatus:'geen',
+   checkinTime:null,checkoutTime:null},
+  {id:10,naam:'Omar Hassan',bedrijf:'NetSafe NV',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Security briefing',locatie:'HQ Amsterdam — Zaal 2B',aankomsttijd:'09:00',
+   status:'Geannuleerd',contactpersoon:'Lisa Smit',contactTel:'+31 20 012 3456',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',
+   checkinTime:null,checkoutTime:null},
+  {id:11,naam:'Lena Bauer',bedrijf:'SAP Netherlands',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Demo ERP systeem',locatie:'HQ Amsterdam — Demo Ruimte',aankomsttijd:'10:30',
+   status:'Verwacht',contactpersoon:'Joost Hendriks',contactTel:'+31 20 111 2222',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',
+   checkinTime:null,checkoutTime:null},
+  {id:12,naam:'Bas van Leeuwen',bedrijf:'VNO-NCW',type:'Bezoeker',contractorType:null,
+   bezoekreden:'Lobbyoverleg',locatie:'HQ Amsterdam — Directiekamer',aankomsttijd:'16:00',
+   status:'Verwacht',contactpersoon:'Mark Dekker',contactTel:'+31 20 333 4444',
+   vip:false,dossier:'compleet',dossierMissing:null,elearning:'niet-vereist',
+   parkeren:{nodig:false,gereserveerd:false,plek:null},passtatus:'geen',
+   checkinTime:null,checkoutTime:null},
+];
+
+/* ──────────────────────────────────────────
+   STATE
+   ────────────────────────────────────────── */
+let activeTab       = 'alle';
+let statusFilter    = '';
+let complianceFilter= {dossier:false, elearning:false};
+let parkFilter      = '';
+let selected        = new Set();
+let curDate         = new Date(2026,3,1);
+const TODAY         = new Date(2026,3,1);
+const DAYS          = ['zo','ma','di','wo','do','vr','za'];
+const MONTHS        = ['januari','februari','maart','april','mei','juni','juli',
+                       'augustus','september','oktober','november','december'];
+
+/* ──────────────────────────────────────────
+   RENDER HELPERS
+   ────────────────────────────────────────── */
+function statusCls(s){return{Verwacht:'sv',Aangekomen:'sa',Vertrokken:'svo','No-show':'sn',Geannuleerd:'sg'}[s]||'sv'}
+function statusBadge(s){return`<span class="sbadge ${statusCls(s)}"><span class="s-dot"></span>${s}</span>`}
+
+function dossierCell(p){
+  if(p.dossier==='compleet')
+    return`<span class="cico c-ok" data-tip="Dossier compleet"><span class="mi">check_circle</span></span>`;
+  const tip=(p.dossierMissing||['Ontbrekende informatie']).join(' · ');
+  return`<span class="cico c-err" data-tip="${tip}"><span class="mi">error</span></span>`;
+}
+function elearningCell(p){
+  if(p.elearning==='niet-vereist') return`<span class="cico c-na" data-tip="Niet vereist"><span class="mi">remove</span></span>`;
+  if(p.elearning==='behaald')      return`<span class="cico c-ok" data-tip="E-learning behaald"><span class="mi">check_circle</span></span>`;
+  return`<span class="cico c-err" data-tip="E-learning niet behaald"><span class="mi">error</span></span>`;
+}
+function parkCell(p){
+  const pk=p.parkeren;
+  if(!pk.nodig) return`<span class="muted">—</span>`;
+  if(pk.gereserveerd){
+    return`<div class="pk-row pk-ok"><span class="mi">check_circle</span>${pk.plek||''}</div>`;
+  }
+  return`<span style="font-size:12px;color:var(--n500)">Niet gereserveerd</span>`;
+}
+function passCell(s){
+  if(s==='geen')      return`<div class="pass pass-n"><span class="mi">badge</span><span style="color:var(--n500);font-weight:600">Niet gekoppeld</span></div>`;
+  if(s==='gekoppeld') return`<div class="pass pass-k"><span class="mi">badge</span>Gekoppeld</div>`;
+  return`<div class="pass pass-p"><span class="mi">print</span>Geprint</div>`;
+}
+
+function actionMenu(p){
+  const canIn  = p.status==='Verwacht';
+  const canOut = p.status==='Aangekomen';
+  const canNS  = p.status==='Verwacht';
+  const canAnn = ['Verwacht','Aangekomen'].includes(p.status);
+  return`<div class="act-wrap">
+    <button class="act-ico" onclick="toggleActMenu(${p.id},event)" data-tip="Acties">
+      <span class="mi">more_horiz</span>
+    </button>
+    <div class="act-menu dd-menu" id="am-${p.id}">
+      ${canIn ?`<div class="dd-item action-primary" onclick="openCheckin(${p.id});closeDD()"><span class="mi">login</span>Inchecken</div>`:''}
+      ${canOut?`<div class="dd-item action-primary" onclick="doCheckout(${p.id});closeDD()"><span class="mi">logout</span>Uitchecken</div>`:''}
+      <div class="dd-divider"></div>
+      <div class="dd-item" onclick="openDP(${p.id});closeDD()"><span class="mi">folder_open</span>Dossier bekijken</div>
+      <div class="dd-item" onclick="doPasKoppelen(${p.id});closeDD()"><span class="mi">badge</span>Pas koppelen</div>
+      <div class="dd-item" onclick="doPasPrinten(${p.id});closeDD()"><span class="mi">print</span>Pas activeren / printen</div>
+      <div class="dd-divider"></div>
+      <div class="dd-section-label">Contact</div>
+      <div class="dd-item" onclick="doContact(${p.id},'bellen');closeDD()"><span class="mi">phone</span>Bellen</div>
+      <div class="dd-item" onclick="doContact(${p.id},'bericht');closeDD()"><span class="mi">message</span>Contactpersoon informeren</div>
+      ${canNS ?`<div class="dd-divider"></div><div class="dd-item danger" onclick="doNoshow(${p.id});closeDD()"><span class="mi">person_off</span>No-show markeren</div>`:''}
+      ${canAnn?`<div class="dd-item danger" onclick="doAnnuleer(${p.id});closeDD()"><span class="mi">cancel</span>Annuleren</div>`:''}
+    </div>
+  </div>`;
+}
+
+function contactCell(p){
+  return`<div class="ct-cell">
+    <span class="ct-name">${p.contactpersoon}</span>
+    <div class="dd-wrap">
+      <button class="ico-btn" data-tip="Contact" onclick="toggleActMenu('ct-${p.id}',event)">
+        <span class="mi">more_horiz</span>
+      </button>
+      <div class="act-menu dd-menu" id="ct-${p.id}" style="min-width:190px;left:auto;right:0">
+        <div class="dd-item" onclick="doContact(${p.id},'bellen');closeDD()"><span class="mi">phone</span>Bellen</div>
+        <div class="dd-item" onclick="doContact(${p.id},'email');closeDD()"><span class="mi">email</span>E-mail sturen</div>
+        <div class="dd-item" onclick="doContact(${p.id},'bericht');closeDD()"><span class="mi">message</span>Bericht sturen</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ──────────────────────────────────────────
+   FILTER & RENDER
+   ────────────────────────────────────────── */
+function filtered(){
+  let d=[...DATA];
+  if(activeTab==='bezoekers')  d=d.filter(p=>p.type==='Bezoeker');
+  if(activeTab==='contractors')d=d.filter(p=>p.type==='Contractor');
+  if(statusFilter) d=d.filter(p=>p.status===statusFilter);
+  if(complianceFilter.dossier)   d=d.filter(p=>p.dossier==='onvolledig');
+  if(complianceFilter.elearning) d=d.filter(p=>p.elearning==='niet-behaald');
+  if(parkFilter==='nodig')           d=d.filter(p=>p.parkeren.nodig);
+  if(parkFilter==='gereserveerd')    d=d.filter(p=>p.parkeren.nodig&&p.parkeren.gereserveerd);
+  if(parkFilter==='niet-gereserveerd') d=d.filter(p=>p.parkeren.nodig&&!p.parkeren.gereserveerd);
+
+  const q=(document.getElementById('gSearch').value||'').toLowerCase();
+  if(q) d=d.filter(p=>[p.naam,p.bedrijf,p.bezoekreden,p.contactpersoon].some(v=>v.toLowerCase().includes(q)));
+
+  const gv=id=>(document.getElementById(id)||{}).value||'';
+  const cn=gv('c-naam').toLowerCase();    if(cn) d=d.filter(p=>p.naam.toLowerCase().includes(cn));
+  const cv=gv('c-vip');                   if(cv==='ja') d=d.filter(p=>p.vip); if(cv==='nee') d=d.filter(p=>!p.vip);
+  const ct=gv('c-type');                  if(ct) d=d.filter(p=>p.type===ct);
+  const cct=gv('c-ctype').toLowerCase();  if(cct) d=d.filter(p=>(p.contractorType||'').toLowerCase().includes(cct));
+  const cb=gv('c-bedrijf').toLowerCase(); if(cb) d=d.filter(p=>p.bedrijf.toLowerCase().includes(cb));
+  const cr=gv('c-reden').toLowerCase();   if(cr) d=d.filter(p=>p.bezoekreden.toLowerCase().includes(cr));
+  const cl=gv('c-locatie').toLowerCase(); if(cl) d=d.filter(p=>p.locatie.toLowerCase().includes(cl));
+  const cc=gv('c-contact').toLowerCase(); if(cc) d=d.filter(p=>p.contactpersoon.toLowerCase().includes(cc));
+  const cp=gv('c-pas');                   if(cp) d=d.filter(p=>p.passtatus===cp);
+  const ctijd=gv('c-tijd');               if(ctijd) d=d.filter(p=>p.aankomsttijd.includes(ctijd));
+  const cin=gv('c-incheckt');             if(cin) d=d.filter(p=>(p.checkinTime||'').includes(cin));
+  const cout=gv('c-uitcheckt');           if(cout) d=d.filter(p=>(p.checkoutTime||'').includes(cout));
+  const cst=gv('c-status');               if(cst) d=d.filter(p=>p.status===cst);
+  const cdos=gv('c-dossier');             if(cdos) d=d.filter(p=>p.dossier===cdos);
+  const cel=gv('c-elearning');            if(cel) d=d.filter(p=>p.elearning===(cel==='behaald'?'ok':cel));
+  const cpark=gv('c-parkeren');
+  if(cpark==='nodig')              d=d.filter(p=>p.parkeren.nodig);
+  if(cpark==='gereserveerd')       d=d.filter(p=>p.parkeren.nodig&&p.parkeren.gereserveerd);
+  if(cpark==='niet-gereserveerd')  d=d.filter(p=>p.parkeren.nodig&&!p.parkeren.gereserveerd);
+  return d;
+}
+
+function render(){
+  const rows=filtered();
+  document.getElementById('cnt-alle').textContent=DATA.length;
+  document.getElementById('cnt-bez').textContent=DATA.filter(p=>p.type==='Bezoeker').length;
+  document.getElementById('cnt-con').textContent=DATA.filter(p=>p.type==='Contractor').length;
+  document.getElementById('pagInfo').textContent=
+    `resultaten per pagina\u00a0|\u00a01\u2013${rows.length} van ${rows.length}`;
+
+  const tb=document.getElementById('tbody');
+  if(!rows.length){
+    tb.innerHTML=`<tr><td colspan="16"><div class="empty-state">
+      <span class="mi" style="font-size:40px">search_off</span>
+      <div class="es-title">Geen resultaten</div>
+      <div class="es-sub">Geen personen gevonden voor de huidige filters.</div>
+    </div></td></tr>`;
+    return;
+  }
+
+  tb.innerHTML=rows.map(p=>{
+    const isSel=selected.has(p.id);
+    return`<tr id="tr-${p.id}" class="${isSel?'selected':''} ${p.vip?'vip-row':''}"
+        onclick="handleRowClick(event,${p.id})">
+      <td class="chk-cell st0" onclick="event.stopPropagation()">
+        <input type="checkbox" class="chk" data-id="${p.id}"
+          onchange="toggleRow(this,${p.id})" ${isSel?'checked':''}/>
+      </td>
+      <td class="act-cell st1" onclick="event.stopPropagation()">
+        ${actionMenu(p)}
+      </td>
+      <td class="st2">
+        <div class="p-name" onclick="openDP(${p.id});event.stopPropagation()">${p.naam}</div>
+      </td>
+      <td style="text-align:center">
+        ${p.vip?`<span class="mi vip-star" data-tip="VIP">star</span>`:`<span class="vip-dash">—</span>`}
+      </td>
+      <td><span class="type-txt">${p.type}</span></td>
+      <td><span class="type-txt">${p.contractorType||'<span class="muted">—</span>'}</span></td>
+      <td style="font-size:13px">${p.bedrijf}</td>
+      <td style="font-size:12px;color:var(--n700)">${p.locatie}</td>
+      <td><div class="t-val ${p.status==='No-show'?'t-over':''}">${p.aankomsttijd}</div></td>
+      <td>${statusBadge(p.status)}</td>
+      <td><span class="t-val">${p.checkinTime||'<span class="muted">—</span>'}</span></td>
+      <td><span class="t-val">${p.checkoutTime||'<span class="muted">—</span>'}</span></td>
+      <td>${passCell(p.passtatus)}</td>
+      <td onclick="event.stopPropagation()">${contactCell(p)}</td>
+      <td style="text-align:center">${dossierCell(p)}</td>
+      <td style="text-align:center">${elearningCell(p)}</td>
+      <td>${parkCell(p)}</td>
+      <td style="font-size:12px;color:var(--n700)">${p.bezoekreden}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ──────────────────────────────────────────
+   FILTER CONTROLS
+   ────────────────────────────────────────── */
+function setTab(tab,btn){
+  activeTab=tab;
+  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selected.clear(); updateBulkBar(); render();
+}
+
+function toggleFilterPanel(id,e){
+  e&&e.stopPropagation();
+  const el=document.getElementById(id);
+  const was=el.classList.contains('open');
+  closeDD();
+  if(!was) el.classList.add('open');
+}
+
+function setStatusFilter(val){
+  statusFilter=val;
+  document.querySelectorAll('#fp-status .f-opt').forEach(o=>{
+    const isMatch=o.dataset.val===val;
+    o.classList.toggle('selected',isMatch);
+    o.querySelector('input').checked=isMatch;
+  });
+  const btn=document.getElementById('btn-status');
+  const lbl=document.getElementById('lbl-status');
+  if(val){
+    const labels={Verwacht:'Verwacht',Aangekomen:'Nu binnen',Vertrokken:'Vertrokken','No-show':'No-show',Geannuleerd:'Geannuleerd'};
+    lbl.textContent=labels[val]||val;
+    btn.classList.add('has-val');
+  }else{
+    lbl.textContent='Status'; btn.classList.remove('has-val');
+  }
+  render();
+}
+
+function toggleCompliance(key,opt){
+  complianceFilter[key]=!complianceFilter[key];
+  const chk=document.getElementById('cf-'+key);
+  if(chk) chk.checked=complianceFilter[key];
+  opt.classList.toggle('selected',complianceFilter[key]);
+
+  const anyActive=complianceFilter.dossier||complianceFilter.elearning;
+  const btn=document.getElementById('btn-compliance');
+  const lbl=document.getElementById('lbl-compliance');
+  btn.classList.toggle('has-val',anyActive);
+  const count=[complianceFilter.dossier,complianceFilter.elearning].filter(Boolean).length;
+  lbl.textContent= count>0?`Compliance (${count})`:'Compliance';
+  render();
+}
+
+function setParkFilter(val){
+  parkFilter=val;
+  document.querySelectorAll('#fp-park .f-opt').forEach(o=>{
+    const isMatch=o.dataset.val===val;
+    o.classList.toggle('selected',isMatch);
+    o.querySelector('input').checked=isMatch;
+  });
+  const btn=document.getElementById('btn-park');
+  const lbl=document.getElementById('lbl-park');
+  if(val){
+    const labels={nodig:'Benodigd',gereserveerd:'Gereserveerd','niet-gereserveerd':'Niet gereserveerd'};
+    lbl.textContent=labels[val]||val; btn.classList.add('has-val');
+  }else{
+    lbl.textContent='Parkeren'; btn.classList.remove('has-val');
+  }
+  render();
+}
+
+/* ──────────────────────────────────────────
+   DATE PICKER
+   ────────────────────────────────────────── */
+function fmtDate(d){return`${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`}
+function fmtISO(d){const m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return`${d.getFullYear()}-${m}-${day}`}
+
+let dpActivePreset='vandaag'; // tracks active preset
+
+const PRESET_LABELS={vandaag:'Vandaag',morgen:'Morgen',week:'Deze week'};
+
+function dpSyncUI(){
+  const lbl = dpActivePreset ? PRESET_LABELS[dpActivePreset] : fmtDate(curDate);
+  document.getElementById('dateLabel').textContent = lbl;
+  document.getElementById('dpInput').value = fmtISO(curDate);
+  ['vandaag','morgen','week'].forEach(p=>{
+    document.getElementById('dpp-'+p).classList.toggle('active', p===dpActivePreset);
+  });
+  // keep button highlighted when a value is set
+  document.getElementById('dnTrigger').classList.add('has-val');
+}
+
+function dpPreset(p){
+  dpActivePreset=p;
+  curDate=new Date(2026,3,1); // reset to "today"
+  if(p==='morgen') curDate.setDate(curDate.getDate()+1);
+  dpSyncUI();
+}
+
+function dpInputChange(val){
+  if(!val) return;
+  const[y,m,d]=val.split('-').map(Number);
+  curDate=new Date(y,m-1,d);
+  dpActivePreset='';
+  dpSyncUI();
+}
+
+function toggleDpPop(e){
+  e&&e.stopPropagation();
+  const pop=document.getElementById('dpPop');
+  const was=pop.classList.contains('open');
+  closeDD();
+  if(!was){
+    // portal to body
+    if(pop.parentElement!==document.body) document.body.appendChild(pop);
+    const r=document.getElementById('dnTrigger').getBoundingClientRect();
+    pop.style.top=(r.bottom+6)+'px';
+    pop.style.left=r.left+'px';
+    pop.style.right='auto';
+    pop.classList.add('open');
+    // flip right if off-screen
+    if(r.left+260>window.innerWidth-8){
+      pop.style.left='auto';
+      pop.style.right=(window.innerWidth-r.right)+'px';
+    }
+  }
+}
+
+function dpApply(){
+  document.getElementById('dpPop').classList.remove('open');
+  // label already updated live; just close
+}
+
+function dpClear(){
+  dpActivePreset='vandaag';
+  curDate=new Date(2026,3,1);
+  dpSyncUI();
+  document.getElementById('dpPop').classList.remove('open');
+}
+
+// shiftDate kept for potential future use but pijltjes are removed from UI
+function shiftDate(dir){
+  curDate=new Date(curDate); curDate.setDate(curDate.getDate()+dir);
+  dpActivePreset='';
+  dpSyncUI();
+}
+
+/* ──────────────────────────────────────────
+   SELECTION
+   ────────────────────────────────────────── */
+function toggleAll(chk){
+  filtered().forEach(p=>chk.checked?selected.add(p.id):selected.delete(p.id));
+  render(); updateBulkBar();
+}
+function toggleRow(chk,id){
+  chk.checked?selected.add(id):selected.delete(id);
+  const tr=document.getElementById('tr-'+id);
+  if(tr) tr.classList.toggle('selected',selected.has(id));
+  updateBulkBar();
+}
+function clearSel(){
+  selected.clear();
+  document.getElementById('selAll').checked=false;
+  updateBulkBar(); render();
+}
+function updateBulkBar(){
+  document.getElementById('bulkBar').style.display=selected.size?'flex':'none';
+  document.getElementById('bulkCnt').textContent=selected.size;
+}
+function handleRowClick(e,id){
+  if(e.target.closest('.act-wrap,.dd-wrap')||e.target.tagName==='INPUT') return;
+  openDP(id);
+}
+
+/* ──────────────────────────────────────────
+   BULK
+   ────────────────────────────────────────── */
+function doBulk(action){
+  const n=selected.size;
+  const sm={checkin:'Aangekomen',checkout:'Vertrokken',noshow:'No-show',annuleren:'Geannuleerd'};
+  if(sm[action]) selected.forEach(id=>{const p=DATA.find(x=>x.id===id);if(p)p.status=sm[action]});
+  const msgs={
+    checkin:`${n} personen ingecheckt`,checkout:`${n} personen uitgeschreven`,
+    noshow:`${n} personen als no-show geregistreerd`,annuleren:`${n} registraties geannuleerd`,
+    'pas-koppelen':`Credential scherm geopend voor ${n} personen`,
+    'pas-printen':`Badges voor ${n} personen naar printer verzonden`
+  };
+  toast('ok','Bulkactie uitgevoerd',msgs[action]||'');
+  clearSel(); render();
+}
+
+/* ──────────────────────────────────────────
+   ROW ACTIONS
+   ────────────────────────────────────────── */
+function openCheckin(id){
+  const p=DATA.find(x=>x.id===id);
+  document.getElementById('mTitle').textContent=`${p.naam} inchecken`;
+  document.getElementById('mBody').innerHTML=`
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px">
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;margin-bottom:3px">${p.naam}</div>
+        <div style="font-size:12px;color:var(--n500)">${p.bedrijf} · ${p.type}${p.contractorType?' — '+p.contractorType:''}</div>
+        <div style="font-size:12px;color:var(--n500);margin-top:2px">Verwacht om <strong>${p.aankomsttijd}</strong> · ${p.locatie}</div>
+        <div style="font-size:12px;color:var(--n500);margin-top:2px">Contactpersoon: <strong>${p.contactpersoon}</strong></div>
+      </div>
+    </div>
+    ${p.dossier==='onvolledig'?`<div class="alert a-warn">
+      <span class="mi">warning</span>
+      <div><strong>Dossier onvolledig:</strong> ${(p.dossierMissing||[]).join(', ')}</div></div>`:''}
+    ${p.elearning==='niet-behaald'?`<div class="alert a-err">
+      <span class="mi">school</span><div><strong>E-learning niet behaald</strong></div></div>`:''}
+    <div class="mt12">
+      <div style="font-size:11px;font-weight:700;color:var(--n700);margin-bottom:5px">Opmerking (optioneel)</div>
+      <textarea rows="2" placeholder="Voeg een opmerking toe…"></textarea>
+    </div>
+    <div class="mt8">
+      <label><input type="checkbox" checked style="accent-color:var(--p500)"/>
+        Contactpersoon automatisch informeren</label>
+    </div>`;
+  document.getElementById('mConfirm').onclick=()=>confirmCheckin(id);
+  document.getElementById('mCheckin').classList.add('open');
+}
+function confirmCheckin(id){
+  const p=DATA.find(x=>x.id===id);
+  p.status='Aangekomen';
+  p.checkinTime=new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+  closeModal('mCheckin'); render();
+  if(document.getElementById('dp').classList.contains('open')) openDP(id);
+  toast('ok','Ingecheckt',`${p.naam} is ingecheckt. ${p.contactpersoon} is geïnformeerd.`);
+}
+function doCheckout(id){
+  const p=DATA.find(x=>x.id===id);
+  p.status='Vertrokken';
+  p.checkoutTime=new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+  render();
+  if(document.getElementById('dp').classList.contains('open')) openDP(id);
+  toast('ok','Uitgeschreven',`${p.naam} is uitgeschreven. Badge gedeactiveerd.`);
+}
+function doNoshow(id){
+  const p=DATA.find(x=>x.id===id);
+  p.status='No-show'; render();
+  toast('warn','No-show',`${p.naam} is als no-show geregistreerd.`);
+}
+function doAnnuleer(id){
+  const p=DATA.find(x=>x.id===id);
+  if(!confirm(`Registratie van ${p.naam} annuleren?`)) return;
+  p.status='Geannuleerd'; render();
+  toast('info','Geannuleerd',`Registratie van ${p.naam} is geannuleerd.`);
+}
+function doContact(id,method){
+  const p=DATA.find(x=>x.id===id);
+  const msgs={
+    bellen:`Verbinding maken met ${p.contactpersoon} (${p.contactTel})…`,
+    email:`E-mail opstellen naar ${p.contactpersoon} over bezoek van ${p.naam}.`,
+    bericht:`Bericht verstuurd naar ${p.contactpersoon}: "${p.naam} van ${p.bedrijf} staat bij de receptie."`
+  };
+  toast('info','Contact opgenomen',msgs[method]);
+}
+function doPasKoppelen(id){
+  const p=DATA.find(x=>x.id===id);
+  toast('info','Pas koppelen',`Credential scherm geopend voor ${p.naam}.`);
+}
+function doPasPrinten(id){
+  const p=DATA.find(x=>x.id===id);
+  p.passtatus='geprint'; render();
+  toast('ok','Pas geprint',`Badge voor ${p.naam} is naar de printer verzonden.`);
+}
+
+/* ──────────────────────────────────────────
+   DETAIL PANEL
+   ────────────────────────────────────────── */
+function openDP(id){
+  const p=DATA.find(x=>x.id===id);
+  document.getElementById('dpPerson').innerHTML=`
+    <div>
+      <div class="dp-name">${p.naam}${p.vip?`<span class="mi vip-star" style="font-size:16px;margin-left:6px" data-tip="VIP">star</span>`:''}</div>
+      <div class="dp-meta">${p.type}${p.contractorType?' — '+p.contractorType:''} · ${p.bedrijf}</div>
+      <div style="margin-top:6px">${statusBadge(p.status)}</div>
+    </div>`;
+
+  document.getElementById('dpScroll').innerHTML=`
+    <div class="dp-sec">
+      <div class="dp-sec-t">Bezoekdetails</div>
+      <div class="dp-grid">
+        <div><div class="dp-fl">Bezoekreden</div><div class="dp-fv">${p.bezoekreden}</div></div>
+        <div><div class="dp-fl">Aankomsttijd</div><div class="dp-fv">${p.aankomsttijd}</div></div>
+        <div style="grid-column:1/-1"><div class="dp-fl">Locatie</div><div class="dp-fv">${p.locatie}</div></div>
+        ${p.checkinTime ?`<div><div class="dp-fl">Ingecheckt om</div><div class="dp-fv" style="color:var(--ok)">✓ ${p.checkinTime}</div></div>`:''}
+        ${p.checkoutTime?`<div><div class="dp-fl">Uitgeschreven om</div><div class="dp-fv" style="color:var(--n500)">← ${p.checkoutTime}</div></div>`:''}
+      </div>
+    </div>
+    <div class="dp-sec">
+      <div class="dp-sec-t">Contactpersoon</div>
+      <div class="fw-row">
+        <div>
+          <div style="font-weight:700;font-size:14px">${p.contactpersoon}</div>
+          <div style="font-size:12px;color:var(--n500)">${p.contactTel}</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm btn-outlined" onclick="doContact(${p.id},'bellen')">
+            <span class="mi">phone</span>Bellen</button>
+          <button class="btn btn-sm btn-outlined" onclick="doContact(${p.id},'bericht')">
+            <span class="mi">message</span>Bericht</button>
+        </div>
+      </div>
+    </div>
+    <div class="dp-sec">
+      <div class="dp-sec-t">Compliance</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="fw-row">
+          <span style="font-size:13px">Dossiervolledigheid</span>
+          <span style="font-size:13px;font-weight:700;color:${p.dossier==='compleet'?'var(--ok)':'var(--err)'}">
+            ${p.dossier==='compleet'?'✓ Compleet':'✗ Onvolledig'}</span>
+        </div>
+        ${p.dossierMissing?p.dossierMissing.map(m=>`<div class="alert a-warn"><span class="mi">warning</span>${m}</div>`).join(''):''}
+        <div class="fw-row">
+          <span style="font-size:13px">E-learning</span>
+          <span style="font-size:13px;font-weight:700;color:${p.elearning==='behaald'?'var(--ok)':p.elearning==='niet-behaald'?'var(--err)':'var(--n500)'}">
+            ${p.elearning==='behaald'?'✓ Behaald':p.elearning==='niet-behaald'?'✗ Niet behaald':'Niet vereist'}</span>
+        </div>
+      </div>
+    </div>
+    <div class="dp-sec">
+      <div class="dp-sec-t">Passtatus &amp; Parkeren</div>
+      <div class="fw-row" style="margin-bottom:8px">
+        <span style="font-size:13px">Passtatus</span>${passCell(p.passtatus)}</div>
+      <div class="fw-row"><span style="font-size:13px">Parkeren</span>${parkCell(p)}</div>
+    </div>`;
+
+  const canIn =p.status==='Verwacht';
+  const canOut=p.status==='Aangekomen';
+  document.getElementById('dpActs').innerHTML=`
+    ${canIn ?`<button class="btn btn-primary" onclick="openCheckin(${p.id})"><span class="mi">login</span>Inchecken</button>`:''}
+    ${canOut?`<button class="btn btn-primary" onclick="doCheckout(${p.id})"><span class="mi">logout</span>Uitchecken</button>`:''}
+    <button class="btn btn-outlined" onclick="toast('info','Dossier','Volledig dossier van ${p.naam} wordt geopend…')">
+      <span class="mi">open_in_new</span>Volledig dossier</button>
+    <button class="btn btn-outlined" onclick="doPasKoppelen(${p.id})">
+      <span class="mi">badge</span>Pas koppelen</button>`;
+
+  document.getElementById('dp').classList.add('open');
+}
+function closeDP(){document.getElementById('dp').classList.remove('open')}
+
+/* ──────────────────────────────────────────
+   MODAL / DROPDOWN
+   ────────────────────────────────────────── */
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-ov').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')});
+});
+
+function toggleDD(id,e){
+  e&&e.stopPropagation();
+  const m=document.getElementById(id);
+  const was=m.classList.contains('open');
+  closeDD();
+  if(!was) m.classList.add('open');
+}
+function toggleActMenu(id,e){
+  e&&e.stopPropagation();
+  const m=document.getElementById('am-'+id)||document.getElementById(id);
+  if(!m) return;
+  const was=m.classList.contains('open');
+  closeDD();
+  if(!was){
+    const btn=e.currentTarget||e.target.closest('button');
+    if(btn){
+      // Portal: move menu to body so it escapes all overflow/stacking contexts
+      if(m.parentElement!==document.body) document.body.appendChild(m);
+      const r=btn.getBoundingClientRect();
+      m.style.top=(r.bottom+4)+'px';
+      m.style.left=r.left+'px';
+      m.style.right='auto';
+      m.style.bottom='auto';
+      m.classList.add('open');
+      // flip if it would go off-screen right
+      const mw=m.offsetWidth;
+      if(r.left+mw>window.innerWidth-8){
+        m.style.left='auto';
+        m.style.right=(window.innerWidth-r.right)+'px';
+      }
+    }
+  }
+}
+/* ──────────────────────────────────────────
+   NAV DRAWER
+   ────────────────────────────────────────── */
+function openNav(){
+  document.getElementById('navDrawer').classList.add('open');
+  document.getElementById('navOverlay').classList.add('open');
+}
+function closeNav(){
+  document.getElementById('navDrawer').classList.remove('open');
+  document.getElementById('navOverlay').classList.remove('open');
+}
+
+/* ──────────────────────────────────────────
+   COLUMN RESIZE
+   ────────────────────────────────────────── */
+function rzStart(e,colIdx){
+  e.preventDefault(); e.stopPropagation();
+  const handle=e.currentTarget;
+  handle.classList.add('rz-active');
+  const cols=document.querySelectorAll('colgroup col');
+  const col=cols[colIdx];
+  const startX=e.clientX;
+  const startW=parseInt(col.style.width)||100;
+  document.body.style.cursor='col-resize';
+  document.body.style.userSelect='none';
+  function onMove(ev){
+    const w=Math.max(40,startW+(ev.clientX-startX));
+    col.style.width=w+'px';
+  }
+  function onUp(){
+    handle.classList.remove('rz-active');
+    document.body.style.cursor='';
+    document.body.style.userSelect='';
+    document.removeEventListener('mousemove',onMove);
+    document.removeEventListener('mouseup',onUp);
+  }
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+}
+
+function closeDD(){
+  document.querySelectorAll('.dd-menu.open,.f-panel.open,.dp-pop.open').forEach(m=>m.classList.remove('open'));
+}
+document.addEventListener('click',closeDD);
+
+/* ──────────────────────────────────────────
+   TOAST
+   ────────────────────────────────────────── */
+const TICONS={ok:'check_circle',err:'error',warn:'warning',info:'info'};
+function toast(type,title,msg){
+  const el=document.createElement('div');
+  el.className=`toast t-${type}`;
+  el.innerHTML=`<div class="t-ico"><span class="mi">${TICONS[type]||'info'}</span></div>
+    <div class="t-body"><div class="t-title">${title}</div><div class="t-msg">${msg}</div></div>
+    <button class="ico-btn" onclick="this.closest('.toast').remove()"><span class="mi">close</span></button>`;
+  document.getElementById('toastHost').appendChild(el);
+  setTimeout(()=>el.remove(),5000);
+}
+
+/* ── INIT ── */
+render();
+</script>
+</body>
+</html>
