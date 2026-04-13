@@ -1,0 +1,55 @@
+:root {
+  /* Primary (Teal) */
+  --p50:  #f0f7f8;
+  --p100: #d6e8ec;
+  --p300: #a2cdd8;
+  --p400: #87bdc6;
+  --p500: #6daeba;
+  --p600: #598f99;
+  --p700: #315161;
+  --p800: #243f4c;
+  --p900: #1a2e38;
+
+  /* Neutral (Grey) */
+  --n0:   #ffffff;
+  --n50:  #f8fafb;
+  --n100: #f0f2f3;
+  --n300: #eaeced;
+  --n400: #b8babb;
+  --n500: #999a9b;
+  --n700: #6b6c6d;
+  --n800: #3e3f40;
+  --n900: #1d1e1f;
+  --n1000: #111313;
+
+  /* Semantic (Figma) */
+  --ok:      #24bb86;
+  --ok-bg:   #e9f8f3;
+  --warn:    #9f871c;
+  --warn-bg: #fefbea;
+  --err:     #bc243b;
+  --err-bg:  #f8e9eb;
+  --info:    #2464bb;
+  --info-bg: #e9f0f8;
+
+  /* VIP */
+  --vip:        #92400e;
+  --vip-bg:     #fef3c7;
+  --vip-border: #f59e0b;
+
+  /* Spacing */
+  --sp-xs:  4px;
+  --sp-s:   8px;
+  --sp-m:   12px;
+  --sp-l:   16px;
+  --sp-xxl: 24px;
+
+  /* Border Radius */
+  --r-s:  4px;
+  --r-m:  8px;
+  --r-l:  12px;
+  --r-xl: 360px;
+
+  /* Typography */
+  --font: 'Nunito', sans-serif;
+}
