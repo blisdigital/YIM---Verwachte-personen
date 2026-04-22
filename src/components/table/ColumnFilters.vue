@@ -98,8 +98,12 @@ function resetDate(key) {
           class="cf-date-btn"
           @click="openDatePopover(col.key, $event)"
         >
-          <span class="cf-date-text">{{ modelValue[col.key] || 'Alle' }}</span>
-          <span class="mi cf-icon-inline">today</span>
+          <span :class="['cf-date-text', { 'cf-date-text--active': modelValue[col.key] }]">
+            {{ modelValue[col.key] || 'Alle' }}
+          </span>
+          <span class="cf-input-icon-area">
+            <span class="mi cf-icon">today</span>
+          </span>
         </button>
 
         <Teleport to="body">
@@ -132,7 +136,7 @@ function resetDate(key) {
           >
             <option value="Alle">Alle</option>
           </select>
-          <span class="mi cf-icon-right">schedule</span>
+          <span class="mi cf-icon-right">access_time</span>
         </div>
       </template>
 
@@ -217,19 +221,18 @@ function resetDate(key) {
 }
 
 .cf-icon {
-  font-size: 24px;
-  color: var(--n500);
+  font-size: 20px;
+  color: var(--n800);
   pointer-events: none;
 }
 
-/* Date filter button */
+/* Date filter button — same two-part layout as search field */
 .cf-date-btn {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
   height: 32px;
-  padding: 6px 6px 6px 8px;
+  padding: 0;
   border: 1px solid var(--n400);
   border-radius: var(--r-s);
   background: var(--n0);
@@ -240,25 +243,24 @@ function resetDate(key) {
   cursor: pointer;
   text-align: left;
   box-sizing: border-box;
-  gap: 4px;
+  overflow: hidden;
   transition: border-color 0.15s;
 }
+.cf-date-btn:focus-within,
 .cf-date-btn:hover { border-color: var(--p500); }
 
 .cf-date-text {
   flex: 1;
+  min-width: 0;
+  padding: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--n500);
+  font-size: 14px;
+  line-height: 20px;
 }
-.cf-date-text:not(:empty) { color: var(--n900); }
-
-.cf-icon-inline {
-  font-size: 18px;
-  color: var(--n500);
-  flex-shrink: 0;
-}
+.cf-date-text--active { color: var(--n900); }
 
 /* Teleported popover */
 .date-popover-backdrop {
@@ -307,15 +309,15 @@ function resetDate(key) {
   position: absolute;
   right: 4px;
   font-size: 18px;
-  color: var(--n500);
+  color: var(--n800);
   pointer-events: none;
 }
 
 .cf-icon-right {
   position: absolute;
-  right: 6px;
-  font-size: 18px;
-  color: var(--n500);
+  right: 4px;
+  font-size: 20px;
+  color: var(--n800);
   pointer-events: none;
 }
 </style>

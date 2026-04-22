@@ -2,22 +2,22 @@
   /* Primary (Teal) */
   --p50:  #f0f7f8;
   --p100: #d6e8ec;
-  --p300: #a2cdd8;
+  --p300: #a2cbd3;
   --p400: #87bdc6;
   --p500: #6daeba;
   --p600: #598f99;
   --p700: #315161;
   --p800: #243f4c;
-  --p900: #1a2e38;
+  --p900: #132a35;
 
   /* Neutral (Grey) */
   --n0:   #ffffff;
   --n50:  #f8fafb;
-  --n100: #f0f2f3;
+  --n100: #f3f4f5;
   --n300: #eaeced;
   --n400: #b8babb;
   --n500: #999a9b;
-  --n700: #6b6c6d;
+  --n700: #5d5e5e;
   --n800: #3e3f40;
   --n900: #1d1e1f;
   --n1000: #111313;
@@ -42,6 +42,7 @@
   --sp-s:   8px;
   --sp-m:   12px;
   --sp-l:   16px;
+  --sp-xl:  20px;
   --sp-xxl: 24px;
 
   /* Border Radius */
@@ -49,6 +50,12 @@
   --r-m:  8px;
   --r-l:  12px;
   --r-xl: 360px;
+
+  /* Shadows */
+  --shadow-s:     0 2px 8px rgba(17, 19, 19, 0.16);       /* Elevation/s  — button hover, pills */
+  --shadow-m:     0 4px 16px -2px rgba(17, 19, 19, 0.16); /* Elevation/m  — dropdowns, popovers */
+  --shadow-l:     0 12px 40px rgba(0, 0, 0, 0.22);        /* Elevation/xl — modals */
+  --shadow-panel: -4px 0 24px rgba(0, 0, 0, 0.12);        /* directional  — detail panel */
 
   /* Typography */
   --font: 'Nunito', sans-serif;

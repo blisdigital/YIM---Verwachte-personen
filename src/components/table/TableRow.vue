@@ -62,7 +62,7 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 
       <!-- Passtatus -->
       <template v-else-if="col.key === 'passtatus'">
-        <PassStatusDot :passtatus="person.passtatus" />
+        <PassStatusDot :status="person.passtatus" />
       </template>
 
       <!-- Compliance -->
@@ -71,21 +71,21 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
           :dossier="person.dossier"
           :dossier-missing="person.dossierMissing"
           :elearning="person.elearning"
+          :elearning-reason="person.elearningReason || null"
         />
       </template>
 
       <!-- VIP -->
       <template v-else-if="col.key === 'vip'">
         <span v-if="person.vip" class="mi vip-star">star</span>
-        <span v-else class="cell-dash">—</span>
       </template>
 
       <!-- Parkeren -->
       <template v-else-if="col.key === 'parkeren'">
         <span v-if="person.parkeren.plek" class="cell-truncate">{{ person.parkeren.plek }}</span>
         <span v-else-if="person.parkeren.gereserveerd" class="park-badge">Gereserveerd</span>
-        <span v-else-if="person.parkeren.nodig" class="cell-muted">Niet gereserveerd</span>
-        <span v-else class="cell-muted">Niet gereserveerd</span>
+        <span v-else-if="person.parkeren.nodig" class="cell-park-none">Niet gereserveerd</span>
+        <span v-else class="cell-park-none">Niet gereserveerd</span>
       </template>
 
       <!-- Locaties -->
@@ -99,7 +99,6 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
       <!-- Contractortype -->
       <template v-else-if="col.key === 'contractortype'">
         <span v-if="person.contractortype">{{ person.contractortype }}</span>
-        <span v-else class="cell-dash">—</span>
       </template>
 
       <!-- Default text -->
@@ -116,8 +115,6 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
   transition: background 0.1s;
 }
 .trow:hover { background: var(--p50); }
-.trow-selected { background: #e2eff4; }
-.trow-selected:hover { background: #d4e8f0; }
 .trow-vip { border-left: 3px solid var(--vip-border); }
 
 .tcell {
@@ -138,19 +135,51 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
   background: var(--n0);
 }
 .trow:hover .sticky { background: var(--p50); }
-.trow-selected .sticky { background: #e2eff4; }
-.trow-selected:hover .sticky { background: #d4e8f0; }
 
 .tcell-actions { padding: 0; text-align: center; }
 .tcell-select { padding: 0; text-align: center; }
 
 .row-checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--p500);
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--n800);
+  border-radius: var(--r-s);
+  background: var(--n0);
   cursor: pointer;
   display: block;
   margin: auto;
+  position: relative;
+  transition: background-color 0.1s, border-color 0.1s;
+  flex-shrink: 0;
+  outline: none;
+}
+.row-checkbox:hover:not(:checked) {
+  border-color: var(--n1000);
+}
+.row-checkbox:checked {
+  background-color: var(--p500);
+  border-color: var(--p500);
+}
+.row-checkbox:hover:checked {
+  background-color: var(--p600);
+  border-color: var(--p600);
+}
+.row-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 5px;
+  height: 9px;
+  border: 2px solid white;
+  border-top: none;
+  border-left: none;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.row-checkbox:focus-visible {
+  box-shadow: 0 0 0 8px var(--p50);
 }
 
 .cell-naam {
@@ -160,7 +189,7 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 }
 
 .vip-star {
-  font-size: 14px;
+  font-size: 20px;
   color: var(--vip-border);
   flex-shrink: 0;
 }
@@ -170,7 +199,7 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
   border: none;
   font-family: var(--font);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--p700);
   cursor: pointer;
   padding: 0;
@@ -186,6 +215,7 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 
 .cell-dash { color: var(--n400); }
 .cell-muted { color: var(--n700); font-size: 12px; }
+.cell-park-none { color: var(--n500); font-size: 14px; }
 
 .cell-truncate {
   display: block;
@@ -199,7 +229,7 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
   display: inline-flex;
   align-items: center;
   gap: var(--sp-xs);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--info);
 }
 .park-badge .mi { font-size: 14px; }

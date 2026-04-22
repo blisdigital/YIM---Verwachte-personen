@@ -11,14 +11,10 @@ const statusClass = computed(() => {
   }
   return map[props.status] || ''
 })
-const displayLabel = computed(() => {
-  if (props.status === 'No-show') return 'No show'
-  return props.status
-})
 </script>
 
 <template>
-  <span :class="['sbadge', statusClass]">{{ displayLabel }}</span>
+  <span :class="['sbadge', statusClass]">{{ status }}</span>
 </template>
 
 <style scoped>
@@ -26,19 +22,19 @@ const displayLabel = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 8px;
+  padding: 4px 12px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
-  line-height: 20px;
-  letter-spacing: 0.12px;
+  line-height: 24px;
+  letter-spacing: 0.14px;
   min-width: 90px;
   text-align: center;
 }
-.sv  { background: #e9f0f8; color: #2464bb; }
-.sa  { background: #e9f8f3; color: #24bb86; }
-.svo { background: #ebeced; color: #999a9b; }
-.sn  { background: #fefbea; color: #9f871c; }
-.sg  { background: #f8e9eb; color: #bc243b; }
+.sv  { background: var(--info-bg); color: var(--info); }
+.sa  { background: var(--ok-bg);   color: var(--ok); }
+.svo { background: var(--n100);    color: var(--n700); }
+.sn  { background: var(--warn-bg); color: var(--warn); }
+.sg  { background: var(--err-bg);  color: var(--err); }
 </style>

@@ -86,6 +86,11 @@ export function usePersonen() {
     return result
   })
 
+  function parseDatum(v) {
+    const [d, m, y] = String(v).split('-')
+    return `${y}-${m}-${d}`
+  }
+
   const sorted = computed(() => {
     const key = filterStore.sortKey
     const dir = filterStore.sortDir
@@ -94,7 +99,14 @@ export function usePersonen() {
       let bv = b[key] ?? ''
       if (typeof av === 'boolean') av = av ? 1 : 0
       if (typeof bv === 'boolean') bv = bv ? 1 : 0
-      const cmp = String(av).localeCompare(String(bv), 'nl')
+      if (key === 'datumVanaf') {
+        av = parseDatum(av)
+        bv = parseDatum(bv)
+      }
+      let cmp = String(av).localeCompare(String(bv), 'nl')
+      if (cmp === 0 && key === 'datumVanaf') {
+        cmp = String(a.aankomsttijd ?? '').localeCompare(String(b.aankomsttijd ?? ''), 'nl')
+      }
       return dir === 'asc' ? cmp : -cmp
     })
   })

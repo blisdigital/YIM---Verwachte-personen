@@ -6,7 +6,7 @@ const props = defineProps({
 const emit = defineEmits(['dismiss'])
 
 const icon = computed(() => {
-  const map = { success: 'check_circle', error: 'error', warning: 'warning', info: 'info' }
+  const map = { ok: 'check_circle', err: 'error', warn: 'warning', info: 'info' }
   return map[props.toast.type] || 'info'
 })
 </script>
@@ -31,27 +31,27 @@ const icon = computed(() => {
   gap: 10px;
   padding: 12px 16px;
   border-radius: var(--r-m);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  box-shadow: var(--shadow-m);
   min-width: 280px;
   max-width: 400px;
   background: var(--n0);
   border-left: 4px solid var(--n400);
 }
 
-.toast-success { border-left-color: var(--ok); }
-.toast-error   { border-left-color: var(--err); }
-.toast-warning { border-left-color: var(--warn); }
-.toast-info    { border-left-color: var(--info); }
+.toast-ok   { border-left-color: var(--ok); }
+.toast-err  { border-left-color: var(--err); }
+.toast-warn { border-left-color: var(--warn); }
+.toast-info { border-left-color: var(--info); }
 
 .toast-icon {
   font-size: 20px;
   flex-shrink: 0;
   margin-top: 1px;
 }
-.toast-success .toast-icon { color: var(--ok); }
-.toast-error   .toast-icon { color: var(--err); }
-.toast-warning .toast-icon { color: var(--warn); }
-.toast-info    .toast-icon { color: var(--info); }
+.toast-ok   .toast-icon { color: var(--ok); }
+.toast-err  .toast-icon { color: var(--err); }
+.toast-warn .toast-icon { color: var(--warn); }
+.toast-info .toast-icon { color: var(--info); }
 
 .toast-content { flex: 1; }
 

@@ -20,15 +20,15 @@ const primaryActions = computed(() => {
   if (!props.person) return []
   const status = props.person.status
   if (status === 'Verwacht') return [
-    { value: 'inchecken', label: 'Inchecken', icon: 'login', variant: 'primary' },
+    { value: 'inchecken', label: 'Inchecken', icon: 'login', variant: 'filled' },
     { value: 'pas-koppelen', label: 'Pas koppelen', icon: 'credit_card', variant: 'outlined' },
   ]
   if (status === 'Aangekomen') return [
-    { value: 'uitchecken', label: 'Uitchecken', icon: 'logout', variant: 'primary' },
+    { value: 'uitchecken', label: 'Uitchecken', icon: 'logout', variant: 'filled' },
     { value: 'pas-printen', label: 'Pas printen', icon: 'print', variant: 'outlined' },
   ]
   if (status === 'No-show') return [
-    { value: 'inchecken', label: 'Inchecken', icon: 'login', variant: 'primary' },
+    { value: 'inchecken', label: 'Inchecken', icon: 'login', variant: 'filled' },
     { value: 'no-show-ongedaan', label: 'Ongedaan maken', icon: 'undo', variant: 'outlined' },
   ]
   return []
@@ -117,7 +117,7 @@ const secondaryActions = computed(() => {
         <!-- Passtatus -->
         <section class="panel-section">
           <h3 class="section-title">Toegangspas</h3>
-          <PassStatusDot :passtatus="person.passtatus" />
+          <PassStatusDot :status="person.passtatus" />
         </section>
 
         <div class="panel-divider"></div>
@@ -129,6 +129,7 @@ const secondaryActions = computed(() => {
             :dossier="person.dossier"
             :dossier-missing="person.dossierMissing"
             :elearning="person.elearning"
+            :elearning-reason="person.elearningReason || null"
           />
         </section>
 
@@ -211,7 +212,7 @@ const secondaryActions = computed(() => {
   bottom: 0;
   width: 480px;
   background: var(--n0);
-  box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+  box-shadow: var(--shadow-panel);
   z-index: 600;
   display: flex;
   flex-direction: column;
@@ -245,7 +246,7 @@ const secondaryActions = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -272,7 +273,7 @@ const secondaryActions = computed(() => {
 .vip-star { font-size: 16px; color: var(--vip-border); flex-shrink: 0; }
 
 .person-company {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--n700);
   margin-top: 2px;
 }
@@ -334,14 +335,14 @@ const secondaryActions = computed(() => {
 
 .info-label {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--n700);
   min-width: 130px;
   flex-shrink: 0;
 }
 
 .info-val {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--n900);
 }
 
@@ -349,7 +350,7 @@ const secondaryActions = computed(() => {
 .info-val.mono { font-family: monospace; font-size: 12px; }
 
 .tel-link {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--p700);
   text-decoration: none;
   font-weight: 600;

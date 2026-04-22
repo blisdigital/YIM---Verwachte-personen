@@ -97,7 +97,7 @@
   {
     "key": "status",
     "label": "Status",
-    "width": 144,
+    "width": 130,
     "sortable": true,
     "filter": "dropdown",
     "filterOptions": ["Alle", "Verwacht", "Aangekomen", "No-show", "Geannuleerd", "Vertrokken"],

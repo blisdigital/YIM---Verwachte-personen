@@ -2,9 +2,14 @@
 
 ## InstellingenMenu
 
-Custom dropdown button in de PageHeader. Geen SplitButton — eigen implementatie.
+Custom dropdown button in de PageHeader. Geen SplitButton — eigen implementatie. Zie [BaseButton.md](BaseButton.md) voor de button-tokens.
+
+```vue
+<BaseButton variant="outlined" size="lg" icon="expand_more" icon-position="right">Instellingen</BaseButton>
+```
 
 **HTML-structuur:**
+
 ```html
 <div class="instellingen-wrap">          <!-- position: relative -->
   <div class="instellingen-backdrop" />  <!-- position: fixed, z-index: 100 -->
@@ -30,9 +35,11 @@ Custom dropdown button in de PageHeader. Geen SplitButton — eigen implementati
 | Font | `16px / 600` Nunito, letter-spacing `0.16px` |
 | Kleur | `var(--n900)` |
 | Achtergrond | `var(--n0)` |
+| Achtergrond hover | `var(--n50)` |
 | Border | `1px solid var(--n400)` |
 | Border-radius | `var(--r-s)` |
 | Z-index | `101` |
+| Caret-icoon | `expand_more`, 24px, `var(--n900)` |
 
 **Dropdown menu:**
 
@@ -42,13 +49,13 @@ Custom dropdown button in de PageHeader. Geen SplitButton — eigen implementati
 | Padding | `16px 0` |
 | Gap tussen items | `8px` |
 | Border-radius | `var(--r-s)` (4px) |
-| Shadow | `0 4px 16px rgba(17, 19, 19, 0.16)` |
+| Shadow | `0 4px 16px -2px rgba(17, 19, 19, 0.16)` |
 | Z-index | `102` |
 
 **Menu-item styling:**
 
 - Font: `16px / 600` Nunito, letter-spacing `0.16px`, line-height `24px`
-- Kleur: `var(--p700)` (default), `var(--n900)` (hover)
+- Kleur: `var(--n900)` (default), `var(--p700)` (active/`aria-current="true"`)
 - Padding: `4px 16px`
 - Hover achtergrond: `var(--n50)`
 
@@ -115,7 +122,7 @@ Wordt weergegeven met 45% opacity en is niet klikbaar.
 ### Layout
 
 ```
-┌─────────────────────────────────────┐  ← 340px breed
+┌─────────────────────────────────────┐  ← 337px breed
 │ Selecteer alles               [—]   │  ← sticky, fontweight 600
 │ ─────────────────────────────────── │  ← sticky divider
 │ Naam persoon                  [✓]   │  ← locked (45% opacity)
@@ -137,11 +144,11 @@ Wordt weergegeven met 45% opacity en is niet klikbaar.
 
 | Eigenschap | Waarde |
 |------------|--------|
-| Breedte | `340px` |
-| Padding | `0` (spacing zit in rijen/footer) |
+| Breedte | `400px` |
+| Padding | `8px 0` |
 | Achtergrond | `var(--n0)` |
-| Border-radius | `var(--r-m)` (8px) |
-| Shadow | `0 4px 16px rgba(17, 19, 19, 0.16)` |
+| Border-radius | `var(--r-s)` (4px) |
+| Shadow | `0 4px 16px -2px rgba(17, 19, 19, 0.16)` |
 | Z-index | `102` |
 | Overflow | `hidden` |
 
@@ -149,10 +156,10 @@ Wordt weergegeven met 45% opacity en is niet klikbaar.
 
 | Eigenschap | Waarde |
 |------------|--------|
-| Max hoogte | `300px` |
+| Max hoogte | `240px` |
 | Overflow-y | `auto` |
-| Scrollbar breedte | `4px` (webkit) / `thin` (Firefox) |
-| Scrollbar kleur | `var(--n300)` / transparante track |
+| Scrollbar breedte | `16px` track, `8px` thumb |
+| Scrollbar kleur | thumb `var(--p700)`, track `var(--n50)`, `Corner-m` (8px) |
 
 Bevat: sticky "Selecteer alles" + divider, vergrendelde "Naam persoon" rij, en alle configureerbare kolomrijen.
 
@@ -161,9 +168,9 @@ Bevat: sticky "Selecteer alles" + divider, vergrendelde "Naam persoon" rij, en a
 | Eigenschap | Waarde |
 |------------|--------|
 | Positie | `sticky; top: 0` binnen `.col-list` |
-| Achtergrond | `var(--n0)` (dekt scrollende items) |
+| Achtergrond | `var(--n50)` |
 | Min-hoogte | `44px` |
-| Padding | `10px 16px` |
+| Padding | `4px 16px` (`py-xs px-l`) |
 | Font | `14px / 600` Nunito |
 | Z-index | `1` (binnen scroll container) |
 
@@ -173,7 +180,7 @@ Bevat: sticky "Selecteer alles" + divider, vergrendelde "Naam persoon" rij, en a
 |------------|--------|
 | Min-hoogte | `40px` |
 | Padding | `0 16px` |
-| Font label | `14px / 400` Nunito, `var(--n900)` |
+| Font label | `14px / 600` Nunito SemiBold, `var(--n900)` |
 | Hover achtergrond | `var(--p50)` |
 | Cursor | `pointer` |
 
@@ -199,7 +206,7 @@ Alle checkbox icons: `font-size: 20px`.
 | Set opslaan | Rechts (gegroepeerd) | `32px` | `12px / 600` | Outlined |
 | Toepassen | Rechts (gegroepeerd) | `32px` | `12px / 600` | Filled (p500) |
 
-Footer padding: `8px 16px 12px`. "Reset standaard" staat links, "Set opslaan" + "Toepassen" worden naar rechts geduwd via `margin-left: auto` op "Set opslaan".
+Footer padding: `8px 16px` (`py-0 px-l`). "Reset standaard" staat links, "Set opslaan" + "Toepassen" worden naar rechts geduwd via `margin-left: auto` op "Set opslaan".
 
 ### State Management (columnStore)
 

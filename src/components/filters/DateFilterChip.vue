@@ -28,8 +28,10 @@ const chipLabel = computed(() => {
   const map = { vandaag: 'Vandaag', morgen: 'Morgen', week: 'Deze week' }
   return localPreset.value
     ? map[localPreset.value] || formatDisplayDate(localDate.value)
-    : formatDisplayDate(localDate.value)
+    : formatDisplayDate(localDate.value) || 'Datum'
 })
+
+const isActive = computed(() => !!(localPreset.value || localDate.value))
 
 function formatDisplayDate(isoStr) {
   if (!isoStr) return ''
@@ -40,8 +42,6 @@ function formatDisplayDate(isoStr) {
 function toggleOpen(event) {
   if (!open.value) {
     const rect = event.currentTarget.getBoundingClientRect()
-    // Right-align: right edge of popover = right edge of chip.
-    // Clamp so the 272px-wide popover never bleeds off the left edge of the screen.
     const right = document.documentElement.clientWidth - rect.right
     popoverPos.value = { top: rect.bottom + 4, right: Math.min(right, document.documentElement.clientWidth - 280) }
   }
@@ -65,7 +65,11 @@ function apply() {
 
 <template>
   <div class="date-chip-wrap">
-    <button ref="chipRef" class="filter-chip" @click="toggleOpen">
+    <button
+      ref="chipRef"
+      :class="['filter-chip', { 'filter-chip--active': isActive || open }]"
+      @click="toggleOpen"
+    >
       <span>{{ chipLabel }}</span>
       <span class="mi">{{ open ? 'arrow_drop_up' : 'arrow_drop_down' }}</span>
     </button>
@@ -99,15 +103,15 @@ function apply() {
 .filter-chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 8px 8px 16px;
-  border: 1px solid var(--p700);
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--n50);
   border-radius: var(--r-s);
-  background: var(--p50);
+  background: var(--n0);
   font-family: var(--font);
   font-size: 14px;
   font-weight: 600;
-  color: var(--p700);
+  color: var(--n800);
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s;
@@ -115,7 +119,12 @@ function apply() {
   letter-spacing: 0.14px;
   line-height: 20px;
 }
-.filter-chip:hover { border-color: var(--p500); }
+
+.filter-chip--active {
+  background: var(--p50);
+  border-color: var(--p700);
+  color: var(--p700);
+}
 
 .popover-anchor {
   position: fixed;

@@ -6,48 +6,75 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
-const WEEKDAYS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo']
+const WEEKDAYS  = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo']
+const MONTHS_NL = ['Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec']
 
-const todayISO = (() => {
-  const d = new Date()
-  return toISO(d)
-})()
+const today    = new Date()
+const todayISO = toISO(today)
 
-// View state: which month/year is shown
-const selected = computed(() => props.modelValue)
-const initDate = props.modelValue ? new Date(props.modelValue) : new Date()
+// ── View state ──────────────────────────────────────────────────────────────
+const view = ref('days') // 'days' | 'month' | 'year'
+
+const initDate  = props.modelValue ? new Date(props.modelValue) : new Date()
 const viewYear  = ref(initDate.getFullYear())
 const viewMonth = ref(initDate.getMonth()) // 0–11
 
-const monthLabel = computed(() => {
-  const d = new Date(viewYear.value, viewMonth.value, 1)
-  const label = d.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' })
-  return label.charAt(0).toUpperCase() + label.slice(1)
+const selected     = computed(() => props.modelValue)
+const decadeStart  = computed(() => Math.floor(viewYear.value / 10) * 10)
+
+// ── Nav label (per view) ────────────────────────────────────────────────────
+const navLabel = computed(() => {
+  if (view.value === 'days') {
+    const d     = new Date(viewYear.value, viewMonth.value, 1)
+    const label = d.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' })
+    return label.charAt(0).toUpperCase() + label.slice(1)
+  }
+  if (view.value === 'month') return String(viewYear.value)
+  return `${decadeStart.value} – ${decadeStart.value + 9}`
 })
 
-function prevMonth() {
-  if (viewMonth.value === 0) { viewMonth.value = 11; viewYear.value-- }
-  else viewMonth.value--
+// ── Navigation ──────────────────────────────────────────────────────────────
+function goUp() {
+  if (view.value === 'days')  view.value = 'month'
+  else if (view.value === 'month') view.value = 'year'
+  // Year has no higher level
 }
 
-function nextMonth() {
-  if (viewMonth.value === 11) { viewMonth.value = 0; viewYear.value++ }
-  else viewMonth.value++
+function prev() {
+  if (view.value === 'days') {
+    if (viewMonth.value === 0) { viewMonth.value = 11; viewYear.value-- }
+    else viewMonth.value--
+  } else if (view.value === 'month') {
+    viewYear.value--
+  } else {
+    viewYear.value -= 10
+  }
+}
+
+function next() {
+  if (view.value === 'days') {
+    if (viewMonth.value === 11) { viewMonth.value = 0; viewYear.value++ }
+    else viewMonth.value++
+  } else if (view.value === 'month') {
+    viewYear.value++
+  } else {
+    viewYear.value += 10
+  }
 }
 
 function goToday() {
-  const d = new Date()
-  viewYear.value  = d.getFullYear()
-  viewMonth.value = d.getMonth()
+  viewYear.value  = today.getFullYear()
+  viewMonth.value = today.getMonth()
+  view.value = 'days'
 }
 
-// Build grid: nulls for padding, Date objects for real days
+// ── Days grid ───────────────────────────────────────────────────────────────
 const calendarDays = computed(() => {
-  const year  = viewYear.value
-  const month = viewMonth.value
-  const firstDay = new Date(year, month, 1)
+  const year      = viewYear.value
+  const month     = viewMonth.value
+  const firstDay  = new Date(year, month, 1)
   const lastDate  = new Date(year, month + 1, 0).getDate()
-  // Week starts Monday: getDay() 0=Sun → offset 6, 1=Mon → 0, etc.
+  // Week starts Monday: getDay() 0=Sun → offset 6
   const startOffset = (firstDay.getDay() + 6) % 7
   const days = []
   for (let i = 0; i < startOffset; i++) days.push(null)
@@ -56,26 +83,64 @@ const calendarDays = computed(() => {
   return days
 })
 
+// ── Months grid (4 × 3) ─────────────────────────────────────────────────────
+const calendarMonths = computed(() =>
+  MONTHS_NL.map((name, i) => ({ name, month: i }))
+)
+
+// ── Years grid (4 × 3, decade + 2 padding) ──────────────────────────────────
+const calendarYears = computed(() => {
+  const start = decadeStart.value
+  const years = Array.from({ length: 10 }, (_, i) => start + i)
+  while (years.length < 12) years.push(null)
+  return years
+})
+
+// ── State helpers ────────────────────────────────────────────────────────────
 function toISO(d) {
   const m   = String(d.getMonth() + 1).padStart(2, '0')
   const day = String(d.getDate()).padStart(2, '0')
   return `${d.getFullYear()}-${m}-${day}`
 }
 
-function dayISO(d) { return d ? toISO(d) : '' }
-
 function dayState(d) {
   if (!d) return 'empty'
   const iso = toISO(d)
   if (iso === selected.value) return 'selected'
-  if (iso === todayISO)       return 'today'
-  if (iso < todayISO)         return 'past'
-  return 'future'
+  if (iso === todayISO)       return 'current'
+  return 'enabled'
 }
 
+function monthState(monthIdx) {
+  const sel = selected.value ? new Date(selected.value) : null
+  if (sel && sel.getFullYear() === viewYear.value && sel.getMonth() === monthIdx) return 'selected'
+  if (today.getFullYear() === viewYear.value && today.getMonth() === monthIdx)    return 'current'
+  return 'enabled'
+}
+
+function yearState(year) {
+  if (year === null) return 'empty'
+  const sel = selected.value ? new Date(selected.value) : null
+  if (sel && sel.getFullYear() === year)  return 'selected'
+  if (today.getFullYear() === year)       return 'current'
+  return 'enabled'
+}
+
+// ── Selection handlers ───────────────────────────────────────────────────────
 function selectDay(d) {
   if (!d) return
   emit('update:modelValue', toISO(d))
+}
+
+function selectMonth(monthIdx) {
+  viewMonth.value = monthIdx
+  view.value = 'days'
+}
+
+function selectYear(year) {
+  if (year === null) return
+  viewYear.value = year
+  view.value = 'month'
 }
 </script>
 
@@ -83,23 +148,21 @@ function selectDay(d) {
   <div class="cal">
     <!-- Nav -->
     <div class="cal-nav">
-      <button class="cal-month-btn">{{ monthLabel }}</button>
+      <button class="cal-label-btn" @click="goUp">{{ navLabel }}</button>
       <div class="cal-nav-group">
-        <button class="cal-icon-btn cal-icon-btn--left" @click="prevMonth">
+        <button class="cal-icon-btn" @click="prev">
           <span class="mi" style="font-size:16px; line-height:1">chevron_left</span>
         </button>
         <button class="cal-today-btn" @click="goToday">Vandaag</button>
-        <button class="cal-icon-btn cal-icon-btn--right" @click="nextMonth">
+        <button class="cal-icon-btn" @click="next">
           <span class="mi" style="font-size:16px; line-height:1">chevron_right</span>
         </button>
       </div>
     </div>
 
-    <!-- Day-of-week headers -->
-    <div class="cal-grid">
+    <!-- Days view -->
+    <div v-if="view === 'days'" class="cal-grid cal-grid--days">
       <div v-for="wd in WEEKDAYS" :key="wd" class="cal-weekday">{{ wd }}</div>
-
-      <!-- Day cells -->
       <div
         v-for="(day, i) in calendarDays"
         :key="i"
@@ -114,6 +177,35 @@ function selectDay(d) {
         >{{ day.getDate() }}</span>
       </div>
     </div>
+
+    <!-- Month view -->
+    <div v-else-if="view === 'month'" class="cal-grid cal-grid--month">
+      <div
+        v-for="{ name, month } in calendarMonths"
+        :key="month"
+        class="cal-cell cal-cell--clickable"
+        @click="selectMonth(month)"
+      >
+        <span class="cal-day" :class="`cal-day--${monthState(month)}`">{{ name }}</span>
+      </div>
+    </div>
+
+    <!-- Year view -->
+    <div v-else class="cal-grid cal-grid--year">
+      <div
+        v-for="(year, i) in calendarYears"
+        :key="i"
+        class="cal-cell"
+        :class="{ 'cal-cell--clickable': year !== null }"
+        @click="selectYear(year)"
+      >
+        <span
+          v-if="year !== null"
+          class="cal-day"
+          :class="`cal-day--${yearState(year)}`"
+        >{{ year }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -121,7 +213,7 @@ function selectDay(d) {
 .cal {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-s);
   width: 100%;
 }
 
@@ -133,7 +225,7 @@ function selectDay(d) {
   width: 100%;
 }
 
-.cal-month-btn {
+.cal-label-btn {
   padding: 8px 12px;
   border: 1px solid var(--n400);
   border-radius: var(--r-s);
@@ -147,7 +239,7 @@ function selectDay(d) {
   white-space: nowrap;
   line-height: 16px;
 }
-.cal-month-btn:hover { background: var(--n50); }
+.cal-label-btn:hover { background: var(--n50); }
 
 /* Connected nav group: ‹ Vandaag › */
 .cal-nav-group {
@@ -160,31 +252,20 @@ function selectDay(d) {
   align-items: center;
   justify-content: center;
   padding: 8px;
-  background: var(--n0);
+  background: transparent;
   color: var(--n700);
+  border: none;
+  border-radius: var(--r-s);
   cursor: pointer;
-  border-top: 1px solid var(--n400);
-  border-bottom: 1px solid var(--n400);
 }
 .cal-icon-btn:hover { background: var(--n50); }
-.cal-icon-btn--left {
-  border-left: 1px solid var(--n400);
-  border-right: none;
-  border-radius: var(--r-s) 0 0 var(--r-s);
-}
-.cal-icon-btn--right {
-  border-right: 1px solid var(--n400);
-  border-left: none;
-  border-radius: 0 var(--r-s) var(--r-s) 0;
-}
+.cal-icon-btn:disabled { color: var(--n300); cursor: default; }
+.cal-icon-btn:disabled:hover { background: transparent; }
 
 .cal-today-btn {
-  padding: 8px 4px;
-  border-top: 1px solid var(--n400);
-  border-bottom: 1px solid var(--n400);
-  border-left: none;
-  border-right: none;
-  background: var(--n0);
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
   font-family: var(--font);
   font-size: 12px;
   font-weight: 600;
@@ -193,21 +274,30 @@ function selectDay(d) {
   cursor: pointer;
   line-height: 16px;
   white-space: nowrap;
+  border-radius: var(--r-s);
 }
 .cal-today-btn:hover { background: var(--n50); }
 
-/* ── Grid ── */
+/* ── Grids ── */
 .cal-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
   width: 100%;
+}
+
+.cal-grid--days {
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.cal-grid--month,
+.cal-grid--year {
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .cal-weekday {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  height: 32px;
   font-family: var(--font);
   font-size: 12px;
   font-weight: 400;
@@ -219,15 +309,15 @@ function selectDay(d) {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+  height: 32px;
 }
 .cal-cell--clickable { cursor: pointer; }
 
-/* Day pill */
+/* Day/month/year pill */
 .cal-day {
-  width: 28px;
-  height: 28px;
-  border-radius: 360px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-xl);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,17 +328,22 @@ function selectDay(d) {
   transition: background 0.1s;
 }
 
+/* Month/year pills are wider */
+.cal-grid--month .cal-day,
+.cal-grid--year .cal-day {
+  width: 100%;
+  padding: 0 var(--sp-s);
+}
+
 .cal-cell--clickable:hover .cal-day:not(.cal-day--selected) {
   background: var(--p50);
 }
 
-.cal-day--past {
-  color: var(--n500);
-}
-.cal-day--future {
+/* States */
+.cal-day--enabled {
   color: var(--n900);
 }
-.cal-day--today {
+.cal-day--current {
   color: var(--p500);
   font-weight: 600;
   letter-spacing: 0.12px;

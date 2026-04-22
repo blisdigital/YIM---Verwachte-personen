@@ -102,7 +102,7 @@ function displayDate(isoStr) {
 .date-popover {
   background: var(--n0);
   border-radius: var(--r-s);
-  box-shadow: 0 4px 16px rgba(17, 19, 19, 0.16);
+  box-shadow: var(--shadow-m);
   padding: 16px;
   width: 272px;
   box-sizing: border-box;
@@ -194,9 +194,9 @@ function displayDate(isoStr) {
 }
 .preset-chip:hover { border-color: var(--p500); color: var(--p700); }
 .preset-chip.active {
-  background: var(--p500);
-  border-color: var(--p500);
-  color: var(--n0);
+  background: var(--p50);
+  border-color: var(--p700);
+  color: var(--p700);
 }
 
 .popover-divider {

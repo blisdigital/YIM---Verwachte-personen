@@ -68,6 +68,7 @@ function clear() {
               :checked="isChecked(opt.value)"
               @change="toggle(opt.value)"
             />
+            <span class="custom-checkbox"></span>
             <span class="opt-label">{{ opt.label }}</span>
           </label>
 
@@ -144,8 +145,8 @@ function clear() {
   z-index: 300;
   background: var(--n0);
   border-radius: var(--r-s);
-  box-shadow: 0 4px 16px rgba(17, 19, 19, 0.16);
-  padding: 16px 8px;
+  box-shadow: var(--shadow-m);
+  padding: 8px;
   min-width: max-content;
 }
 
@@ -155,19 +156,57 @@ function clear() {
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 6px 8px;
+  padding: 8px;
   cursor: pointer;
   user-select: none;
   border-radius: var(--r-s);
 }
-.chip-option:hover { background: var(--p50); }
+.chip-option:hover { background: var(--n100); }
 
 .filter-checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--p500);
-  cursor: pointer;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--n800);
+  border-radius: var(--r-s);
+  display: inline-block;
   flex-shrink: 0;
+  background: var(--n0);
+  position: relative;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.chip-option:hover .custom-checkbox {
+  border-color: var(--n1000);
+}
+
+.filter-checkbox:checked + .custom-checkbox {
+  background: var(--p500);
+  border-color: var(--p500);
+}
+
+.chip-option:hover .filter-checkbox:checked + .custom-checkbox {
+  background: var(--p600);
+  border-color: var(--p600);
+}
+
+.filter-checkbox:checked + .custom-checkbox::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 5px;
+  height: 9px;
+  border: 2px solid white;
+  border-top: none;
+  border-left: none;
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .opt-label {

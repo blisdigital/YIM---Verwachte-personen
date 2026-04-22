@@ -10,7 +10,7 @@ App.vue
     ├── PageHeader.vue
     │   ├── InstellingenMenu (custom dropdown — geen SplitButton)
     │   │   └── KolomInstellingenPanel.vue (popover, position: absolute)
-    │   └── SplitButton.vue (Nieuwe registratie)
+    │   └── BaseButton + ActionMenu (Nieuwe registratie)
     │
     ├── FilterStrip.vue
     │   ├── TypeTabs.vue (Alle / Bezoekers / Contractors — met counts)
@@ -32,7 +32,7 @@ App.vue
     │   │   └── CompliancePill.vue
     │   └── Pagination.vue
     │
-    ├── DetailPanel.vue (slide-out, nog nader te specificeren)
+    ├── DetailPanel.vue (slide-out rechts; sections: Bezoekgegevens, Compliance, Parkeren, Contactgegevens + primaire/secundaire acties)
     │
     ├── CheckinModal.vue
     │
@@ -45,28 +45,33 @@ App.vue
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         Pinia Store                              │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌──────────────┐  │
-│  │ personenStore│  │ filterStore │  │selectionStore│  │ columnStore  │  │
-│  │             │  │             │  │             │  │              │  │
-│  │ - personen  │  │ - datum     │  │ - selected  │  │-visibleColumns│  │
-│  │ - loading   │  │ - status[]  │  │ - selectAll │  │- savedSets   │  │
-│  │ - error     │  │ - persoontype│  │             │  │-DEFAULT_VISIBLE│ │
-│  │             │  │ - compliance[]│ │             │  │-LOCKED_COLUMNS│  │
-│  │             │  │ - parkeren  │  │             │  │              │  │
-│  │             │  │ - search    │  │             │  │              │  │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬───────┘  │
-└─────────┼────────────────┼────────────────┼─────────────────────┘
-          │                │                │
-          ▼                ▼                ▼
+│  ┌─────────────┐  ┌─────────────────────────┐  ┌──────────────┐  │
+│  │ personenStore│  │       filterStore        │  │ columnStore  │  │
+│  │             │  │                         │  │              │  │
+│  │ - personen  │  │ - datum / datumPreset    │  │-visibleColumns│  │
+│  │ - loading   │  │ - status[]              │  │- savedSets   │  │
+│  │ - error     │  │ - compliance[]          │  │-DEFAULT_VISIBLE│ │
+│  │             │  │ - parkeren              │  │-LOCKED_COLUMNS│  │
+│  │             │  │ - persoontype           │  │              │  │
+│  │             │  │ - search                │  │              │  │
+│  │             │  │ - columnFilters {}      │  │              │  │
+│  │             │  │ - sortKey / sortDir     │  │              │  │
+│  │             │  │ - page / pageSize       │  │              │  │
+│  └──────┬──────┘  └──────┬──────────────────┘  └──────┬───────┘  │
+└─────────┼────────────────────────────────────────────────────┘
+          │
+          ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                      Composables                                 │
-│  ┌─────────────────┐  ┌─────────────────┐                       │
-│  │  usePersonen()  │  │  useSelection() │                       │
-│  │                 │  │                 │                       │
-│  │ - filtered      │  │ - toggle()      │                       │
-│  │ - sorted        │  │ - selectAll()   │                       │
-│  │ - paginated     │  │ - clearAll()    │                       │
-│  └────────┬────────┘  └────────┬────────┘                       │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌──────────────────┐ │
+│  │  usePersonen()  │  │  useSelection() │  │   useToast()     │ │
+│  │                 │  │                 │  │                  │ │
+│  │ - filtered      │  │ - toggle()      │  │ - show(type,...) │ │
+│  │ - sorted        │  │ - selectAll()   │  │ - dismiss(id)    │ │
+│  │ - paginated     │  │ - clearAll()    │  │ - toasts[]       │ │
+│  │ - counts        │  │ - isSelected()  │  │                  │ │
+│  │ - total         │  │ - count         │  │                  │ │
+│  └────────┬────────┘  └────────┬────────┘  └──────────────────┘ │
 └───────────┼────────────────────┼────────────────────────────────┘
             │                    │
             ▼                    ▼
@@ -77,7 +82,7 @@ App.vue
 │                                                                  │
 │   DataTable ◀──reads── usePersonen().paginated                  │
 │       │                                                          │
-│       └── TableRow ──emits──▶ selectionStore.toggle()           │
+│       └── TableRow ──emits──▶ useSelection().toggle()           │
 │              │                                                   │
 │              └── @click ──emits──▶ openDetail(person)           │
 │                                                                  │
@@ -126,19 +131,43 @@ export function usePersonen() {
       result = result.filter(p => p.parkeren.gereserveerd === (filterStore.parkeren === 'gereserveerd'))
     }
 
-    // Zoekterm (naam, bedrijf, personeelsnr, referentie)
+    // Zoekterm (naam, bedrijf, personeelsnr, bezoekreden)
     if (filterStore.search) {
-      result = result.filter(p => matchesSearch(p, filterStore.search))
+      const q = filterStore.search.toLowerCase()
+      result = result.filter(p =>
+        p.naam.toLowerCase().includes(q) ||
+        p.bedrijf.toLowerCase().includes(q) ||
+        p.personeelsnr.toLowerCase().includes(q) ||
+        p.bezoekreden.toLowerCase().includes(q)
+      )
     }
+
+    // Kolomfilters (filterrij direct onder tabelheaders)
+    Object.entries(filterStore.columnFilters).forEach(([key, val]) => {
+      if (!val || val === '' || val === 'Alle') return
+      result = result.filter(p => {
+        const pval = p[key]
+        if (pval === null || pval === undefined) return false
+        if (Array.isArray(pval)) return pval.some(v => v.toLowerCase().includes(val.toLowerCase()))
+        if (key === 'vip') return val === 'Ja' ? pval : !pval
+        return String(pval).toLowerCase().includes(val.toLowerCase())
+      })
+    })
 
     return result
   })
 
-  // Computed: gesorteerd
+  // Computed: gesorteerd op basis van filterStore.sortKey en filterStore.sortDir
   const sorted = computed(() => {
+    const key = filterStore.sortKey
+    const dir = filterStore.sortDir
     return [...filtered.value].sort((a, b) => {
-      // Default: sorteer op aankomsttijd
-      return a.aankomsttijd.localeCompare(b.aankomsttijd)
+      let av = a[key] ?? ''
+      let bv = b[key] ?? ''
+      if (typeof av === 'boolean') av = av ? 1 : 0
+      if (typeof bv === 'boolean') bv = bv ? 1 : 0
+      const cmp = String(av).localeCompare(String(bv), 'nl')
+      return dir === 'asc' ? cmp : -cmp
     })
   })
 
@@ -171,30 +200,32 @@ export function usePersonen() {
 
 ```javascript
 export function useSelection() {
-  const selected = ref<Set<number>>(new Set())
+  const selected = ref(new Set())
 
-  function toggle(id: number) {
+  function toggle(id) {
     if (selected.value.has(id)) {
       selected.value.delete(id)
     } else {
       selected.value.add(id)
     }
+    selected.value = new Set(selected.value)
   }
 
-  function selectAll(ids: number[]) {
+  function selectAll(ids) {
     ids.forEach(id => selected.value.add(id))
+    selected.value = new Set(selected.value)
   }
 
   function clearAll() {
-    selected.value.clear()
+    selected.value = new Set()
   }
 
-  function isSelected(id: number) {
+  function isSelected(id) {
     return selected.value.has(id)
   }
 
   return {
-    selected: computed(() => [...selected.value]),
+    selectedIds: computed(() => [...selected.value]),
     count: computed(() => selected.value.size),
     toggle,
     selectAll,
@@ -207,19 +238,24 @@ export function useSelection() {
 ### useToast
 
 ```javascript
-export function useToast() {
-  const toasts = ref<Toast[]>([])
+// toasts is een module-level ref — gedeeld tussen alle componenten die useToast() aanroepen
+const toasts = ref([])
 
-  function show(type: 'ok' | 'err' | 'warn' | 'info', title: string, message?: string) {
+export function useToast() {
+  function show(type, title, message) {
+    // type: 'ok' | 'err' | 'warn' | 'info'
     const id = Date.now()
     toasts.value.push({ id, type, title, message })
-
     setTimeout(() => {
       toasts.value = toasts.value.filter(t => t.id !== id)
-    }, 4000)
+    }, 4000) // auto-dismiss na 4 seconden
   }
 
-  return { toasts, show }
+  function dismiss(id) {
+    toasts.value = toasts.value.filter(t => t.id !== id)
+  }
+
+  return { toasts, show, dismiss }
 }
 ```
 
@@ -244,7 +280,7 @@ export const usePersonenStore = defineStore('personen', () => {
     }
   }
 
-  function updateStatus(id: number, status: Person['status']) {
+  function updateStatus(id, status) {
     const person = personen.value.find(p => p.id === id)
     if (person) {
       person.status = status
@@ -257,7 +293,12 @@ export const usePersonenStore = defineStore('personen', () => {
     }
   }
 
-  return { personen, loading, error, fetch, updateStatus }
+  function updatePassStatus(id, passtatus) {
+    const person = personen.value.find(p => p.id === id)
+    if (person) person.passtatus = passtatus
+  }
+
+  return { personen, loading, error, fetch, updateStatus, updatePassStatus }
 })
 ```
 
@@ -284,6 +325,16 @@ export const useFilterStore = defineStore('filters', () => {
   const page = ref(1)
   const pageSize = ref(10)
 
+  // Kolomfilters (filterrij in de tabel)
+  // LET OP: columnFilters['datumVanaf'] en filterStore.datum zijn gekoppeld.
+  // Beide componenten (DateFilterChip en kolomfilter 'datumVanaf') lezen en
+  // schrijven naar dezelfde filterStore.datum. Zie DateFilterChip.md en ColumnFilters.md.
+  const columnFilters = ref({})  // { [columnKey]: string }
+
+  // Sortering
+  const sortKey = ref('datumVanaf')    // default sortering (primair); tiebreaker: aankomsttijd
+  const sortDir = ref('asc')           // 'asc' | 'desc'
+
   function reset() {
     datum.value = new Date()
     datumPreset.value = 'vandaag'
@@ -293,6 +344,8 @@ export const useFilterStore = defineStore('filters', () => {
     persoontype.value = null
     search.value = ''
     page.value = 1
+    columnFilters.value = {}
+    // sortKey en sortDir worden NIET gereset — dat is gebruikersvoorkeur
   }
 
   return {
@@ -301,6 +354,8 @@ export const useFilterStore = defineStore('filters', () => {
     persoontype,
     search,
     page, pageSize,
+    columnFilters,
+    sortKey, sortDir,
     reset
   }
 })

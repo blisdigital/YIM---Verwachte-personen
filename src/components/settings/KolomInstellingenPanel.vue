@@ -107,9 +107,9 @@ function confirmSaveSet() {
         <div class="col-row col-row--all" @click.stop="toggleAll">
           <span class="col-label">Selecteer alles</span>
           <span class="col-checkbox-wrap">
-            <span v-if="someChecked" class="mi checkbox-icon checkbox-partial">indeterminate_check_box</span>
-            <span v-else-if="allChecked" class="mi checkbox-icon checkbox-checked">check_box</span>
-            <span v-else class="mi checkbox-icon checkbox-unchecked">check_box_outline_blank</span>
+            <span v-if="someChecked" class="cb cb--indeterminate"></span>
+            <span v-else-if="allChecked" class="cb cb--checked"></span>
+            <span v-else class="cb cb--unchecked"></span>
           </span>
         </div>
         <div class="col-divider" />
@@ -119,7 +119,7 @@ function confirmSaveSet() {
       <div class="col-row col-row--locked">
         <span class="col-label">Naam persoon</span>
         <span class="col-checkbox-wrap">
-          <span class="mi checkbox-icon checkbox-locked">check_box</span>
+          <span class="cb cb--locked"></span>
         </span>
       </div>
 
@@ -132,8 +132,8 @@ function confirmSaveSet() {
       >
         <span class="col-label">{{ col.label }}</span>
         <span class="col-checkbox-wrap">
-          <span v-if="isChecked(col.key)" class="mi checkbox-icon checkbox-checked">check_box</span>
-          <span v-else class="mi checkbox-icon checkbox-unchecked">check_box_outline_blank</span>
+          <span v-if="isChecked(col.key)" class="cb cb--checked"></span>
+          <span v-else class="cb cb--unchecked"></span>
         </span>
       </div>
     </div>
@@ -178,10 +178,10 @@ function confirmSaveSet() {
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
-  width: 340px;
+  width: 400px;
   background: var(--n0);
-  border-radius: var(--r-m);
-  box-shadow: 0 4px 16px rgba(17, 19, 19, 0.16);
+  border-radius: var(--r-s);
+  box-shadow: var(--shadow-m);
   padding: 0;
   z-index: 102;
   display: flex;
@@ -192,37 +192,34 @@ function confirmSaveSet() {
 /* Scrollable column list */
 .col-list {
   flex: 1;
-  max-height: 300px;
+  max-height: 240px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  /* Thin custom scrollbar */
-  scrollbar-width: thin;
-  scrollbar-color: var(--n300) transparent;
+  scrollbar-width: 16px;
+  scrollbar-color: var(--p700) var(--n50);
 }
 
 .col-list::-webkit-scrollbar {
-  width: 4px;
+  width: 16px;
 }
 
 .col-list::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--n50);
+  padding: 2px 4px;
 }
 
 .col-list::-webkit-scrollbar-thumb {
-  background: var(--n300);
-  border-radius: 2px;
-}
-
-.col-list::-webkit-scrollbar-thumb:hover {
-  background: var(--n500);
+  background: var(--p700);
+  border-radius: 8px;
+  border: 4px solid var(--n50);
 }
 
 /* Sticky "Selecteer alles" header inside the scroll container */
 .col-list-header {
   position: sticky;
   top: 0;
-  background: var(--n0);
+  background: var(--n50);
   z-index: 1;
 }
 
@@ -248,7 +245,11 @@ function confirmSaveSet() {
 .col-row--all {
   font-weight: 600;
   min-height: 44px;
-  padding: 10px 16px;
+  padding: 4px 16px;
+}
+
+.col-row--all:hover {
+  background: var(--n50);
 }
 
 .col-row--locked {
@@ -262,6 +263,7 @@ function confirmSaveSet() {
 
 .col-label {
   font-size: 14px;
+  font-weight: 600;
   color: var(--n900);
   flex: 1;
   white-space: nowrap;
@@ -275,29 +277,81 @@ function confirmSaveSet() {
   flex-shrink: 0;
 }
 
-.checkbox-icon {
-  font-size: 20px;
+.cb {
+  display: inline-block;
   width: 20px;
   height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: var(--r-s);
+  flex-shrink: 0;
+  position: relative;
 }
 
-.checkbox-checked {
-  color: var(--p500);
+.cb--unchecked {
+  border: 1px solid var(--n800);
+  background: var(--n0);
 }
 
-.checkbox-unchecked {
-  color: var(--n400);
+.col-row:not(.col-row--locked):hover .cb--unchecked {
+  border-color: var(--n1000);
 }
 
-.checkbox-partial {
-  color: var(--p500);
+.cb--checked {
+  background: var(--p500);
 }
 
-.checkbox-locked {
-  color: var(--p500);
+.cb--checked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 5px;
+  height: 9px;
+  border: 2px solid white;
+  border-top: none;
+  border-left: none;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.col-row:not(.col-row--locked):hover .cb--checked {
+  background: var(--p600);
+}
+
+.cb--indeterminate {
+  background: var(--p500);
+}
+
+.cb--indeterminate::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 2px;
+  background: white;
+  transform: translate(-50%, -50%);
+}
+
+.col-row:hover .cb--indeterminate {
+  background: var(--p600);
+}
+
+.cb--locked {
+  background: var(--p100);
+  cursor: not-allowed;
+}
+
+.cb--locked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 5px;
+  height: 9px;
+  border: 2px solid white;
+  border-top: none;
+  border-left: none;
+  transform: translate(-50%, -50%) rotate(45deg);
+  opacity: 0.6;
 }
 
 /* Footer */
@@ -305,7 +359,7 @@ function confirmSaveSet() {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px 12px;
+  padding: 8px 16px;
 }
 
 .panel-footer--save {

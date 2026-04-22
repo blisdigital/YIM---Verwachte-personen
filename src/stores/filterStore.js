@@ -12,7 +12,7 @@ export const useFilterStore = defineStore('filters', () => {
   const page = ref(1)
   const pageSize = ref(10)
   const columnFilters = ref({})
-  const sortKey = ref('aankomsttijd')
+  const sortKey = ref('datumVanaf')
   const sortDir = ref('asc')
 
   function reset() {

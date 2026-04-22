@@ -42,7 +42,7 @@ function setTab(val) {
 <style scoped>
 .type-tabs {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   background: var(--n0);
   border: 1px solid var(--n400);
   border-radius: var(--r-s);
@@ -84,7 +84,6 @@ function setTab(val) {
   font-size: 12px;
   font-weight: 600;
   min-width: 20px;
-  height: 18px;
   padding: 2px var(--sp-xs);
   border-radius: var(--r-xl);
   letter-spacing: 0.12px;

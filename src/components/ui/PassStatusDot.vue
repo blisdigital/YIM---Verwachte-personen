@@ -1,16 +1,16 @@
 <script setup>
 import { computed } from 'vue'
 const props = defineProps({
-  passtatus: { type: String, required: true }
+  status: { type: String, required: true }
 })
 
 const dotColor = computed(() => {
   const map = {
-    'niet-gekoppeld': '#999a9b',
-    'gekoppeld': '#2464bb',
-    'geprint': '#24bb86',
+    'niet-gekoppeld': 'var(--n400)',
+    'gekoppeld': 'var(--info)',
+    'geprint': 'var(--ok)',
   }
-  return map[props.passtatus] || '#999a9b'
+  return map[props.status] || 'var(--n400)'
 })
 
 const label = computed(() => {
@@ -19,12 +19,12 @@ const label = computed(() => {
     'gekoppeld': 'Gekoppeld',
     'geprint': 'Geprint',
   }
-  return map[props.passtatus] || props.passtatus
+  return map[props.status] || props.status
 })
 </script>
 
 <template>
-  <span :class="['pass-dot-wrap', { muted: passtatus === 'niet-gekoppeld' }]">
+  <span :class="['pass-dot-wrap', { muted: status === 'niet-gekoppeld' }]">
     <span class="dot" :style="{ background: dotColor }"></span>
     <span class="pass-label">{{ label }}</span>
   </span>

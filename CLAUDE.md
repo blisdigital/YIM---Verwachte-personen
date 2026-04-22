@@ -16,8 +16,8 @@ src/
 │   ├── filters/       # FilterStrip, TypeTabs, DateFilterChip, FilterChip, SearchBox
 │   ├── table/         # DataTable, ColumnFilters, TableRow, Pagination
 │   ├── detail/        # DetailPanel
-│   ├── actions/       # BulkBar, ActionMenu, SplitButton, CheckinModal
-│   └── ui/            # BaseButton, StatusBadge, PassStatusDot, ComplianceCell, CompliancePill, Modal, Toast, ToastContainer
+│   ├── actions/       # BulkBar, ActionMenu, CheckinModal
+│   └── ui/            # BaseButton, IconButton, StatusBadge, PassStatusDot, ComplianceCell, CompliancePill, Modal, DatePopover, DatePickerCalendar, Toast, ToastContainer
 ├── composables/       # usePersonen, useSelection, useToast
 ├── stores/            # Pinia stores (personenStore, filterStore)
 ├── views/             # VerwachtePersonenView.vue
@@ -219,14 +219,44 @@ Toont twee iconen per rij:
 - ❌ Geen business logic in templates
 - ❌ Geen globale state buiten Pinia stores
 
+## Werkwijze: wijzigingen consistent doorvoeren
+
+Het prototype bestaat uit twee lagen die altijd in sync moeten blijven:
+
+- **Specificatie** — md-files (`ARCHITECTURE.md`, `COMPONENTS.md`, `components/*.md`, `TOKENS.md`, `brand.md`, `columns.json`, etc.)
+- **Implementatie** — Vue/JS bronbestanden (`src/components/**/*.vue`, `src/stores/*.js`, `src/composables/*.js`, `src/data/*.js`, `src/assets/styles/*.css`)
+
+### Regel: altijd impact checken vóór én ná een wijziging
+
+Na elke bewerking — of die nu in een md-file of in een Vue/JS-bestand zit — altijd:
+
+1. **Check de impact** — Scan de hele `_prototype` folder op alle bestanden (md én src/) die verwijzen naar het gewijzigde concept, component, prop, event, store-key of bestandsnaam.
+2. **Geef een overzicht** — Toon per bestand welke specifieke regels niet meer kloppen of bijgewerkt moeten worden.
+3. **Vraag bevestiging** — Vraag of de gevonden aanpassingen direct doorgevoerd mogen worden. Voer niets door zonder bevestiging.
+
+### Richtingen
+
+| Wijziging in | Check ook |
+| --- | --- |
+| md-file (spec) | Andere md-files + bijbehorende Vue/JS-bestanden in `src/` |
+| Vue/JS-bestand (impl) | Bijbehorende md-file(s) + andere Vue/JS-bestanden die hetzelfde component/store gebruiken |
+| `columns.json` | `DataTable.vue`, `ColumnFilters.vue`, `KolomInstellingenPanel.vue`, `Settings.md`, `DataTable.md` |
+| `src/assets/styles/_tokens.css` | `TOKENS.md` en alle componenten die de gewijzigde token gebruiken |
+
+Voer stap 1–3 altijd uit, ook als de bewerking klein lijkt. Sla stap 3 nooit over.
+
 ## Referentie Documenten
 
 - `ARCHITECTURE.md` — Gedetailleerde componentenboom en dataflow
 - `COMPONENTS.md` — Index naar component specificaties
-  - `components/ui-atoms.md` — BaseButton, StatusBadge, PassStatusDot, ComplianceCell, Dropdown, Modal, Toast
-  - `components/filters.md` — TypeTabs, DateFilterChip, FilterChip, SearchBox
-  - `components/table.md` — DataTable, TableRow, ColumnFilters, Pagination
-  - `components/actions.md` — ActionMenu, BulkBar, SplitButton
-  - `components/settings.md` — InstellingenMenu, KolomInstellingenPanel
+  - `components/AppHeader.md`, `components/PageHeader.md` — Layout
+  - `components/BaseButton.md`, `components/IconButton.md` — BaseButton, IconButton
+  - `components/ui-atoms.md` — StatusBadge, PassStatusDot, CompliancePill, ComplianceCell, Modal, DatePopover, DatePickerCalendar, Toast, ToastContainer
+  - `components/TypeTabs.md`, `components/DateFilterChip.md`, `components/FilterChip.md`, `components/FilterStrip.md`, `components/SearchBox.md` — Filters
+  - `components/DataTable.md`, `components/TableRow.md`, `components/ColumnFilters.md`, `components/Pagination.md` — Tabel
+  - `components/ActionMenu.md`, `components/Bulkbar.md`, `components/CheckinModal.md` — Acties
+  - `components/BezoekDetail.md` — DetailPanel
+  - `components/Settings.md` — InstellingenMenu, KolomInstellingenPanel
 - `columns.json` — Kolomconfiguratie (single source of truth voor de tabel)
-- `TOKENS.md` — Design tokens referentie
+- `TOKENS.md` — Design tokens referentie (prototype-implementatie)
+- `brand.md` — YIM UI Kit foundations: kleuren, typografie, elevaties, spacing — Figma bron

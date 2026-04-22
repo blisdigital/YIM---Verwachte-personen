@@ -56,7 +56,7 @@ watch(() => props.open, (val) => {
 .modal-box {
   background: var(--n0);
   border-radius: var(--r-l);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+  box-shadow: var(--shadow-l);
   display: flex;
   flex-direction: column;
   max-height: 90vh;

@@ -20,16 +20,16 @@ const actions = computed(() => {
     { value: 'annuleren', label: 'Annuleren', danger: true },
     { divider: true },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
-    { value: 'contact-opnemen', label: 'Contact opnemen' },
-    { value: 'bel-contactpersoon', label: 'Bel contactpersoon' },
+    { value: 'bel-persoon', label: 'Bel persoon' },
+    { value: 'contactpersoon-informeren', label: 'Contactpersoon informeren' },
   ]
   if (status === 'Aangekomen') return [
     { value: 'uitchecken', label: 'Uitchecken' },
-    { value: 'pas-ontkoppelen', label: 'Pas ontkoppelen' },
     { value: 'pas-printen', label: 'Pas printen' },
+    { value: 'pas-ontkoppelen', label: 'Pas ontkoppelen' },
     { divider: true },
-    { value: 'bel-persoon', label: 'Bel persoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
+    { value: 'bel-persoon', label: 'Bel persoon' },
     { value: 'contactpersoon-informeren', label: 'Contactpersoon informeren' },
   ]
   if (status === 'No-show') return [
@@ -38,14 +38,14 @@ const actions = computed(() => {
     { value: 'pas-koppelen', label: 'Pas koppelen' },
     { value: 'annuleren', label: 'Annuleren', danger: true },
     { divider: true },
-    { value: 'bel-persoon', label: 'Bel persoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
+    { value: 'bel-persoon', label: 'Bel persoon' },
     { value: 'contactpersoon-informeren', label: 'Contactpersoon informeren' },
   ]
-  // Geannuleerd / Vertrokken — no divider
+  // Geannuleerd / Vertrokken
   return [
-    { value: 'bel-persoon', label: 'Bel persoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
+    { value: 'bel-persoon', label: 'Bel persoon' },
     { value: 'contactpersoon-informeren', label: 'Contactpersoon informeren' },
   ]
 })
@@ -146,7 +146,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickAway))
   background: var(--n0);
   border: none;
   border-radius: var(--r-s);
-  box-shadow: 0px 4px 16px -2px rgba(17, 19, 19, 0.16);
+  box-shadow: var(--shadow-m);
   min-width: 266px;
   overflow: hidden;
   padding: 16px 0;

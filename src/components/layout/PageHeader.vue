@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import SplitButton from '@/components/actions/SplitButton.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
 import KolomInstellingenPanel from '@/components/settings/KolomInstellingenPanel.vue'
 import { useToast } from '@/composables/useToast'
 import { useColumnStore } from '@/stores/columnStore'
@@ -51,6 +51,9 @@ function applySavedSet(set) {
   showSavedSetsMenu.value = false
 }
 
+// Nieuwe registratie dropdown state
+const showRegistratieMenu = ref(false)
+
 const registratieOptions = [
   { value: 'bezoeker', label: 'Bezoeker registreren' },
   { value: 'contractor', label: 'Contractor registreren en autoriseren' },
@@ -59,7 +62,12 @@ const registratieOptions = [
   { value: 'upload-contractors', label: 'Contractor(s) uploaden' },
 ]
 
+function toggleRegistratieMenu() {
+  showRegistratieMenu.value = !showRegistratieMenu.value
+}
+
 function handleRegistratieSelect(val) {
+  showRegistratieMenu.value = false
   show('info', 'Registratie', `Actie: ${val}`)
 }
 </script>
@@ -79,7 +87,7 @@ function handleRegistratieSelect(val) {
           @click="closeAll"
         />
 
-        <!-- Instellingen button (outlined, like SplitButton but custom) -->
+        <!-- Instellingen button -->
         <button
           class="instellingen-btn"
           :class="{ active: showInstellingenMenu || showKolomPanel || showSavedSetsMenu }"
@@ -119,15 +127,38 @@ function handleRegistratieSelect(val) {
         />
       </div>
 
-      <!-- Nieuwe registratie SplitButton (unchanged) -->
-      <SplitButton
-        label="Nieuwe registratie"
-        icon="add"
-        variant="primary"
-        :options="registratieOptions"
-        @click="() => show('info', 'Nieuwe registratie', 'Selecteer type registratie')"
-        @select="handleRegistratieSelect"
-      />
+      <!-- Nieuwe registratie: BaseButton + inline dropdown -->
+      <div class="registratie-wrap">
+        <div
+          v-if="showRegistratieMenu"
+          class="registratie-backdrop"
+          @click="showRegistratieMenu = false"
+        />
+
+        <BaseButton
+          variant="filled"
+          size="lg"
+          icon="expand_more"
+          icon-position="right"
+          @click.stop="toggleRegistratieMenu"
+        >
+          Nieuwe registratie
+        </BaseButton>
+
+        <div v-if="showRegistratieMenu" class="registratie-menu">
+          <template v-for="opt in registratieOptions" :key="opt.value ?? opt.type">
+            <div v-if="opt.type === 'divider'" class="menu-divider" />
+            <button
+              v-else
+              class="menu-item"
+              @click.stop="handleRegistratieSelect(opt.value)"
+            >
+              {{ opt.label }}
+            </button>
+          </template>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -154,7 +185,7 @@ function handleRegistratieSelect(val) {
   gap: var(--sp-s);
 }
 
-/* Instellingen wrapper */
+/* ── Instellingen wrapper ── */
 .instellingen-wrap {
   position: relative;
 }
@@ -165,14 +196,13 @@ function handleRegistratieSelect(val) {
   z-index: 100;
 }
 
-/* Instellingen button — same size as SplitButton */
 .instellingen-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   height: 48px;
-  padding: 12px 12px 12px 24px;
+  padding: 12px 8px 12px 16px;
   font-family: var(--font);
   font-size: 16px;
   font-weight: 600;
@@ -196,10 +226,10 @@ function handleRegistratieSelect(val) {
 
 .btn-caret {
   font-size: 24px;
-  color: var(--n700);
+  color: var(--n900);
 }
 
-/* Dropdown menu */
+/* ── Dropdown menus ── */
 .instellingen-menu {
   position: absolute;
   top: calc(100% + 4px);
@@ -207,7 +237,7 @@ function handleRegistratieSelect(val) {
   width: 230px;
   background: var(--n0);
   border-radius: var(--r-s);
-  box-shadow: 0 4px 16px rgba(17, 19, 19, 0.16);
+  box-shadow: var(--shadow-m);
   padding: 16px 0;
   z-index: 102;
   display: flex;
@@ -232,7 +262,7 @@ function handleRegistratieSelect(val) {
   font-family: var(--font);
   font-size: 16px;
   font-weight: 600;
-  color: var(--p700);
+  color: var(--n900);
   background: none;
   border: none;
   cursor: pointer;
@@ -243,7 +273,42 @@ function handleRegistratieSelect(val) {
 
 .menu-item:hover {
   background: var(--n50);
-  color: var(--n900);
+}
+
+.menu-item[aria-current="true"] {
+  color: var(--p700);
+}
+
+/* ── Nieuwe registratie wrapper ── */
+.registratie-wrap {
+  position: relative;
+}
+
+.registratie-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+.registratie-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 280px;
+  background: var(--n0);
+  border-radius: var(--r-s);
+  box-shadow: var(--shadow-m);
+  padding: 16px 0;
+  z-index: 102;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-divider {
+  height: 1px;
+  background: var(--n300);
+  margin: 4px 0;
 }
 
 @media (max-width: 1279px) {

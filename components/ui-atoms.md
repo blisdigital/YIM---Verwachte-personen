@@ -2,25 +2,7 @@
 
 ## BaseButton
 
-Generieke button met varianten.
-
-```vue
-<BaseButton variant="primary" icon="add">Nieuwe registratie</BaseButton>
-<BaseButton variant="outlined" size="sm">Annuleren</BaseButton>
-<BaseButton variant="ghost" danger>Verwijderen</BaseButton>
-```
-
-| Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
-| `variant` | `'primary' \| 'outlined' \| 'ghost'` | `'primary'` | Visuele stijl |
-| `size` | `'sm' \| 'md'` | `'md'` | Grootte |
-| `icon` | `string` | — | Material icon naam (optioneel) |
-| `iconPosition` | `'left' \| 'right'` | `'left'` | Icon positie |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `loading` | `boolean` | `false` | Loading state |
-| `danger` | `boolean` | `false` | Rode/destructieve stijl |
-
-**Events:** `@click`
+Zie [BaseButton.md](BaseButton.md) voor de volledige componentdocumentatie inclusief design tokens en states.
 
 ---
 
@@ -34,19 +16,19 @@ Toont de status van een persoon met kleurcodering.
 ```
 
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
+| --- | --- | --- | --- |
 | `status` | `'Verwacht' \| 'Aangekomen' \| 'Vertrokken' \| 'No-show' \| 'Geannuleerd'` | — | Status waarde |
 
 **Visuele specs:**
-- `border-radius: 4px`, `padding: 2px 8px`, `font-size: 12px`, `line-height: 20px`, `min-width: 90px`
-- Tekst gecentreerd, `font-weight: 500`
+- `border-radius: 4px`, `padding: 2px 8px`, `font-size: 12px`, `line-height: 16px`, `min-width: 90px`
+- Tekst gecentreerd, `font-weight: 600`
 
 **Kleurmapping:**
 - Verwacht → Blauw (`#e9f0f8` / `#2464bb`)
 - Aangekomen → Groen (`#e9f8f3` / `#24bb86`)
 - Vertrokken → Grijs (`--n100` / `--n700`)
-- No-show → Oranje (`#f8f0e9` / `#bb6424`)
-- Geannuleerd → Rood (`#f8e9e9` / `#bb2424`)
+- No-show → Oranje (`--warn-bg` / `--warn`)
+- Geannuleerd → Rood (`--err-bg` / `--err`)
 
 ---
 
@@ -61,7 +43,7 @@ Toont de passtatus als gekleurde stip met label.
 ```
 
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
+| --- | --- | --- | --- |
 | `status` | `'niet-gekoppeld' \| 'gekoppeld' \| 'geprint'` | — | Passtatus waarde |
 
 **Kleurmapping:**
@@ -82,7 +64,7 @@ Atomic pill-component dat één compliance-item toont (dossier óf e-learning) m
 ```
 
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
+| --- | --- | --- | --- |
 | `type` | `'dossier' \| 'elearning'` | — | Welk compliance-item |
 | `status` | `string` | — | Status waarde (zie hieronder) |
 | `reasons` | `string[] \| null` | `null` | Redenen bij onvolledig dossier |
@@ -91,7 +73,7 @@ Atomic pill-component dat één compliance-item toont (dossier óf e-learning) m
 ### Visueel
 
 | Type | Status | Pill | Kleur |
-|------|--------|------|-------|
+| --- | --- | --- | --- |
 | `dossier` | `compleet` | `✓ Dossier` | Groen (`--ok` / `--ok-bg`) |
 | `dossier` | `onvolledig` | `▲ Dossier` | Oranje (`--warn` / `--warn-bg`) |
 | `elearning` | `behaald` | `✓ E-learning` | Groen (`--ok` / `--ok-bg`) |
@@ -132,7 +114,7 @@ Compositie-component dat nul, één of twee `CompliancePill`s rendert in een tab
 ```
 
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
+| --- | --- | --- | --- |
 | `dossier` | `'compleet' \| 'onvolledig'` | — | Dossier status |
 | `dossierMissing` | `string[] \| null` | `null` | Redenen voor onvolledigheid |
 | `elearning` | `'behaald' \| 'niet-behaald' \| 'niet-vereist'` | — | E-learning status |
@@ -140,7 +122,7 @@ Compositie-component dat nul, één of twee `CompliancePill`s rendert in een tab
 
 ### Render logica
 
-```
+```text
 altijd:     <CompliancePill type="dossier" :status="dossier" :reasons="dossierMissing" />
 
 als elearning !== 'niet-vereist':
@@ -169,27 +151,7 @@ als elearning === 'niet-vereist':
 
 ## Dropdown
 
-Generieke dropdown menu component.
-
-```vue
-<Dropdown>
-  <template #trigger>
-    <BaseButton variant="outlined">Opties</BaseButton>
-  </template>
-  <DropdownItem icon="edit">Bewerken</DropdownItem>
-  <DropdownDivider />
-  <DropdownItem icon="delete" danger>Verwijderen</DropdownItem>
-</Dropdown>
-```
-
-| Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
-| `align` | `'left' \| 'right'` | `'left'` | Uitlijning t.o.v. trigger |
-| `width` | `string` | `'220px'` | Minimum breedte |
-
-**Slots:**
-- `trigger` — Element dat dropdown opent
-- `default` — Dropdown content (items)
+> **Niet geïmplementeerd als zelfstandige component.** Dropdowns in dit prototype zijn ingebouwd in de componenten die ze gebruiken (ActionMenu, FilterChip, PageHeader), elk via `<Teleport to="body">` met `position: fixed`. Bij een productie-implementatie zou dit een herbruikbare `<Dropdown>` component worden.
 
 ---
 
@@ -208,7 +170,7 @@ Modale dialoog voor bevestigingen en formulieren.
 ```
 
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
+| --- | --- | --- | --- |
 | `open` | `boolean` | `false` | Zichtbaarheid (v-model) |
 | `title` | `string` | — | Modal titel |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Breedte |
@@ -235,98 +197,104 @@ Gedeeld popover-paneel voor datumfilters. Gebruikt in `DateFilterChip` (filterst
 ```
 
 | Prop | Type | Beschrijving |
-|------|------|--------------|
+| --- | --- | --- |
 | `isoDate` | `string` | Geselecteerde datum in ISO-formaat (`YYYY-MM-DD`) |
 | `preset` | `string \| null` | Actieve preset (`vandaag`, `morgen`, `week`) |
 
 | Event | Payload | Beschrijving |
-|-------|---------|--------------|
+| --- | --- | --- |
 | `update:isoDate` | `string` | Nieuwe ISO-datum |
 | `update:preset` | `string \| null` | Nieuwe preset |
 | `apply` | — | Gebruiker klikt "Toepassen" |
 | `reset` | — | Gebruiker klikt "Resetten" |
 
 **Structuur:**
-- Titel "Filter": `18px / 700`, `--p700`
-- Datumveld: styled wrapper (tekst links, kalender-icoon rechts met `--n50` achtergrond); klikken toggelt `DatePickerCalendar`
-- `DatePickerCalendar` (inline, conditioneel)
-- Preset-chips: rechthoekig (`--r-s`), actief = gevuld `--p500`, inactief = omlijnd `--n500`
+
+- Titel "Filter" — H5, `--p700`
+- Label "Kies datum" — Label M, `--p700`
+- Datumveld: styled wrapper (tekst links, kalender-icoon rechts); klikken toggelt `DatePickerCalendar`
+- `DatePickerCalendar` (inline, conditioneel) — zie [DatePickerCalendar.md](DatePickerCalendar.md)
+- Label "Selecteer" — Label M, `--p700`
+- Preset-chips: Vandaag / Morgen / Deze week
 - Divider
-- Footer: Resetten (outlined) + Toepassen (filled `--p500`), beide `flex: 1`
+- Footer: Resetten (outlined) + Toepassen (filled), beide `flex: 1`
 
 **Breedte:** `272px` (vaste breedte, box-sizing: border-box)
+
+### Design Tokens
+
+**Container:** `padding: var(--sp-l)` (16px), `gap: var(--sp-s)` (8px), `border-radius: var(--r-s)` (4px), `box-shadow: var(--shadow-m)`.
+
+| Element | Eigenschap | Waarde |
+| --- | --- | --- |
+| Titel "Filter" | Typografie | H5 — Nunito Bold, 18px/24px |
+| Titel "Filter" | Kleur | `--p700` |
+| Labels ("Kies datum", "Selecteer") | Typografie | Label M — 600, 14px/20px, ls 0.14px |
+| Labels | Kleur | `--p700` |
+| Datumveld wrapper | Border | `1px solid --n400` |
+| Datumveld wrapper | Border-radius | `var(--r-s)` (4px) |
+| Datumveld input | Typografie | Body M — 400, 14px/20px |
+| Datumveld input | Kleur | `--n900` |
+| Datumveld input | Padding | `var(--sp-s)` (8px) |
+| Kalender-icoon trigger | Achtergrond | `--n50` |
+| Kalender-icoon trigger | Icongrootte | 24px, kleur `--n900` |
+| Preset-chips | Padding | `var(--sp-xs) var(--sp-s)` (4px 8px) |
+| Preset-chips | Border-radius | `var(--r-s)` (4px) |
+| Divider | Kleur | `--n300`, 1px hoog |
+| Toolbar | Gap | `var(--sp-s)` (8px) |
+| Toolbar-knoppen | Padding | `var(--sp-s) var(--sp-m)` (8px 12px) |
+| Toolbar-knoppen | Border-radius | `var(--r-s)` (4px) |
+| Toolbar-knoppen | Flex | `flex: 1` (gelijke breedte) |
+
+**Preset-chip states:**
+
+| State | Achtergrond | Border | Tekst | Typografie |
+| --- | --- | --- | --- | --- |
+| Actief | `--p50` | `1px solid --p700` | `--p700` | Label M |
+| Inactief | `--n0` | `1px solid --n500` | `--n800` | Label M |
+
+**Toolbar-knop states:**
+
+| Knop | Achtergrond | Border | Tekst | Typografie |
+| --- | --- | --- | --- | --- |
+| Resetten | `--n0` | `1px solid --n400` | `--n900` | Label S — 600, 12px/16px, ls 0.12px |
+| Toepassen | `--p500` | — | `--n0` | Label S |
 
 ---
 
 ## DatePickerCalendar
 
-Volledig custom kalender-component in YIM-huisstijl. Wordt inline getoond binnen `DatePopover` wanneer de gebruiker op het datumveld klikt.
-
-```vue
-<DatePickerCalendar
-  :model-value="isoDate"
-  @update:model-value="onDateSelected"
-/>
-```
-
-| Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
-| `modelValue` | `string` | `''` | Geselecteerde datum (ISO `YYYY-MM-DD`) |
-
-**Event:** `@update:modelValue` — Geeft ISO-datum terug bij dagklik; sluit de kalender in de parent.
-
-### Structuur
-
-```
-┌─────────────────────────────────────────┐
-│ [April 2026]          [‹] [Vandaag] [›] │  ← Nav
-│  Ma  Di  Wo  Do  Vr  Za  Zo            │  ← Weekdagen
-│           1   2   3   4   5            │
-│  6   7   8   9  10  11  12            │
-│  ...                                   │
-│ 28  29  30                             │
-└─────────────────────────────────────────┘
-```
-
-### Nav
-
-| Element | Stijl |
-|---------|-------|
-| Maandknop | Outlined (`--n400`), `12px / 600`, `--n900` |
-| `‹` (vorige maand) | Icon-button, linker segment (border links + top + bottom) |
-| `Vandaag` | Middensegment (border top + bottom), navigeert view naar huidige maand |
-| `›` (volgende maand) | Icon-button, rechter segment (border rechts + top + bottom) |
-
-De drie nav-elementen rechts delen hun randen (geen dubbele border).
-
-### Dagcellen
-
-| State | Achtergrond | Tekst | Gewicht |
-|-------|-------------|-------|---------|
-| Verleden | — | `--n500` | 400 |
-| Toekomst | — | `--n900` | 400 |
-| Vandaag | — | `--p500` | 600 |
-| Geselecteerd | `--p500` | `--n0` | 600 |
-| Hover (niet geselecteerd) | `--p50` | — | — |
-
-- Cel: `border-radius: 360px` (volledig rond), `28px × 28px`
-- Font: `12px`, letter-spacing `0.12px`
-- Grid: 7 kolommen (`1fr` elk), weekdaglabels als eerste rij
+Zie [DatePickerCalendar.md](DatePickerCalendar.md) voor de volledige specificatie (drie views, nav-logica, cel-states, tokens).
 
 ---
 
 ## Toast
 
-Notificatie toast (wordt beheerd via `useToast` composable).
+Notificatie toast (wordt beheerd via `useToast` composable en gerenderd in `ToastContainer`).
 
-```typescript
-const { show } = useToast()
+```javascript
+const { show, dismiss } = useToast()
 show('ok', 'Ingecheckt', 'Sophie van der Berg is succesvol ingecheckt')
+show('err', 'Fout', 'Actie kon niet worden uitgevoerd')
 ```
 
+**useToast API:**
+
+| Functie | Signature | Beschrijving |
+| --- | --- | --- |
+| `show` | `(type, title, message?)` | Toont een toast; verdwijnt automatisch na 4 seconden |
+| `dismiss` | `(id)` | Sluit een specifieke toast direct |
+
+**Type enum:** `'ok' | 'err' | 'warn' | 'info'`
+
 | Type | Kleur | Icon |
-|------|-------|------|
+| --- | --- | --- |
 | `ok` | Groen | `check_circle` |
 | `err` | Rood | `error` |
 | `warn` | Oranje | `warning` |
 | `info` | Blauw | `info` |
+
+**Implementatiedetails:**
+- `toasts` ref is module-level (buiten de functie) — gedeeld singleton over alle componenten
+- Auto-dismiss via `setTimeout` van 4000ms (niet configureerbaar)
+- `ToastContainer` gebruikt `<Teleport to="body">` + `<TransitionGroup name="toast-list">`

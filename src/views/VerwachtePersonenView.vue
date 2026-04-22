@@ -19,6 +19,11 @@ const personenStore = usePersonenStore()
 const filterStore = useFilterStore()
 const { paginated, total, loading, filtered } = usePersonen()
 
+// Scroll to top before DOM updates when filters change, to prevent scroll-clamp jump
+watch(filtered, () => {
+  window.scrollTo({ top: 0, behavior: 'instant' })
+}, { flush: 'pre' })
+
 // Reset page when filters change and results shrink
 watch(() => filtered.value.length, (newLen) => {
   const maxPage = Math.ceil(newLen / filterStore.pageSize) || 1
@@ -70,14 +75,14 @@ function handleAction({ person, action }) {
       break
     case 'no-show':
       personenStore.updateStatus(person.id, 'No-show')
-      show('warning', 'No-show geregistreerd', `${person.naam} is gemarkeerd als no-show.`)
+      show('warn', 'No-show geregistreerd', `${person.naam} is gemarkeerd als no-show.`)
       if (detailPerson.value?.id === person.id) {
         detailPerson.value = personenStore.personen.find(p => p.id === person.id)
       }
       break
     case 'no-show-ongedaan':
       personenStore.updateStatus(person.id, 'Verwacht')
-      show('success', 'No-show ongedaan gemaakt', `${person.naam} is teruggezet op Verwacht.`)
+      show('ok', 'No-show ongedaan gemaakt', `${person.naam} is teruggezet op Verwacht.`)
       if (detailPerson.value?.id === person.id) {
         detailPerson.value = personenStore.personen.find(p => p.id === person.id)
       }
@@ -89,11 +94,11 @@ function handleAction({ person, action }) {
       break
     case 'pas-koppelen':
       personenStore.updatePassStatus(person.id, 'gekoppeld')
-      show('success', 'Pas gekoppeld', `Pas is gekoppeld aan ${person.naam}.`)
+      show('ok', 'Pas gekoppeld', `Pas is gekoppeld aan ${person.naam}.`)
       break
     case 'pas-printen':
       personenStore.updatePassStatus(person.id, 'geprint')
-      show('success', 'Pas geprint', `Pas voor ${person.naam} is afgedrukt.`)
+      show('ok', 'Pas geprint', `Pas voor ${person.naam} is afgedrukt.`)
       break
     case 'pas-ontkoppelen':
       personenStore.updatePassStatus(person.id, 'niet-gekoppeld')
@@ -119,10 +124,10 @@ function handleAction({ person, action }) {
 function handleCheckinConfirm({ person, action }) {
   if (action === 'inchecken') {
     personenStore.updateStatus(person.id, 'Aangekomen')
-    show('success', 'Ingecheckt', `${person.naam} is succesvol ingecheckt.`)
+    show('ok', 'Ingecheckt', `${person.naam} is succesvol ingecheckt.`)
   } else {
     personenStore.updateStatus(person.id, 'Vertrokken')
-    show('success', 'Uitgecheckt', `${person.naam} is succesvol uitgecheckt.`)
+    show('ok', 'Uitgecheckt', `${person.naam} is succesvol uitgecheckt.`)
   }
   // Sync detail panel person
   if (detailPerson.value?.id === person.id) {
@@ -139,21 +144,21 @@ function handleBulkAction(action) {
       persons.filter(p => ['Verwacht', 'No-show'].includes(p.status)).forEach(p => {
         personenStore.updateStatus(p.id, 'Aangekomen')
       })
-      show('success', 'Bulk inchecken', `${persons.length} personen ingecheckt.`)
+      show('ok', 'Bulk inchecken', `${persons.length} personen ingecheckt.`)
       clearAll()
       break
     case 'uitchecken':
       persons.filter(p => p.status === 'Aangekomen').forEach(p => {
         personenStore.updateStatus(p.id, 'Vertrokken')
       })
-      show('success', 'Bulk uitchecken', `Geselecteerde personen uitgecheckt.`)
+      show('ok', 'Bulk uitchecken', `Geselecteerde personen uitgecheckt.`)
       clearAll()
       break
     case 'no-show':
       persons.filter(p => ['Verwacht', 'No-show'].includes(p.status)).forEach(p => {
         personenStore.updateStatus(p.id, 'No-show')
       })
-      show('warning', 'No-show', `Geselecteerde personen als no-show geregistreerd.`)
+      show('warn', 'No-show', `Geselecteerde personen als no-show geregistreerd.`)
       clearAll()
       break
     case 'annuleren':
@@ -163,14 +168,14 @@ function handleBulkAction(action) {
       break
     case 'pas-koppelen':
       persons.forEach(p => personenStore.updatePassStatus(p.id, 'gekoppeld'))
-      show('success', 'Pas koppelen', `Passen gekoppeld aan ${persons.length} personen.`)
+      show('ok', 'Pas koppelen', `Passen gekoppeld aan ${persons.length} personen.`)
       clearAll()
       break
     case 'pas-printen':
       persons.filter(p => p.status === 'Aangekomen').forEach(p => {
         personenStore.updatePassStatus(p.id, 'geprint')
       })
-      show('success', 'Pas printen', `Passen afgedrukt.`)
+      show('ok', 'Pas printen', `Passen afgedrukt.`)
       clearAll()
       break
   }

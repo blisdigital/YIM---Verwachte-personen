@@ -69,21 +69,22 @@ const drawerItems = [
 <style scoped>
 /* ── Header ── */
 .app-header {
-  height: 64px;
+  height: 72px;
   background: var(--n0);
-  border-bottom: 1px solid var(--n100);
+  border-bottom: 1px solid var(--n300);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 200;
+  padding-left: 16px;
 }
 
 .header-brand {
   display: flex;
   align-items: center;
-  gap: var(--sp-s);
-  padding: 0 var(--sp-m);
+  gap: 16px;
   flex-shrink: 0;
 }
 
@@ -93,19 +94,19 @@ const drawerItems = [
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: var(--r-s);
+  border-radius: 360px;
   border: none;
   background: transparent;
   cursor: pointer;
-  color: var(--n700);
+  color: var(--n1000);
   flex-shrink: 0;
 }
 .hamburger:hover,
 .hamburger.active { background: var(--n100); }
-.hamburger .mi { font-size: 22px; }
+.hamburger .mi { font-size: 24px; }
 
 .logo {
-  height: 32px;
+  max-height: 40px;
   width: auto;
 }
 
@@ -114,7 +115,6 @@ const drawerItems = [
   display: flex;
   align-items: center;
   height: 100%;
-  margin-left: auto;
   flex-shrink: 0;
 }
 
@@ -122,13 +122,13 @@ const drawerItems = [
   display: flex;
   align-items: center;
   gap: var(--sp-s);
-  padding: 0 var(--sp-m);
+  padding: 12px 12px 12px 24px;
   height: 100%;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--n800);
   cursor: pointer;
-  border-left: 1px solid var(--n100);
+  border-left: 1px solid var(--p50);
   transition: background 0.15s;
   letter-spacing: 0.16px;
   white-space: nowrap;
@@ -136,23 +136,24 @@ const drawerItems = [
 .util-item:hover { background: var(--n50); }
 
 .avatar {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--r-xl);
   background: var(--n300);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--n800);
   flex-shrink: 0;
   letter-spacing: 0.12px;
+  line-height: 16px;
 }
 
 .util-caret {
-  font-size: 18px;
-  color: var(--n500);
+  font-size: 24px;
+  color: var(--n800);
 }
 
 /* ── Sidebar ── */
@@ -164,7 +165,7 @@ const drawerItems = [
   width: 272px;
   background: var(--p700);
   z-index: 150;
-  padding-top: 80px; /* clears the 64px header + small gap */
+  padding-top: 80px;
   box-shadow: 2px 0 16px rgba(0, 0, 0, 0.15);
 }
 

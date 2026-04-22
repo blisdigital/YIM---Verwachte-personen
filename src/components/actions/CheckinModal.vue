@@ -82,7 +82,7 @@ function confirm() {
 
     <template #footer>
       <BaseButton variant="outlined" @click="cancel">Annuleren</BaseButton>
-      <BaseButton variant="primary" :icon="isCheckin ? 'login' : 'logout'" @click="confirm">
+      <BaseButton variant="filled" :icon="isCheckin ? 'login' : 'logout'" @click="confirm">
         {{ confirmLabel }}
       </BaseButton>
     </template>
