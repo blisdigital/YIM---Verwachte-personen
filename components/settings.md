@@ -24,7 +24,9 @@ Custom dropdown button in de PageHeader. Geen SplitButton — eigen implementati
 | Label | Actie |
 |-------|-------|
 | Kolominstellingen | Opent `KolomInstellingenPanel` |
-| Opgeslagen set toepassen | Toont submenu met opgeslagen kolomsets, of info-toast als er geen zijn |
+| Opgeslagen set toepassen | Toont submenu met opgeslagen kolomsets, of neutral toast¹ als er geen zijn |
+
+¹ Neutral toast · trailing close icon · zie [toast-messages-tokens.md](toast-messages-tokens.md)
 
 **Button styling:**
 
@@ -97,21 +99,21 @@ Wordt weergegeven met 45% opacity en is niet klikbaar.
 
 | Key | Label |
 |-----|-------|
+| `status` | Status |
+| `datumVanaf` | Aankomstdatum |
+| `aankomsttijd` | Aankomsttijd |
 | `vip` | VIP |
 | `persoontype` | Persoonstype |
 | `contractortype` | Contractortype |
 | `bedrijf` | Bedrijf |
-| `locaties` | Locatie(s) |
-| `datumVanaf` | Datum vanaf |
-| `aankomsttijd` | Aankomsttijd |
-| `status` | Status |
 | `passtatus` | Passtatus |
 | `compliance` | Compliance |
 | `parkeren` | Parkeren |
+| `locaties` | Locatie(s) |
 | `contactpersoon` | Contactpersoon |
 | `bezoekreden` | Bezoekreden |
 
-**Standaard UIT:**
+**Standaard UIT (persoonsinformatie, na Naam persoon):**
 
 | Key | Label |
 |-----|-------|
@@ -126,13 +128,16 @@ Wordt weergegeven met 45% opacity en is niet klikbaar.
 │ Selecteer alles               [—]   │  ← sticky, fontweight 600
 │ ─────────────────────────────────── │  ← sticky divider
 │ Naam persoon                  [✓]   │  ← locked (45% opacity)
+│ Personeelsnr                  [ ]   │  ← standaard UIT (persoonsinformatie)
+│ Telefoonnummer                [ ]   │
+│ E-mailadres                   [ ]   │
+│ Status                        [✓]   │
+│ Aankomstdatum                 [✓]   │
+│ Aankomsttijd                  [✓]   │  ↑ scrollable
 │ VIP                           [✓]   │
 │ Persoonstype                  [✓]   │
-│ Contractortype                [✓]   │  ↑ scrollable
 │ ...                                 │
-│ Personeelsnr                  [ ]   │
-│ Telefoonnummer                [ ]   │
-│ E-mailadres                   [ ]   │  ↓
+│ Bezoekreden                   [✓]   │  ↓
 │ ─────────────────────────────────── │
 │ Reset standaard  [Set opslaan] [Toepassen] │
 └─────────────────────────────────────┘
@@ -215,9 +220,11 @@ Footer padding: `8px 16px` (`py-0 px-l`). "Reset standaard" staat links, "Set op
 const LOCKED_COLUMNS = ['naam']          // altijd zichtbaar
 const DEFAULT_VISIBLE = [
   'naam',
-  'vip', 'persoontype', 'contractortype', 'bedrijf', 'locaties',
-  'datumVanaf', 'aankomsttijd', 'status', 'passtatus', 'compliance',
-  'parkeren', 'contactpersoon', 'bezoekreden',
+  'status', 'datumVanaf', 'aankomsttijd',
+  'vip', 'persoontype', 'contractortype', 'bedrijf',
+  'passtatus', 'compliance', 'parkeren',
+  'locaties', 'contactpersoon', 'bezoekreden',
+  // 'personeelsnr', 'telefoonnummer', 'emailadres' — standaard UIT
 ]
 
 // Store exposeert:
@@ -236,4 +243,4 @@ const DEFAULT_VISIBLE = [
 - Minimum: minstens 1 niet-vergrendelde kolom moet geselecteerd blijven
 - "Naam persoon" is altijd geselecteerd en niet togglebaar
 - "Set opslaan" opent een inline tekstveld in de footer (vervangt de drie knoppen tijdelijk)
-- "Opgeslagen set toepassen" in het InstellingenMenu toont een info-toast als er geen sets zijn
+- "Opgeslagen set toepassen" in het InstellingenMenu toont een neutral toast (trailing close icon) als er geen sets zijn — zie [toast-messages-tokens.md](toast-messages-tokens.md)

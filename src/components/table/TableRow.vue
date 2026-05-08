@@ -24,10 +24,10 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
     <td
       v-for="col in columns"
       :key="col.key"
-      :class="['tcell', { sticky: col.sticky, 'tcell-actions': col.key === 'actions', 'tcell-select': col.key === 'select' }]"
+      :class="['tcell', { sticky: col.sticky, 'sticky-last': col.key === 'actions', 'tcell-actions': col.key === 'actions', 'tcell-select': col.key === 'select' }]"
       :style="{
-        width: (columnWidths[col.key] || col.width) + 'px',
-        minWidth: (columnWidths[col.key] || col.width) + 'px',
+        width: col.sticky ? col.width + 'px' : (columnWidths[col.key] != null ? columnWidths[col.key] + 'px' : undefined),
+        minWidth: col.sticky ? col.width + 'px' : (columnWidths[col.key] != null ? columnWidths[col.key] + 'px' : undefined),
         left: col.sticky ? col.stickyLeft + 'px' : undefined
       }"
       @click.stop="col.key === 'select' || col.key === 'actions' ? null : emit('open-detail', person)"
@@ -50,9 +50,7 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 
       <!-- Name -->
       <template v-else-if="col.key === 'naam'">
-        <button class="naam-btn" @click.stop="emit('open-detail', person)">
-          {{ person.naam }}
-        </button>
+        <span class="naam-text">{{ person.naam }}</span>
       </template>
 
       <!-- Status -->
@@ -118,13 +116,15 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 .trow-vip { border-left: 3px solid var(--vip-border); }
 
 .tcell {
-  padding: 8px 8px 8px 16px;
+  padding: 8px 16px;
+  height: 48px;
   font-size: 14px;
   font-weight: 400;
   color: var(--n900);
   border-bottom: 1px solid var(--n300);
   border-right: 1px solid var(--n300);
   white-space: nowrap;
+  overflow: hidden;
   vertical-align: middle;
   background: inherit;
 }
@@ -194,24 +194,16 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
   flex-shrink: 0;
 }
 
-.naam-btn {
-  background: none;
-  border: none;
-  font-family: var(--font);
+.naam-text {
   font-size: 14px;
   font-weight: 400;
-  color: var(--p700);
-  cursor: pointer;
-  padding: 0;
-  text-align: left;
-  text-decoration: none;
-  transition: color 0.15s;
+  color: var(--n900);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 140px;
+  display: block;
 }
-.naam-btn:hover { color: var(--p500); text-decoration: underline; }
 
 .cell-dash { color: var(--n400); }
 .cell-muted { color: var(--n700); font-size: 12px; }

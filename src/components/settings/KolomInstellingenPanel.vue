@@ -43,7 +43,7 @@ function toggleColumn(key) {
   if (localVisible.value.includes(key)) {
     const nonLocked = localVisible.value.filter(k => !LOCKED_KEYS.has(k))
     if (nonLocked.length <= 1) {
-      show('warn', 'Minimaal 1 kolom', 'Er moet minimaal 1 kolom zichtbaar zijn.')
+      show('Minimaal 1 kolom', 'Er moet minimaal 1 kolom zichtbaar zijn.')
       return
     }
     localVisible.value = localVisible.value.filter(k => k !== key)
@@ -84,11 +84,11 @@ function cancelSaveSet() {
 function confirmSaveSet() {
   const name = setName.value.trim()
   if (!name) {
-    show('warn', 'Naam vereist', 'Geef de set een naam.')
+    show('Naam vereist', 'Geef de set een naam.')
     return
   }
   columnStore.saveSet(name)
-  show('ok', 'Set opgeslagen', `Kolomset "${name}" is opgeslagen.`)
+  show('Set opgeslagen', `Kolomset "${name}" is opgeslagen.`)
   showSaveInput.value = false
   setName.value = ''
 }

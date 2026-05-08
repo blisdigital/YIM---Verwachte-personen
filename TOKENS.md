@@ -61,6 +61,8 @@ Voor feedback en status communicatie. De semantische tokens gebruiken nu de Figm
 | `--warn-bg`  | `#fefbea` | `Color / Warning / Y50`  | Warning background |
 | `--err`      | `#bc243b` | `Color / Error / R500`   | Error text/icons |
 | `--err-bg`   | `#f8e9eb` | `Color / Error / R50`    | Error background |
+| `--err-hover`  | `#a01e32` | ⚠ *prototype-only* | Destructive button hover (10% darker than R500) |
+| `--err-active` | `#871929` | ⚠ *prototype-only* | Destructive button pressed (20% darker than R500) |
 | `--info`     | `#2464bb` | `Color / Info / B500`    | Info text/icons |
 | `--info-bg`  | `#e9f0f8` | `Color / Info / B50`     | Info background |
 

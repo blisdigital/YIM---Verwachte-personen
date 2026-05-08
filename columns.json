@@ -2,7 +2,7 @@
   {
     "key": "select",
     "label": "",
-    "width": 40,
+    "width": 48,
     "sticky": true,
     "stickyLeft": 0,
     "sortable": false,
@@ -12,12 +12,37 @@
   {
     "key": "actions",
     "label": "",
-    "width": 40,
+    "width": 48,
     "sticky": true,
-    "stickyLeft": 40,
+    "stickyLeft": 48,
     "sortable": false,
     "filter": null,
     "description": "Actiemenu (••• icoon)"
+  },
+  {
+    "key": "status",
+    "label": "Status",
+    "width": 130,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Verwacht", "Aangekomen", "No-show", "Geannuleerd", "Vertrokken"],
+    "description": "StatusBadge component met kleurcodering"
+  },
+  {
+    "key": "datumVanaf",
+    "label": "Aankomstdatum",
+    "width": 144,
+    "sortable": true,
+    "filter": "date",
+    "description": "Datum in DD-MM-YYYY formaat. Kolomfilter is prefilled op vandaag en volgt automatisch de DateFilterChip preset in de filterstrip."
+  },
+  {
+    "key": "aankomsttijd",
+    "label": "Aankomsttijd",
+    "width": 144,
+    "sortable": true,
+    "filter": "time",
+    "description": "Verwachte aankomsttijd in HH:mm"
   },
   {
     "key": "naam",
@@ -33,7 +58,23 @@
     "width": 152,
     "sortable": true,
     "filter": "text",
-    "description": "Personeelsnummer (P-format, bijv. P0000002393)"
+    "description": "Personeelsnummer (P-format, bijv. P0000002393). Standaard verborgen; aan te zetten via kolominstellingen."
+  },
+  {
+    "key": "telefoonnummer",
+    "label": "Telefoonnummer",
+    "width": 160,
+    "sortable": false,
+    "filter": "text",
+    "description": "Telefoonnummer van de persoon. Standaard verborgen; aan te zetten via kolominstellingen."
+  },
+  {
+    "key": "emailadres",
+    "label": "E-mailadres",
+    "width": 200,
+    "sortable": false,
+    "filter": "text",
+    "description": "E-mailadres van de persoon. Standaard verborgen; aan te zetten via kolominstellingen."
   },
   {
     "key": "vip",
@@ -71,39 +112,6 @@
     "description": "Bedrijfsnaam"
   },
   {
-    "key": "locaties",
-    "label": "Locatie(s)",
-    "width": 160,
-    "sortable": true,
-    "filter": "text",
-    "description": "Kommagescheiden locaties, afgekapt met ellipsis + tooltip"
-  },
-  {
-    "key": "datumVanaf",
-    "label": "Datum vanaf",
-    "width": 144,
-    "sortable": true,
-    "filter": "date",
-    "description": "Datum in DD-MM-YYYY formaat"
-  },
-  {
-    "key": "aankomsttijd",
-    "label": "Aankomsttijd",
-    "width": 144,
-    "sortable": true,
-    "filter": "time",
-    "description": "Verwachte aankomsttijd in HH:mm"
-  },
-  {
-    "key": "status",
-    "label": "Status",
-    "width": 130,
-    "sortable": true,
-    "filter": "dropdown",
-    "filterOptions": ["Alle", "Verwacht", "Aangekomen", "No-show", "Geannuleerd", "Vertrokken"],
-    "description": "StatusBadge component met kleurcodering"
-  },
-  {
     "key": "passtatus",
     "label": "Passtatus",
     "width": 176,
@@ -131,28 +139,20 @@
     "description": "Parkeer-indicator"
   },
   {
+    "key": "locaties",
+    "label": "Locatie(s)",
+    "width": 160,
+    "sortable": true,
+    "filter": "text",
+    "description": "Kommagescheiden locaties, afgekapt met ellipsis + tooltip"
+  },
+  {
     "key": "contactpersoon",
     "label": "Contactpersoon",
     "width": 200,
     "sortable": true,
     "filter": "text",
     "description": "Naam contactpersoon"
-  },
-  {
-    "key": "telefoonnummer",
-    "label": "Telefoonnummer",
-    "width": 160,
-    "sortable": false,
-    "filter": "text",
-    "description": "Telefoonnummer van de persoon"
-  },
-  {
-    "key": "emailadres",
-    "label": "E-mailadres",
-    "width": 200,
-    "sortable": false,
-    "filter": "text",
-    "description": "E-mailadres van de persoon"
   },
   {
     "key": "bezoekreden",

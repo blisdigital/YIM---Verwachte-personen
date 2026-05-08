@@ -20,7 +20,7 @@ Toont de status van een persoon met kleurcodering.
 | `status` | `'Verwacht' \| 'Aangekomen' \| 'Vertrokken' \| 'No-show' \| 'Geannuleerd'` | — | Status waarde |
 
 **Visuele specs:**
-- `border-radius: 4px`, `padding: 2px 8px`, `font-size: 12px`, `line-height: 16px`, `min-width: 90px`
+- `border-radius: 4px`, `padding: 4px 12px`, `font-size: 14px`, `line-height: 24px`, `min-width: 116px`
 - Tekst gecentreerd, `font-weight: 600`
 
 **Kleurmapping:**
@@ -57,8 +57,10 @@ Toont de passtatus als gekleurde stip met label.
 
 Atomic pill-component dat één compliance-item toont (dossier óf e-learning) met kleurcodering en hover-tooltip. Wordt hergebruikt in zowel de tabel (via `ComplianceCell`) als het detail panel.
 
+Tooltip wordt gerenderd via de generieke `<Tooltip>` component — zie [Tooltip.md](Tooltip.md).
+
 ```vue
-<CompliancePill type="dossier" status="onvolledig" :reasons="['VCA certificaat verlopen']" />
+<CompliancePill type="dossier" status="onvolledig" :reasons="['Dossier niet compleet', 'Dossier afgekeurd']" />
 <CompliancePill type="elearning" status="niet-behaald" reason="verlopen" />
 <CompliancePill type="elearning" status="behaald" />
 ```
@@ -67,8 +69,8 @@ Atomic pill-component dat één compliance-item toont (dossier óf e-learning) m
 | --- | --- | --- | --- |
 | `type` | `'dossier' \| 'elearning'` | — | Welk compliance-item |
 | `status` | `string` | — | Status waarde (zie hieronder) |
-| `reasons` | `string[] \| null` | `null` | Redenen bij onvolledig dossier |
-| `reason` | `string \| null` | `null` | Reden bij e-learning niet-behaald |
+| `reasons` | `string[] \| null` | `null` | Tooltip-regels bij onvolledig dossier (zie Tooltip logica) |
+| `reason` | `'niet-afgerond' \| 'verlopen' \| 'op-locatie' \| null` | `null` | Reden bij e-learning niet-behaald |
 
 ### Visueel
 
@@ -81,22 +83,35 @@ Atomic pill-component dat één compliance-item toont (dossier óf e-learning) m
 
 ### Tooltip logica
 
-Elke pill heeft een hover-tooltip met context:
+Tooltip wordt alleen getoond bij een compliance-probleem (oranje pill). Groene pills tonen **geen tooltip**.
 
-**Dossier:**
-- `compleet` → `"Dossier volledig"`
-- `onvolledig` → toont de reden(en) uit `reasons[]`:
-  - `"Dossier onvolledig: VCA certificaat verlopen"`
-  - `"Dossier onvolledig: ID document ontbreekt"`
-  - `"Dossier afgekeurd: verzekeringsbewijs ontbreekt"`
-  - Meerdere redenen → elke reden op een eigen regel in de tooltip
+**Dossier (`onvolledig`):**
 
-**E-learning:**
-- `behaald` → `"E-learning voltooid"`
-- `niet-behaald` → verschilt per situatie (via `reason` prop):
-  - `reason="niet-afgerond"` → `"E-learning verplicht, nog niet afgerond"`
-  - `reason="verlopen"` → `"E-learning verlopen"`
-  - Geen `reason` → `"E-learning niet behaald"`
+Tooltip toont de reden(en) uit `reasons[]`. Elke reden staat op een eigen regel. Toegestane waarden:
+
+| Reden (string in `reasons[]`) | Situatie |
+| --- | --- |
+| `"Dossier niet compleet"` | Dossier niet volledig ingevuld |
+| `"Dossier afgekeurd"` | Dossier afgekeurd door beoordelaar |
+| `"Dossier geblokkeerd"` | Dossier geblokkeerd |
+
+Meerdere redenen kunnen tegelijk voorkomen en worden gestapeld:
+
+```text
+Dossier niet compleet
+Dossier afgekeurd
+```
+
+**E-learning (`niet-behaald`):**
+
+Tooltip toont één reden op basis van de `reason` prop:
+
+| `reason` | Tooltiptekst |
+| --- | --- |
+| `"verlopen"` | `"E-learning is verlopen"` |
+| `"niet-afgerond"` | `"E-learning niet behaald"` |
+| `"op-locatie"` | `"E-learning moet op locatie gehaald worden"` |
+| `null` | `"E-learning niet behaald"` |
 
 ---
 
@@ -272,29 +287,27 @@ Zie [DatePickerCalendar.md](DatePickerCalendar.md) voor de volledige specificati
 
 Notificatie toast (wordt beheerd via `useToast` composable en gerenderd in `ToastContainer`).
 
+**Design tokens:** zie [toast-messages-tokens.md](toast-messages-tokens.md)
+
+**Standaard variant:** `Neutral` · `cancel = true` · `leadingIcon = false` · `action = false`  
+Donkere achtergrond (`#1d1e1f`) met witte tekst en trailing close-knop (×). Overal in de applicatie wordt deze variant gebruikt.
+
 ```javascript
 const { show, dismiss } = useToast()
-show('ok', 'Ingecheckt', 'Sophie van der Berg is succesvol ingecheckt')
-show('err', 'Fout', 'Actie kon niet worden uitgevoerd')
+show('Ingecheckt', 'Sophie van der Berg is succesvol ingecheckt')
+show('Fout', 'Actie kon niet worden uitgevoerd')
 ```
 
 **useToast API:**
 
 | Functie | Signature | Beschrijving |
 | --- | --- | --- |
-| `show` | `(type, title, message?)` | Toont een toast; verdwijnt automatisch na 4 seconden |
+| `show` | `(title, message?)` | Toont een neutral toast met trailing close-knop; verdwijnt automatisch na 4 seconden |
 | `dismiss` | `(id)` | Sluit een specifieke toast direct |
-
-**Type enum:** `'ok' | 'err' | 'warn' | 'info'`
-
-| Type | Kleur | Icon |
-| --- | --- | --- |
-| `ok` | Groen | `check_circle` |
-| `err` | Rood | `error` |
-| `warn` | Oranje | `warning` |
-| `info` | Blauw | `info` |
 
 **Implementatiedetails:**
 - `toasts` ref is module-level (buiten de functie) — gedeeld singleton over alle componenten
 - Auto-dismiss via `setTimeout` van 4000ms (niet configureerbaar)
 - `ToastContainer` gebruikt `<Teleport to="body">` + `<TransitionGroup name="toast-list">`
+- Positie: `fixed`, rechtsonder (`bottom: 24px; right: 24px`)
+- Animatie: slide omhoog bij verschijnen/verdwijnen (`translateY(16px)`)

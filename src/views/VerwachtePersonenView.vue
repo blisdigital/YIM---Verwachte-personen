@@ -8,6 +8,8 @@ import DataTable from '@/components/table/DataTable.vue'
 import Pagination from '@/components/table/Pagination.vue'
 import DetailPanel from '@/components/detail/DetailPanel.vue'
 import CheckinModal from '@/components/actions/CheckinModal.vue'
+import NoShowModal from '@/components/actions/NoShowModal.vue'
+import AnnulerenModal from '@/components/actions/AnnulerenModal.vue'
 import ToastContainer from '@/components/ui/ToastContainer.vue'
 import { usePersonenStore } from '@/stores/personenStore'
 import { useFilterStore } from '@/stores/filterStore'
@@ -59,6 +61,24 @@ function openCheckin(person, action) {
   checkinOpen.value = true
 }
 
+// No-show modal
+const noShowOpen   = ref(false)
+const noShowPerson = ref(null)
+
+function openNoShow(person) {
+  noShowPerson.value = person
+  noShowOpen.value   = true
+}
+
+// Annuleren modal
+const annulerenOpen   = ref(false)
+const annulerenPerson = ref(null)
+
+function openAnnuleren(person) {
+  annulerenPerson.value = person
+  annulerenOpen.value   = true
+}
+
 // Computed: selected persons data for BulkBar
 const selectedPersons = computed(() =>
   personenStore.personen.filter(p => selectedIds.value.includes(p.id))
@@ -74,49 +94,39 @@ function handleAction({ person, action }) {
       openCheckin(person, 'uitchecken')
       break
     case 'no-show':
-      personenStore.updateStatus(person.id, 'No-show')
-      show('warn', 'No-show geregistreerd', `${person.naam} is gemarkeerd als no-show.`)
-      if (detailPerson.value?.id === person.id) {
-        detailPerson.value = personenStore.personen.find(p => p.id === person.id)
-      }
+      openNoShow(person)
       break
     case 'no-show-ongedaan':
-      personenStore.updateStatus(person.id, 'Verwacht')
-      show('ok', 'No-show ongedaan gemaakt', `${person.naam} is teruggezet op Verwacht.`)
-      if (detailPerson.value?.id === person.id) {
-        detailPerson.value = personenStore.personen.find(p => p.id === person.id)
-      }
+      openCheckin(person, 'no-show-ongedaan')
       break
     case 'annuleren':
-      personenStore.updateStatus(person.id, 'Geannuleerd')
-      show('info', 'Geannuleerd', `${person.naam} is geannuleerd.`)
-      closeDetail()
+      openAnnuleren(person)
       break
     case 'pas-koppelen':
       personenStore.updatePassStatus(person.id, 'gekoppeld')
-      show('ok', 'Pas gekoppeld', `Pas is gekoppeld aan ${person.naam}.`)
+      show('Pas gekoppeld', `Pas is gekoppeld aan ${person.naam}.`)
       break
     case 'pas-printen':
       personenStore.updatePassStatus(person.id, 'geprint')
-      show('ok', 'Pas geprint', `Pas voor ${person.naam} is afgedrukt.`)
+      show('Pas geprint', `Pas voor ${person.naam} is afgedrukt.`)
       break
     case 'pas-ontkoppelen':
       personenStore.updatePassStatus(person.id, 'niet-gekoppeld')
-      show('info', 'Pas ontkoppeld', `Pas is ontkoppeld van ${person.naam}.`)
+      show('Pas ontkoppeld', `Pas is ontkoppeld van ${person.naam}.`)
       break
     case 'bekijk-dossier':
-      show('info', 'Dossier', `Dossier van ${person.naam} wordt geopend.`)
+      show('Dossier', `Dossier van ${person.naam} wordt geopend.`)
       break
     case 'contact-opnemen':
     case 'contactpersoon-informeren':
-      show('info', 'Contact', `Contactpersoon van ${person.naam}: ${person.contactpersoon} (${person.contactTel})`)
+      show('Contact', `Contactpersoon van ${person.naam}: ${person.contactpersoon} (${person.contactTel})`)
       break
     case 'bel-persoon':
     case 'bel-contactpersoon':
-      show('info', 'Bellen', `Bel: ${person.contactTel}`)
+      show('Bellen', `Bel: ${person.contactTel}`)
       break
     default:
-      show('info', 'Actie', `${action} voor ${person.naam}`)
+      show('Actie', `${action} voor ${person.naam}`)
   }
 }
 
@@ -124,15 +134,34 @@ function handleAction({ person, action }) {
 function handleCheckinConfirm({ person, action }) {
   if (action === 'inchecken') {
     personenStore.updateStatus(person.id, 'Aangekomen')
-    show('ok', 'Ingecheckt', `${person.naam} is succesvol ingecheckt.`)
-  } else {
+    show('Ingecheckt', `${person.naam} is succesvol ingecheckt.`)
+  } else if (action === 'uitchecken') {
     personenStore.updateStatus(person.id, 'Vertrokken')
-    show('ok', 'Uitgecheckt', `${person.naam} is succesvol uitgecheckt.`)
+    show('Uitgecheckt', `${person.naam} is succesvol uitgecheckt.`)
+  } else if (action === 'no-show-ongedaan') {
+    personenStore.updateStatus(person.id, 'Verwacht')
+    show('No-show ongedaan gemaakt', `No-show van ${person.naam} is ongedaan gemaakt.`)
   }
   // Sync detail panel person
   if (detailPerson.value?.id === person.id) {
     detailPerson.value = personenStore.personen.find(p => p.id === person.id)
   }
+}
+
+// Confirm no-show
+function handleNoShowConfirm({ person }) {
+  personenStore.updateStatus(person.id, 'No-show')
+  show('No-show geregistreerd', `${person.naam} is gemarkeerd als no-show.`)
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
+}
+
+// Confirm annuleren — sluit ook detail panel (flow spec: geen detailweergave na annuleren)
+function handleAnnulerenConfirm({ person }) {
+  personenStore.updateStatus(person.id, 'Geannuleerd')
+  show('Geannuleerd', `${person.naam} is geannuleerd.`)
+  closeDetail()
 }
 
 // Bulk actions
@@ -144,38 +173,38 @@ function handleBulkAction(action) {
       persons.filter(p => ['Verwacht', 'No-show'].includes(p.status)).forEach(p => {
         personenStore.updateStatus(p.id, 'Aangekomen')
       })
-      show('ok', 'Bulk inchecken', `${persons.length} personen ingecheckt.`)
+      show('Bulk inchecken', `${persons.length} personen ingecheckt.`)
       clearAll()
       break
     case 'uitchecken':
       persons.filter(p => p.status === 'Aangekomen').forEach(p => {
         personenStore.updateStatus(p.id, 'Vertrokken')
       })
-      show('ok', 'Bulk uitchecken', `Geselecteerde personen uitgecheckt.`)
+      show('Bulk uitchecken', `Geselecteerde personen uitgecheckt.`)
       clearAll()
       break
     case 'no-show':
       persons.filter(p => ['Verwacht', 'No-show'].includes(p.status)).forEach(p => {
         personenStore.updateStatus(p.id, 'No-show')
       })
-      show('warn', 'No-show', `Geselecteerde personen als no-show geregistreerd.`)
+      show('No-show', `Geselecteerde personen als no-show geregistreerd.`)
       clearAll()
       break
     case 'annuleren':
       persons.forEach(p => personenStore.updateStatus(p.id, 'Geannuleerd'))
-      show('info', 'Geannuleerd', `Geselecteerde personen zijn geannuleerd.`)
+      show('Geannuleerd', `Geselecteerde personen zijn geannuleerd.`)
       clearAll()
       break
     case 'pas-koppelen':
       persons.forEach(p => personenStore.updatePassStatus(p.id, 'gekoppeld'))
-      show('ok', 'Pas koppelen', `Passen gekoppeld aan ${persons.length} personen.`)
+      show('Pas koppelen', `Passen gekoppeld aan ${persons.length} personen.`)
       clearAll()
       break
     case 'pas-printen':
       persons.filter(p => p.status === 'Aangekomen').forEach(p => {
         personenStore.updatePassStatus(p.id, 'geprint')
       })
-      show('ok', 'Pas printen', `Passen afgedrukt.`)
+      show('Pas printen', `Passen afgedrukt.`)
       clearAll()
       break
   }
@@ -252,6 +281,20 @@ onMounted(() => {
       :person="checkinPerson"
       :action="checkinAction"
       @confirm="handleCheckinConfirm"
+    />
+
+    <!-- No-show modal -->
+    <NoShowModal
+      v-model:open="noShowOpen"
+      :person="noShowPerson"
+      @confirm="handleNoShowConfirm"
+    />
+
+    <!-- Annuleren modal -->
+    <AnnulerenModal
+      v-model:open="annulerenOpen"
+      :person="annulerenPerson"
+      @confirm="handleAnnulerenConfirm"
     />
 
     <!-- Toast notifications -->

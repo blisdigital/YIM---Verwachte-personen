@@ -32,21 +32,21 @@ Container voor de data tabel. De tabel scrolt horizontaal; de eerste twee kolomm
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
 │  STICKY          │  SCROLLBAAR DEEL →                                    │
-│  ☐  •••          │  Naam | Personeelsnr | VIP | ... | Bezoekreden        │
+│  ☐  •••          │  Status | Aankomstdatum | Tijd | Naam | VIP | ... | Bezoekreden │
 │                  │                                                       │
-│  (left:0)(left:40)  overflow-x: auto                                     │
+│  (left:0)(left:48)  overflow-x: auto                                     │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
 **CSS structuur:**
 - `.table-wrap` — Buitenste container met border en border-radius
 - `.table-scroll` — `overflow-x: auto; overflow-y: visible` scroll-container
-- `table` — Volledige breedte tabel (`min-width` groter dan viewport)
+- `table` — `table-layout: auto; min-width: 100%; width: max-content` — kolommen auto-sizeen op inhoud; tabel vult minimaal 100% breedte
 
 **Sticky kolommen:**
 
-- `.st0` — Checkbox kolom: `position: sticky; left: 0; z-index: 6` — breedte **40px**
-- `.st1` — Actie kolom: `position: sticky; left: 40px; z-index: 6` — breedte **48px**
+- `.st0` — Checkbox kolom: `position: sticky; left: 0; z-index: 6` — breedte **48px**
+- `.st1` — Actie kolom: `position: sticky; left: 48px; z-index: 6` — breedte **48px**
 - Sticky cellen gebruiken `background: inherit` zodat de rij-state (hover/selected) automatisch doorwerkt — geen eigen achtergrondkleur
 
 ## Kolomheader design tokens
@@ -93,7 +93,7 @@ Figma: [`54:49591`](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Ve
 
 | Eigenschap | Waarde |
 | --- | --- |
-| Padding | `8px 8px 8px 16px` (py / pr / py / pl) |
+| Padding | `8px 16px` (verticaal / horizontaal) — symmetrisch |
 | Achtergrond | `--n50` |
 | Border-right | `1px solid --n300` |
 | Border-top-right-radius | `4px` (alleen de laatste kolom) |
@@ -120,11 +120,11 @@ Sorteerbare kolommen tonen een **24×24 Material icon** rechts in de cel. Kleur 
 | Niet gesorteerd | `"none"` | `unfold_more` (▲▼ gestapeld) |
 | Aflopend actief | `"descending"` | `arrow_drop_down` (▼) |
 | Oplopend actief | `"ascending"` | `arrow_drop_up` (▲) |
-| Niet sorteerbaar | — | Geen icoon; padding symmetrisch (`16px` links én rechts) |
+| Niet sorteerbaar | — | Geen icoon |
 
 **Klikcyclus:** `none → descending → ascending → none`
 
-Kolommen zonder sorteeroptie (`sortable: false` in columns.json) gebruiken de "niet sorteerbaar"-variant: geen icoon, `justify-content: flex-start`, padding `16px` aan beide kanten.
+Kolommen zonder sorteeroptie (`sortable: false` in columns.json) gebruiken de "niet sorteerbaar"-variant: geen icoon, `justify-content: flex-start`. Alle kolomheaders hebben padding `8px 16px` (symmetrisch).
 
 ### Sticky shadow bij horizontaal scrollen
 
@@ -191,7 +191,7 @@ Kolom configuratie staat in **`columns.json`** (single source of truth). TypeScr
 interface Column {
   key: string
   label: string
-  width: number               // initiële breedte in px (resizable door gebruiker)
+  width: number               // vaste breedte in px voor sticky kolommen; voor scrollbare kolommen: fallback bij resize (kolommen auto-sizeen standaard op inhoud)
   sticky?: boolean            // sticky positie (alleen checkbox + actiemenu)
   stickyLeft?: number         // left-offset in px voor sticky kolommen
   sortable?: boolean          // sorteer-icoon tonen
@@ -201,4 +201,4 @@ interface Column {
 }
 ```
 
-Zie [`columns.json`](../columns.json) voor de volledige configuratie met 17 kolommen (2 sticky + 15 scrollbaar).
+Zie [`columns.json`](../columns.json) voor de volledige configuratie met 19 kolommen (2 sticky + 17 scrollbaar, waarvan 3 standaard verborgen).

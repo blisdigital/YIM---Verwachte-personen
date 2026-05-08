@@ -2,7 +2,7 @@
 
 ## Componentenhiërarchie
 
-```
+```text
 App.vue
 └── VerwachtePersonenView.vue
     ├── AppHeader.vue (hamburger + logo + user/taal; sidebar schuift in van links zonder overlay)
@@ -32,9 +32,11 @@ App.vue
     │   │   └── CompliancePill.vue
     │   └── Pagination.vue
     │
-    ├── DetailPanel.vue (slide-out rechts; sections: Bezoekgegevens, Compliance, Parkeren, Contactgegevens + primaire/secundaire acties)
+    ├── DetailPanel.vue (gecentreerde modal 832px; sections: Bezoekgegevens, Compliance, Contactpersoon, Toegangspas + footer-acties per status)
     │
-    ├── CheckinModal.vue
+    ├── CheckinModal.vue   (check-in / check-out bevestiging)
+    ├── NoShowModal.vue    (no-show registratie met formulier)
+    ├── AnnulerenModal.vue (destructieve bevestiging)
     │
     └── ToastContainer.vue
         └── Toast.vue
@@ -42,7 +44,7 @@ App.vue
 
 ## Dataflow
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                         Pinia Store                              │
 │  ┌─────────────┐  ┌─────────────────────────┐  ┌──────────────┐  │

@@ -1,19 +1,12 @@
 <script setup>
-import { computed } from 'vue'
 const props = defineProps({
   toast: { type: Object, required: true }
 })
 const emit = defineEmits(['dismiss'])
-
-const icon = computed(() => {
-  const map = { ok: 'check_circle', err: 'error', warn: 'warning', info: 'info' }
-  return map[props.toast.type] || 'info'
-})
 </script>
 
 <template>
-  <div :class="['toast', `toast-${toast.type}`]">
-    <span class="mi toast-icon">{{ icon }}</span>
+  <div class="toast">
     <div class="toast-content">
       <div class="toast-title">{{ toast.title }}</div>
       <div v-if="toast.message" class="toast-message">{{ toast.message }}</div>
@@ -27,43 +20,33 @@ const icon = computed(() => {
 <style scoped>
 .toast {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px 16px;
-  border-radius: var(--r-m);
-  box-shadow: var(--shadow-m);
-  min-width: 280px;
-  max-width: 400px;
-  background: var(--n0);
-  border-left: 4px solid var(--n400);
+  align-items: center;
+  gap: 8px;
+  width: 360px;
+  padding: 8px 8px 8px 16px;
+  border-radius: var(--r-s);
+  box-shadow: 0px 4px 8px rgba(17, 19, 19, 0.16);
+  background: var(--n900);
 }
 
-.toast-ok   { border-left-color: var(--ok); }
-.toast-err  { border-left-color: var(--err); }
-.toast-warn { border-left-color: var(--warn); }
-.toast-info { border-left-color: var(--info); }
-
-.toast-icon {
-  font-size: 20px;
-  flex-shrink: 0;
-  margin-top: 1px;
+.toast-content {
+  flex: 1;
 }
-.toast-ok   .toast-icon { color: var(--ok); }
-.toast-err  .toast-icon { color: var(--err); }
-.toast-warn .toast-icon { color: var(--warn); }
-.toast-info .toast-icon { color: var(--info); }
-
-.toast-content { flex: 1; }
 
 .toast-title {
+  font-family: var(--font);
   font-size: 14px;
-  font-weight: 700;
-  color: var(--n900);
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--n50);
 }
 
 .toast-message {
-  font-size: 13px;
-  color: var(--n700);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--n50);
   margin-top: 2px;
 }
 
@@ -71,13 +54,20 @@ const icon = computed(() => {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--n500);
-  padding: 0;
+  color: var(--n50);
+  padding: 8px;
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  transition: color 0.15s;
+  border-radius: var(--r-s);
+  transition: background 0.15s;
 }
-.toast-close:hover { color: var(--n900); }
-.toast-close .mi { font-size: 16px; }
+
+.toast-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.toast-close .mi {
+  font-size: 24px;
+}
 </style>

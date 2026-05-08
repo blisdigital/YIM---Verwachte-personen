@@ -23,7 +23,7 @@ const { toasts, dismiss } = useToast()
 <style scoped>
 .toast-container {
   position: fixed;
-  top: 24px;
+  bottom: 24px;
   right: 24px;
   z-index: 9999;
   display: flex;
@@ -41,10 +41,10 @@ const { toasts, dismiss } = useToast()
 }
 .toast-list-enter-from {
   opacity: 0;
-  transform: translateX(40px);
+  transform: translateY(16px);
 }
 .toast-list-leave-to {
   opacity: 0;
-  transform: translateX(40px);
+  transform: translateY(16px);
 }
 </style>

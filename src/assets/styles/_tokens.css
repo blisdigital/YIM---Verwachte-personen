@@ -59,4 +59,23 @@
 
   /* Typography */
   --font: 'Nunito', sans-serif;
+
+  /* ── Popup action content ── */
+  /* Invented tokens for check-in/out, no-show and annuleren flows.   */
+  /* Awaiting definitive Figma design; values derived from semantics. */
+  --popup-person-bg:    var(--n50);         /* persoon-card achtergrond             */
+  --popup-field-bg:     var(--n0);          /* formulier veld achtergrond           */
+  --popup-field-border: var(--n400);        /* formulier veld rand (rust)           */
+  --popup-field-radius: var(--r-s);         /* formulier veld hoekafronding         */
+  --popup-warn-bg:      var(--warn-bg);     /* waarschuwingsblok achtergrond        */
+  --popup-warn-icon:    var(--warn);        /* waarschuwingsblok icon kleur         */
+  --popup-cancel-bg:    var(--err-bg);      /* annuleren-blok achtergrond           */
+  --popup-cancel-border: #eac8cc;           /* annuleren-blok rand (err-bg darkened)*/
+  --popup-cancel-icon:  var(--err);         /* annuleren-blok icon kleur            */
+
+  /* ── Destructive button shades ── */
+  /* Darker steps van --err (#bc243b) voor hover en active states.    */
+  /* Awaiting definitive design tokens; prototype approximation only. */
+  --err-hover:  #a01e32;
+  --err-active: #871929;
 }

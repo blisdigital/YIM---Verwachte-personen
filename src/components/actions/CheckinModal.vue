@@ -1,26 +1,33 @@
 <script setup>
-import Modal from '@/components/ui/Modal.vue'
+import ActionPopup from '@/components/ui/ActionPopup.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
 import { computed } from 'vue'
 
 const props = defineProps({
-  open: { type: Boolean, default: false },
-  person: { type: Object, default: null },
-  action: { type: String, default: 'inchecken' }, // 'inchecken' | 'uitchecken'
+  open:   { type: Boolean, default: false },
+  person: { type: Object,  default: null },
+  action: { type: String,  default: 'inchecken' }, // 'inchecken' | 'uitchecken' | 'no-show-ongedaan'
 })
 const emit = defineEmits(['update:open', 'confirm'])
 
+const title = computed(() => {
+  if (props.action === 'inchecken')         return 'Check-in'
+  if (props.action === 'uitchecken')        return 'Check-out'
+  if (props.action === 'no-show-ongedaan')  return 'No-show ongedaan maken'
+  return ''
+})
+
+const introText = computed(() => {
+  if (props.action === 'inchecken')         return 'Wil je deze persoon inchecken?'
+  if (props.action === 'uitchecken')        return 'Wil je deze persoon uitchecken?'
+  if (props.action === 'no-show-ongedaan')  return 'Wil je de no-show van deze persoon ongedaan maken?'
+  return ''
+})
+
 const isCheckin = computed(() => props.action === 'inchecken')
 
-const title = computed(() => isCheckin.value ? 'Persoon inchecken' : 'Persoon uitchecken')
-const confirmLabel = computed(() => isCheckin.value ? 'Inchecken bevestigen' : 'Uitchecken bevestigen')
-const newStatus = computed(() => isCheckin.value ? 'Aangekomen' : 'Vertrokken')
-
-function cancel() {
-  emit('update:open', false)
-}
-
+function cancel()  { emit('update:open', false) }
 function confirm() {
   emit('confirm', { person: props.person, action: props.action })
   emit('update:open', false)
@@ -28,9 +35,11 @@ function confirm() {
 </script>
 
 <template>
-  <Modal :open="open" :title="title" size="sm" @update:open="emit('update:open', $event)">
-    <div v-if="person" class="checkin-body">
-      <div class="person-info">
+  <ActionPopup :open="open" :title="title" @update:open="emit('update:open', $event)">
+    <div v-if="person">
+      <p class="intro-text">{{ introText }}</p>
+
+      <div class="person-card">
         <div class="person-avatar">
           {{ person.naam.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() }}
         </div>
@@ -39,69 +48,55 @@ function confirm() {
             <span v-if="person.vip" class="mi vip-star">star</span>
             {{ person.naam }}
           </div>
-          <div class="person-meta">{{ person.bedrijf }}</div>
+          <div class="person-sub">{{ person.bedrijf }}</div>
         </div>
         <StatusBadge :status="person.status" />
       </div>
 
-      <div class="checkin-info">
-        <div class="info-row">
-          <span class="info-label">Personeelsnr.</span>
-          <span class="info-val">{{ person.personeelsnr }}</span>
+      <div class="person-fields">
+        <div class="field-row">
+          <span class="field-label">Personeelsnr.</span>
+          <span class="field-value">{{ person.personeelsnr }}</span>
         </div>
-        <div class="info-row">
-          <span class="info-label">Aankomsttijd</span>
-          <span class="info-val">{{ person.aankomsttijd }}</span>
+        <div class="field-row">
+          <span class="field-label">Locatie(s)</span>
+          <span class="field-value">{{ person.locaties.join(', ') }}</span>
         </div>
-        <div class="info-row">
-          <span class="info-label">Locatie(s)</span>
-          <span class="info-val">{{ person.locaties.join(', ') }}</span>
+        <div class="field-row">
+          <span class="field-label">Datum</span>
+          <span class="field-value">{{ person.datumVanaf }}</span>
         </div>
-        <div v-if="person.checkinTime && !isCheckin" class="info-row">
-          <span class="info-label">Ingecheckt om</span>
-          <span class="info-val">{{ person.checkinTime }}</span>
+        <div class="field-row">
+          <span class="field-label">Verwacht om</span>
+          <span class="field-value">{{ person.aankomsttijd }}</span>
         </div>
-      </div>
-
-      <div class="checkin-message">
-        <span class="mi" :class="isCheckin ? 'msg-icon-ok' : 'msg-icon-out'">
-          {{ isCheckin ? 'login' : 'logout' }}
-        </span>
-        <p>
-          <template v-if="isCheckin">
-            Bevestig het inchecken van <strong>{{ person.naam }}</strong>.
-            De status wordt bijgewerkt naar <strong>Aangekomen</strong>.
-          </template>
-          <template v-else>
-            Bevestig het uitchecken van <strong>{{ person.naam }}</strong>.
-            De status wordt bijgewerkt naar <strong>Vertrokken</strong>.
-          </template>
-        </p>
+        <div v-if="!isCheckin && person.checkinTime" class="field-row">
+          <span class="field-label">Ingecheckt om</span>
+          <span class="field-value">{{ person.checkinTime }}</span>
+        </div>
       </div>
     </div>
 
     <template #footer>
-      <BaseButton variant="outlined" @click="cancel">Annuleren</BaseButton>
-      <BaseButton variant="filled" :icon="isCheckin ? 'login' : 'logout'" @click="confirm">
-        {{ confirmLabel }}
-      </BaseButton>
+      <BaseButton variant="ghost" @click="cancel">Annuleren</BaseButton>
+      <BaseButton variant="filled" @click="confirm">Bevestigen</BaseButton>
     </template>
-  </Modal>
+  </ActionPopup>
 </template>
 
 <style scoped>
-.checkin-body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.intro-text {
+  font-size: 14px;
+  color: var(--n900);
+  line-height: 1.5;
 }
 
-.person-info {
+.person-card {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: var(--n50);
+  background: var(--popup-person-bg);
   border-radius: var(--r-m);
 }
 
@@ -119,7 +114,7 @@ function confirm() {
   flex-shrink: 0;
 }
 
-.person-details { flex: 1; }
+.person-details { flex: 1; min-width: 0; }
 
 .person-name {
   display: flex;
@@ -132,57 +127,34 @@ function confirm() {
 
 .vip-star { font-size: 14px; color: var(--vip-border); }
 
-.person-meta {
+.person-sub {
   font-size: 12px;
   color: var(--n700);
   margin-top: 2px;
 }
 
-.checkin-info {
+.person-fields {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.info-row {
+.field-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
 }
 
-.info-label {
+.field-label {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--n700);
   min-width: 120px;
-}
-
-.info-val {
-  font-size: 13px;
-  color: var(--n900);
-}
-
-.checkin-message {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px;
-  border-radius: var(--r-m);
-  background: var(--info-bg);
-}
-
-.checkin-message .mi {
-  font-size: 20px;
   flex-shrink: 0;
-  margin-top: 1px;
 }
 
-.msg-icon-ok { color: var(--ok); }
-.msg-icon-out { color: var(--warn); }
-
-.checkin-message p {
+.field-value {
   font-size: 13px;
   color: var(--n900);
-  line-height: 1.5;
 }
 </style>

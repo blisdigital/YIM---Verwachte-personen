@@ -29,7 +29,7 @@ const statusClass = computed(() => {
   white-space: nowrap;
   line-height: 24px;
   letter-spacing: 0.14px;
-  min-width: 90px;
+  min-width: 116px;
   text-align: center;
 }
 .sv  { background: var(--info-bg); color: var(--info); }

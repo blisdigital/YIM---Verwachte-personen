@@ -136,6 +136,24 @@ const padding = computed(() => {
   color: var(--n400);
 }
 
+/* ── Destructive ── */
+.btn-destructive {
+  background: var(--err);
+  color: var(--n0);
+  border-color: transparent;
+}
+.btn-destructive:hover:not(:disabled) {
+  background: var(--err-hover);
+  box-shadow: var(--shadow-s);
+}
+.btn-destructive:active:not(:disabled) {
+  background: var(--err-active);
+}
+.btn-destructive:disabled {
+  background: var(--err-bg);
+  color: var(--n400);
+}
+
 /* ── Gray ── */
 .btn-gray {
   background: var(--n50);

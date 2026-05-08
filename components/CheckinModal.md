@@ -1,6 +1,6 @@
 # CheckinModal
 
-Bevestigingsdialoog voor inchecken en uitchecken. Gebruikt `<Modal>` als wrapper.
+Bevestigingsdialoog voor inchecken en uitchecken. Gebruikt `<ActionPopup>` als wrapper.
 
 ```vue
 <CheckinModal
@@ -12,23 +12,26 @@ Bevestigingsdialoog voor inchecken en uitchecken. Gebruikt `<Modal>` als wrapper
 ```
 
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
+| --- | --- | --- | --- |
 | `open` | `boolean` | `false` | Zichtbaarheid (v-model:open) |
 | `person` | `Person \| null` | `null` | Persoon die in/uitgecheckt wordt |
-| `action` | `'inchecken' \| 'uitchecken'` | `'inchecken'` | Type actie |
+| `action` | `'inchecken' \| 'uitchecken' \| 'no-show-ongedaan'` | `'inchecken'` | Type actie |
 
 **Events:**
+
 - `@update:open` — Modal sluiten
 - `@confirm` — Bevestigd (`{ person, action }`)
 
 **Inhoud:**
-- Persoon-avatar (initialen uit naam, 40×40px, teal `--p500`)
-- Naam + bedrijf + huidige `<StatusBadge>`
-- Infolijst: personeelsnr, aankomsttijd, locatie(s), en (bij uitchecken) ingecheckt-om tijd
-- Bevestigingsbericht met passend icoon (`login` groen / `logout` oranje)
-- Footer: Annuleren (outlined) + Inchecken/Uitchecken bevestigen (primary)
+
+- Introtekst: "Wil je deze persoon inchecken?" / "Wil je deze persoon uitchecken?"
+- Persoon-kaart: initialen-avatar (40×40px, teal `--p500`) + naam + bedrijf + `<StatusBadge>`
+- Infolijst: personeelsnr, locatie(s), datum, verwacht om; bij uitchecken ook ingecheckt-om tijd
+- Footer: Annuleren (ghost) + Bevestigen (filled)
 
 **Gedrag:**
-- Titel, bevestigingsknop en bericht zijn computed op basis van `action` prop
+
+- Titel ("Check-in" / "Check-out") en introtekst zijn computed op basis van `action` prop
 - Bij bevestigen: emit `confirm` → VerwachtePersonenView roept `personenStore.updateStatus()` aan
 - Modal sluit automatisch na bevestigen
+- Backdrop sluit popup **niet** — actie vereist expliciete knop (zie `ActionPopup.md`)

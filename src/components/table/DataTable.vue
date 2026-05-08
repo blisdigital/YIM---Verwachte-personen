@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import TableRow from './TableRow.vue'
 import ColumnFilters from './ColumnFilters.vue'
 import { useFilterStore } from '@/stores/filterStore'
@@ -17,6 +17,23 @@ const filterStore = useFilterStore()
 const columnStore = useColumnStore()
 const columnWidths = ref({})
 
+// Sticky shadow on scroll
+const tableWrapRef = ref(null)
+const tableScrollRef = ref(null)
+
+function onTableScroll() {
+  if (tableWrapRef.value) {
+    tableWrapRef.value.dataset.scrolled = tableScrollRef.value.scrollLeft > 0 ? 'true' : 'false'
+  }
+}
+
+onMounted(() => {
+  tableScrollRef.value?.addEventListener('scroll', onTableScroll, { passive: true })
+})
+onUnmounted(() => {
+  tableScrollRef.value?.removeEventListener('scroll', onTableScroll)
+})
+
 const visibleCols = computed(() => {
   const alwaysVisible = new Set(['select', 'actions'])
   const userVisible = new Set(columnStore.visibleColumns)
@@ -29,7 +46,8 @@ const resizing = ref(null)
 function startResize(e, col) {
   e.preventDefault()
   const startX = e.clientX
-  const startW = columnWidths.value[col.key] || col.width
+  const th = e.currentTarget.parentElement
+  const startW = th ? th.getBoundingClientRect().width : (columnWidths.value[col.key] ?? col.width)
 
   function onMove(e) {
     const diff = e.clientX - startX
@@ -79,19 +97,21 @@ function setSort(col) {
 }
 
 function colWidth(col) {
-  return (columnWidths.value[col.key] || col.width) + 'px'
+  if (col.sticky) return col.width + 'px'
+  const w = columnWidths.value[col.key]
+  return w != null ? w + 'px' : undefined
 }
 </script>
 
 <template>
-  <div class="table-wrap">
-    <div class="table-scroll">
+  <div class="table-wrap" ref="tableWrapRef">
+    <div class="table-scroll" ref="tableScrollRef">
       <table class="data-table">
         <colgroup>
           <col
             v-for="col in visibleCols"
             :key="col.key"
-            :style="{ width: colWidth(col), minWidth: colWidth(col) }"
+            :style="colWidth(col) ? { width: colWidth(col), minWidth: colWidth(col) } : {}"
           />
         </colgroup>
 
@@ -101,10 +121,10 @@ function colWidth(col) {
             <th
               v-for="col in visibleCols"
               :key="col.key"
-              :class="['th-cell', { sticky: col.sticky, sortable: col.sortable, sorted: filterStore.sortKey === col.key, 'th-center': col.key === 'select' || col.key === 'actions' }]"
+              :class="['th-cell', { sticky: col.sticky, 'sticky-last': col.key === 'actions', sortable: col.sortable, sorted: filterStore.sortKey === col.key, 'th-center': col.key === 'select' || col.key === 'actions' }]"
               :style="{
-                width: colWidth(col),
-                minWidth: colWidth(col),
+                width: colWidth(col) || undefined,
+                minWidth: colWidth(col) || undefined,
                 left: col.sticky ? col.stickyLeft + 'px' : undefined
               }"
               @click="setSort(col)"
@@ -125,18 +145,15 @@ function colWidth(col) {
               <template v-else>
                 <div class="th-inner">
                   <span class="th-label">{{ col.label }}</span>
-                  <svg v-if="col.sortable" class="sort-svg" viewBox="0 0 7.18049 11.185" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      v-if="!(filterStore.sortKey === col.key && filterStore.sortDir === 'desc')"
-                      d="M0.296477 2.8825L2.88648 0.2925C3.27648 -0.0975 3.90648 -0.0975 4.29648 0.2925L6.88648 2.8825C7.51648 3.5125 7.06648 4.5925 6.17648 4.5925H0.996477C0.106477 4.5925 -0.333523 3.5125 0.296477 2.8825Z"
-                      :fill="filterStore.sortKey === col.key && filterStore.sortDir === 'asc' ? 'var(--p700)' : 'var(--n400)'"
-                    />
-                    <path
-                      v-if="!(filterStore.sortKey === col.key && filterStore.sortDir === 'asc')"
-                      d="M0.296477 8.3025L2.88648 10.8925C3.27648 11.2825 3.90648 11.2825 4.29648 10.8925L6.88648 8.3025C7.51648 7.6725 7.06648 6.5925 6.17648 6.5925H0.996477C0.106477 6.5925 -0.333523 7.6725 0.296477 8.3025Z"
-                      :fill="filterStore.sortKey === col.key && filterStore.sortDir === 'desc' ? 'var(--p700)' : 'var(--n400)'"
-                    />
-                  </svg>
+                  <template v-if="col.sortable">
+                    <span v-if="filterStore.sortKey === col.key" class="mi sort-icon">{{
+                      filterStore.sortDir === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
+                    }}</span>
+                    <span v-else class="sort-icon-dual">
+                      <span class="mi">arrow_drop_up</span>
+                      <span class="mi">arrow_drop_down</span>
+                    </span>
+                  </template>
                 </div>
               </template>
 
@@ -152,6 +169,7 @@ function colWidth(col) {
           <!-- Column filters -->
           <ColumnFilters
             :columns="visibleCols"
+            :column-widths="columnWidths"
             :model-value="filterStore.columnFilters"
             @update:model-value="val => { filterStore.columnFilters = val; filterStore.page = 1 }"
           />
@@ -205,17 +223,18 @@ function colWidth(col) {
 }
 
 .data-table {
-  width: 100%;
+  min-width: 100%;
+  width: max-content;
   border-collapse: separate;
   border-spacing: 0;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 /* Header */
 .thead-row { background: var(--n50); }
 
 .th-cell {
-  padding: 8px 8px 8px 16px;
+  padding: 8px 16px;
   height: 40px;
   text-align: left;
   font-size: 14px;
@@ -251,10 +270,32 @@ function colWidth(col) {
 
 .th-label { flex: 1; min-width: 0; }
 
-.sort-svg {
-  width: 8px;
-  height: 12px;
+.sort-icon {
+  font-size: 16px;
+  color: var(--n400);
   flex-shrink: 0;
+  line-height: 1;
+  width: 16px;
+  text-align: center;
+}
+.sort-icon-dual {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  color: var(--n400);
+  width: 16px;
+}
+.sort-icon-dual .mi {
+  font-size: 16px;
+  line-height: 0.6;
+  display: block;
+}
+.sorted .sort-icon { color: var(--p700); }
+
+/* Sticky shadow when scrolled */
+.table-wrap[data-scrolled="true"] :deep(.sticky-last) {
+  box-shadow: 4px 0 4px -2px rgba(17, 19, 19, 0.08);
 }
 
 .resize-handle {

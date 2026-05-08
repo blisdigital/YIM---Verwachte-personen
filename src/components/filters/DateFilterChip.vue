@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import DatePopover from '@/components/ui/DatePopover.vue'
 
 const props = defineProps({
@@ -13,6 +13,7 @@ const localDate = ref(toInputDate(props.modelValue))
 const localPreset = ref(props.preset)
 const popoverPos = ref({ top: 0, right: 0 })
 const chipRef = ref(null)
+const popoverAnchorRef = ref(null)
 
 function toInputDate(d) {
   if (!d) return ''
@@ -39,11 +40,40 @@ function formatDisplayDate(isoStr) {
   return `${d}-${m}-${y}`
 }
 
-function toggleOpen(event) {
-  if (!open.value) {
-    const rect = event.currentTarget.getBoundingClientRect()
-    const right = document.documentElement.clientWidth - rect.right
-    popoverPos.value = { top: rect.bottom + 4, right: Math.min(right, document.documentElement.clientWidth - 280) }
+let rafId = null
+
+// flush: 'post' = fires after DOM update, so popoverAnchorRef.value is guaranteed set
+watch(open, (isOpen) => {
+  if (isOpen) {
+    function loop() {
+      if (popoverAnchorRef.value && chipRef.value) {
+        const rect = chipRef.value.getBoundingClientRect()
+        popoverAnchorRef.value.style.top = (rect.bottom + 4) + 'px'
+        popoverAnchorRef.value.style.right = Math.min(
+          document.documentElement.clientWidth - rect.right,
+          document.documentElement.clientWidth - 280,
+        ) + 'px'
+      }
+      rafId = requestAnimationFrame(loop)
+    }
+    loop()
+  } else {
+    cancelAnimationFrame(rafId)
+    rafId = null
+  }
+}, { flush: 'post' })
+
+function toggleOpen() {
+  if (!open.value && chipRef.value) {
+    // Calc position before v-if renders the element — sets correct initial style
+    const rect = chipRef.value.getBoundingClientRect()
+    popoverPos.value = {
+      top: rect.bottom + 4,
+      right: Math.min(
+        document.documentElement.clientWidth - rect.right,
+        document.documentElement.clientWidth - 280,
+      ),
+    }
   }
   open.value = !open.value
 }
@@ -71,13 +101,14 @@ function apply() {
       @click="toggleOpen"
     >
       <span>{{ chipLabel }}</span>
-      <span class="mi">{{ open ? 'arrow_drop_up' : 'arrow_drop_down' }}</span>
+      <span class="mi chip-icon">{{ open ? 'arrow_drop_up' : 'arrow_drop_down' }}</span>
     </button>
 
     <Teleport to="body">
       <template v-if="open">
         <div class="click-away" @click="open = false" />
         <div
+          ref="popoverAnchorRef"
           class="popover-anchor"
           :style="{ top: popoverPos.top + 'px', right: popoverPos.right + 'px' }"
         >
@@ -104,7 +135,7 @@ function apply() {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
+  padding: 4px 8px 4px 12px;
   border: 1px solid var(--n50);
   border-radius: var(--r-s);
   background: var(--n0);
@@ -129,6 +160,12 @@ function apply() {
 .popover-anchor {
   position: fixed;
   z-index: 300;
+}
+
+.chip-icon {
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .click-away {

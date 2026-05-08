@@ -4,6 +4,7 @@ import DatePopover from '@/components/ui/DatePopover.vue'
 
 const props = defineProps({
   columns: { type: Array, default: () => [] },
+  columnWidths: { type: Object, default: () => ({}) },
   modelValue: { type: Object, default: () => ({}) },
 })
 const emit = defineEmits(['update:modelValue'])
@@ -36,7 +37,16 @@ function openDatePopover(key, event) {
   const rect = event.currentTarget.getBoundingClientRect()
   popoverPos.top = rect.bottom + 4
   popoverPos.left = rect.left
-  getDateState(key) // ensure initialised
+  // Always re-sync from current modelValue when opening, so external changes
+  // (e.g. FilterStrip date preset change) are reflected in the popover.
+  const raw = props.modelValue[key] || ''
+  let iso = ''
+  if (raw && raw.includes('-')) {
+    const parts = raw.split('-')
+    if (parts[0].length === 2) iso = `${parts[2]}-${parts[1]}-${parts[0]}`
+    else iso = raw
+  }
+  dateState[key] = { isoDate: iso, preset: null }
   openDateKey.value = key
 }
 
@@ -69,7 +79,11 @@ function resetDate(key) {
       v-for="col in columns"
       :key="col.key"
       :class="['cf-cell', { sticky: col.sticky }]"
-      :style="{ width: col.width + 'px', minWidth: col.width + 'px', left: col.sticky ? col.stickyLeft + 'px' : undefined }"
+      :style="{
+        width: col.sticky ? col.width + 'px' : (columnWidths[col.key] != null ? columnWidths[col.key] + 'px' : undefined),
+        minWidth: col.sticky ? col.width + 'px' : (columnWidths[col.key] != null ? columnWidths[col.key] + 'px' : undefined),
+        left: col.sticky ? col.stickyLeft + 'px' : undefined
+      }"
     >
       <!-- Checkbox and action columns: no filter -->
       <template v-if="col.key === 'select' || col.key === 'actions'">

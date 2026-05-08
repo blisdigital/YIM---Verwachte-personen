@@ -48,8 +48,8 @@ Twee cellen links, `position: sticky`, z-index boven scrollbare cellen.
 
 | Eigenschap | Waarde |
 |------------|--------|
-| Breedte | `40px` |
-| Hoogte | rij-hoogte (content-driven, ~44px) |
+| Breedte | `48px` |
+| Hoogte | `48px` (via `height: 48px` op alle `td`-cellen) |
 | Achtergrond | `inherit` (volgt rij-state) |
 | Border-bottom + border-right | `1px solid --n200` |
 | Padding | `10px` rondom |
@@ -70,12 +70,12 @@ Twee cellen links, `position: sticky`, z-index boven scrollbare cellen.
 | Eigenschap | Waarde |
 |------------|--------|
 | Breedte | `48px` |
-| Hoogte | rij-hoogte |
+| Hoogte | `48px` |
 | Achtergrond | `inherit` (volgt rij-state) |
 | Border-bottom + border-right | `1px solid --n200` |
 | Padding | `4px` horizontaal + `4px` verticaal |
 | Display | `flex; align-items: center; justify-content: center` |
-| `position: sticky; left: 40px` | — |
+| `position: sticky; left: 48px` | — |
 
 **Icon-button (more-horiz):**
 
@@ -108,7 +108,7 @@ Alle data-cellen delen deze wrapper-stijling. Alleen de inhoud verschilt per kol
 | Typografie | Body M — Nunito Regular 14/20, kleur `--n900` |
 | Overflow | `white-space: nowrap; overflow: hidden; text-overflow: ellipsis` |
 | Tooltip | Lange waarden altijd via `title`-attribuut; volledige tekst zichtbaar on hover |
-| Breedte | volgt kolomdefinitie in `columns.json` (88 / 144 / 152 / 160 / 176 / 200 / 216px) |
+| Breedte | auto op inhoud by default; expliciet (px) na gebruiker-resize via `columnWidths`; sticky cellen altijd `48px` |
 
 Lege velden: lege cel (geen dash).
 
@@ -120,7 +120,7 @@ Lege velden: lege cel (geen dash).
 |-------|-----------|
 | `select` | `<Checkbox />` — sticky, stopt propagatie |
 | `actions` | `<ActionMenu />` via ••• icoon — sticky, stopt propagatie |
-| `naam` | Klikbare `<button>` met naam van persoon |
+| `naam` | Plain tekst `<span>` — rij-click opent detail panel |
 | `personeelsnr` | Plain tekst Body M `--n900` |
 | `vip` | Zie §3.1 |
 | `persoontype` | Plain tekst ("Bezoeker" / "Contractor") |
@@ -142,7 +142,7 @@ Kolom 88px. Padding `4px` (`--s-xs`) rondom, `justify-content: center`.
 
 | State | Inhoud |
 | --- | --- |
-| VIP = true | 20px `star` (Material, **filled**), kleur `--y500` `#f8d32c` |
+| VIP = true | 20px `star` (Material, **filled**), kleur `--vip-border` `#f59e0b` |
 | VIP = false | lege cel |
 
 Gebruik altijd de filled variant — niet `star_outline`.

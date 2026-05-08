@@ -18,7 +18,7 @@ Chip-knop die een datum-filterpopover opent. Altijd zichtbaar in de filterstrip;
 
 **Chip icoon:** `arrow_drop_down` (gesloten) / `arrow_drop_up` (open) — Material Icons caret.
 
-**Positionering:** popover opent rechts-uitgelijnd (`right: document.documentElement.clientWidth - rect.right`) via `position: fixed`. Geclamped zodat de 272px-brede popover nooit buiten het scherm links valt. `z-index: 300`.
+**Positionering:** popover opent rechts-uitgelijnd (`right: document.documentElement.clientWidth - rect.right`) via `position: fixed`. Geclamped zodat de 272px-brede popover nooit buiten het scherm links valt. `z-index: 300`. Positie wordt bijgehouden via een `requestAnimationFrame`-loop zolang de popover open is — hierdoor volgt de popover de knop bij scrollen en layout-wijzigingen zonder lag.
 
 **Events:**
 

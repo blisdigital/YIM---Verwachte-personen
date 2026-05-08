@@ -3,9 +3,9 @@ import { ref } from 'vue'
 const toasts = ref([])
 
 export function useToast() {
-  function show(type, title, message) {
+  function show(title, message) {
     const id = Date.now()
-    toasts.value.push({ id, type, title, message })
+    toasts.value.push({ id, title, message })
     setTimeout(() => {
       toasts.value = toasts.value.filter(t => t.id !== id)
     }, 4000)

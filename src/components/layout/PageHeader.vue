@@ -39,7 +39,7 @@ function openSavedSets() {
   showInstellingenMenu.value = false
   showKolomPanel.value = false
   if (columnStore.savedSets.length === 0) {
-    show('info', 'Geen opgeslagen sets', 'Er zijn nog geen kolomsets opgeslagen.')
+    show('Geen opgeslagen sets', 'Er zijn nog geen kolomsets opgeslagen.')
   } else {
     showSavedSetsMenu.value = true
   }
@@ -47,7 +47,7 @@ function openSavedSets() {
 
 function applySavedSet(set) {
   columnStore.applySet(set)
-  show('ok', 'Set toegepast', `Kolomset "${set.name}" is toegepast.`)
+  show('Set toegepast', `Kolomset "${set.name}" is toegepast.`)
   showSavedSetsMenu.value = false
 }
 
@@ -68,7 +68,7 @@ function toggleRegistratieMenu() {
 
 function handleRegistratieSelect(val) {
   showRegistratieMenu.value = false
-  show('info', 'Registratie', `Actie: ${val}`)
+  show('Registratie', `Actie: ${val}`)
 }
 </script>
 

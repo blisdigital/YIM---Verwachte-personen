@@ -13,7 +13,7 @@ Tekstbutton voor primaire, secundaire en tertiaire acties.
 
 | Prop | Type | Default | Beschrijving |
 |------|------|---------|--------------|
-| `variant` | `'filled' \| 'outlined' \| 'ghost' \| 'gray'` | `'filled'` | Visuele stijl |
+| `variant` | `'filled' \| 'outlined' \| 'ghost' \| 'gray' \| 'destructive'` | `'filled'` | Visuele stijl |
 | `size` | `'lg' \| 'md' \| 'sm'` | `'md'` | Grootte |
 | `icon` | `string` | — | Material icon naam (optioneel) |
 | `iconPosition` | `'left' \| 'right'` | `'left'` | Icon positie |
@@ -25,7 +25,8 @@ Tekstbutton voor primaire, secundaire en tertiaire acties.
 
 - `lg` + `icon right` → PageHeader (Nieuwe registratie)
 - `lg` + `icon right` → PageHeader (Instellingen)
-- `md` → BezoekDetail, CheckinModal (actiebuttons en annuleren)
+- `md` → BezoekDetail, CheckinModal, NoShowModal (actiebuttons en annuleren)
+- `md` + `destructive` → AnnulerenModal (onomkeerbare actie)
 
 ---
 
@@ -101,6 +102,17 @@ Neutrale actie. Grijze achtergrond in rust; geschikt op witte én gekleurde acht
 | Focus | `--n100` `#f3f4f5` | `--n900` `#1d1e1f` | `2px solid --n50` `#f8fafb` |
 | Pressed | `--n200` `#ebeced` | `--n900` `#1d1e1f` | — |
 | Disabled | `--n50` `#f8fafb` | `--n400` `#b8babb` | — |
+
+### Destructive
+
+⚠ **Prototype-specifiek** — niet in de Figma UI Kit. Gebruikt voor onomkeerbare acties (bijv. persoon annuleren). Hover/active shades zijn prototype-approximaties; tokens `--err-hover` / `--err-active` in `_tokens.css`.
+
+| State | Achtergrond | Tekst | Border | Extra |
+| --- | --- | --- | --- | --- |
+| Enabled | `--err` `#bc243b` | `--n0` | — | — |
+| Hover | `--err-hover` `#a01e32` | `--n0` | — | `box-shadow: --shadow-s` |
+| Pressed | `--err-active` `#871929` | `--n0` | — | — |
+| Disabled | `--err-bg` `#f8e9eb` | `--n400` | — | `cursor: not-allowed` |
 
 ---
 

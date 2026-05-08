@@ -17,7 +17,7 @@ src/
 │   ├── table/         # DataTable, ColumnFilters, TableRow, Pagination
 │   ├── detail/        # DetailPanel
 │   ├── actions/       # BulkBar, ActionMenu, CheckinModal
-│   └── ui/            # BaseButton, IconButton, StatusBadge, PassStatusDot, ComplianceCell, CompliancePill, Modal, DatePopover, DatePickerCalendar, Toast, ToastContainer
+│   └── ui/            # BaseButton, IconButton, StatusBadge, PassStatusDot, ComplianceCell, CompliancePill, Modal, DatePopover, DatePickerCalendar, Tooltip, Toast, ToastContainer
 ├── composables/       # usePersonen, useSelection, useToast
 ├── stores/            # Pinia stores (personenStore, filterStore)
 ├── views/             # VerwachtePersonenView.vue
@@ -102,6 +102,12 @@ interface Person {
   checkoutTime: string | null
   contactpersoon: string            // verborgen kolom (horizontale scroll)
   contactTel: string
+  telefoonnummer: string | null     // eigen telefoonnummer persoon
+  emailadres: string | null         // eigen e-mailadres persoon
+  contactEmail: string | null       // e-mailadres contactpersoon
+  vertrekTijd: string | null        // geplande vertrektijd "HH:mm" (zelfde datum als datumVanaf)
+  credentialType: string | null     // bijv. "Bezoekerspas", "Contractorpas"
+  pasnummer: string | null          // 14-cijferig pasnummer
 }
 ```
 
@@ -109,7 +115,7 @@ interface Person {
 
 De tabel heeft **horizontale scroll**. Kolom configuratie staat in `columns.json` (single source of truth). Checkbox- en actiekolom zijn **sticky** (altijd zichtbaar). Alle kolommen zijn **resizable** door de gebruiker via de rechterrand van de kolomheader. De hele rij is klikbaar en opent het detail panel.
 
-Zie `columns.json` voor alle 17 kolommen met breedtes, filtertypes en dropdown-opties.
+Zie `columns.json` voor alle kolommen met breedtes, filtertypes en dropdown-opties. columns.json bevat 19 entries: 2 sticky systeemkolommen (checkbox, actie) + 17 data kolommen.
 
 ## Filterstrip Layout
 
@@ -128,7 +134,7 @@ Zie `columns.json` voor alle 17 kolommen met breedtes, filtertypes en dropdown-o
 ## Paginaheader Knoppen
 
 - **"Instellingen ▾"** — outlined split button (links), opent menu met:
-  - **Kolominstellingen** — popover panel met kolom toggles, zoekbalk, set opslaan/laden (zie `components/settings.md`)
+  - **Kolominstellingen** — popover panel met kolom toggles, zoekbalk, set opslaan/laden (zie `components/Settings.md`)
   - **Opgeslagen set toepassen** — submenu met opgeslagen kolomconfiguraties
 - **"Nieuwe registratie ▾"** — primary split button (rechts), met dropdown:
   - Bezoeker registreren
@@ -251,7 +257,9 @@ Voer stap 1–3 altijd uit, ook als de bewerking klein lijkt. Sla stap 3 nooit o
 - `COMPONENTS.md` — Index naar component specificaties
   - `components/AppHeader.md`, `components/PageHeader.md` — Layout
   - `components/BaseButton.md`, `components/IconButton.md` — BaseButton, IconButton
-  - `components/ui-atoms.md` — StatusBadge, PassStatusDot, CompliancePill, ComplianceCell, Modal, DatePopover, DatePickerCalendar, Toast, ToastContainer
+  - `components/ui-atoms.md` — StatusBadge, PassStatusDot, CompliancePill, ComplianceCell, Modal, DatePopover, Toast, ToastContainer
+  - `components/Tooltip.md` — Tooltip
+  - `components/DatePickerCalendar.md` — DatePickerCalendar
   - `components/TypeTabs.md`, `components/DateFilterChip.md`, `components/FilterChip.md`, `components/FilterStrip.md`, `components/SearchBox.md` — Filters
   - `components/DataTable.md`, `components/TableRow.md`, `components/ColumnFilters.md`, `components/Pagination.md` — Tabel
   - `components/ActionMenu.md`, `components/Bulkbar.md`, `components/CheckinModal.md` — Acties

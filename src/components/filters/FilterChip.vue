@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   label: { type: String, required: true },
@@ -10,6 +10,8 @@ const emit = defineEmits(['update:modelValue'])
 
 const open = ref(false)
 const dropPos = ref({ top: 0, right: 0 })
+const chipRef = ref(null)
+const dropdownRef = ref(null)
 
 const activeCount = computed(() => props.modelValue.length)
 
@@ -24,6 +26,25 @@ function toggle(val) {
   else current.push(val)
   emit('update:modelValue', current)
 }
+
+let rafId = null
+
+watch(open, (isOpen) => {
+  if (isOpen) {
+    function loop() {
+      if (dropdownRef.value && chipRef.value) {
+        const rect = chipRef.value.getBoundingClientRect()
+        dropdownRef.value.style.top = (rect.bottom + 4) + 'px'
+        dropdownRef.value.style.right = (document.documentElement.clientWidth - rect.right) + 'px'
+      }
+      rafId = requestAnimationFrame(loop)
+    }
+    loop()
+  } else {
+    cancelAnimationFrame(rafId)
+    rafId = null
+  }
+}, { flush: 'post' })
 
 function toggleOpen(event) {
   if (!open.value) {
@@ -42,6 +63,7 @@ function clear() {
 <template>
   <div class="chip-wrap">
     <button
+      ref="chipRef"
       :class="['filter-chip', { 'filter-chip-open': open, 'filter-chip-active': activeCount > 0 && !open }]"
       @click="toggleOpen"
     >
@@ -54,6 +76,7 @@ function clear() {
       <template v-if="open">
         <div class="click-away" @click="open = false" />
         <div
+          ref="dropdownRef"
           class="chip-dropdown"
           :style="{ top: dropPos.top + 'px', right: dropPos.right + 'px' }"
         >

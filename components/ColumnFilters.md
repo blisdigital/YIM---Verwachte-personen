@@ -5,7 +5,7 @@ Rij met per-kolom filter-inputs direct onder de kolomheaders. Bestaat uit twee d
 Bron: Figma [Epic - Verwachte personen `53:15693`](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=53-15693&m=dev) + [Sticky columns `54:49592`](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=54-49592&m=dev).
 
 ```vue
-<ColumnFilters :columns="columns" v-model="columnFilters" />
+<ColumnFilters :columns="columns" :column-widths="columnWidths" v-model="columnFilters" />
 ```
 
 ---
@@ -105,21 +105,25 @@ Tighter verticale padding (`6px` i.p.v. `8px`). Geen aparte icon-action containe
 
 ## Per-kolom mapping
 
-| # | Kolom | Breedte | Veldtype |
-|---|---|---|---|
-| 1 | Naam persoon | 160 | search |
-| 2 | Personeelsnr | 152 | search |
-| 3 | VIP | 88 | select |
-| 4 | Persoonstype | 144 | select |
-| 5 | Contractortype | 152 | select |
-| 6 | Bedrijf | 160 | search |
-| 7 | Locatie(s) | 160 | search |
-| 8 | Aankomstdatum | 160 | date |
-| 9 | Aankomsttijd | 144 | time |
-| 10 | Status | 144 | select |
-| 11 | Passtatus | 176 | select |
-| 12 | Compliance | 216 | select |
-| 13 | Parkeren | 160 | select |
+| # | Kolom | Breedte | Veldtype | Standaard zichtbaar |
+|---|---|---|---|---|
+| 1 | Status | 130 | select | ja |
+| 2 | Aankomstdatum | 144 | date | ja — prefilled vandaag, volgt FilterStrip preset |
+| 3 | Aankomsttijd | 144 | time | ja |
+| 4 | Naam persoon | 160 | search | ja (vergrendeld) |
+| 5 | Personeelsnr | 152 | search | nee |
+| 6 | Telefoonnummer | 160 | search | nee |
+| 7 | E-mailadres | 200 | search | nee |
+| 8 | VIP | 88 | select | ja |
+| 9 | Persoonstype | 144 | select | ja |
+| 10 | Contractortype | 152 | select | ja |
+| 11 | Bedrijf | 160 | search | ja |
+| 12 | Passtatus | 176 | select | ja |
+| 13 | Compliance | 216 | select | ja |
+| 14 | Parkeren | 160 | select | ja |
+| 15 | Locatie(s) | 160 | search | ja |
+| 16 | Contactpersoon | 200 | search | ja |
+| 17 | Bezoekreden | 200 | search | ja |
 
 Zie `columns.json` voor de volledige kolomconfiguratie (single source of truth).
 
