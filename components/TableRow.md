@@ -123,8 +123,7 @@ Lege velden: lege cel (geen dash).
 | `naam` | Plain tekst `<span>` — rij-click opent detail panel |
 | `personeelsnr` | Plain tekst Body M `--n900` |
 | `vip` | Zie §3.1 |
-| `persoontype` | Plain tekst ("Bezoeker" / "Contractor") |
-| `contractortype` | Plain tekst of lege cel als null |
+| `persoontype` | Plain tekst (bijv. "Bezoeker", "Warehouse", "Technisch") |
 | `bedrijf` | Plain tekst |
 | `locaties` | Kommagescheiden; ellipsis + `title`-attribuut bij overflow |
 | `datumVanaf` | Geformatteerde datum `DD-MM-YYYY` |

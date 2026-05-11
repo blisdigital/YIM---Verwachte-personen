@@ -3,7 +3,7 @@
 Basis pop-up wrapper voor snelle acties vanuit het Verwachte Personen overzicht.
 Alle actie-modals (check-in, check-out, no-show, annuleren) zijn gebouwd op deze component.
 
-**Figma node:** nog te definiëren — zie `base-popup-tokens.md`  
+**Figma:** nog te definiëren  
 **Versie:** 0.1 — Concept  
 **Datum:** mei 2026
 

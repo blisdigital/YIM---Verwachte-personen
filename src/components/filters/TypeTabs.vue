@@ -1,6 +1,6 @@
 <script setup>
 defineProps({
-  modelValue: { type: String, default: null }, // null | 'Bezoeker' | 'Contractor'
+  modelValue: { type: String, default: null }, // null = Alle | 'Bezoeker' | 'Contractor' (filtert op alle niet-Bezoeker persoontypen)
   counts: { type: Object, default: () => ({ alle: 0, bezoekers: 0, contractors: 0 }) }
 })
 const emit = defineEmits(['update:modelValue'])

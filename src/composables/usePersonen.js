@@ -33,8 +33,13 @@ export function usePersonen() {
       }
     }
 
+    // 'Bezoeker' → exact match; 'Contractor' → alle niet-Bezoeker types
     if (filterStore.persoontype) {
-      result = result.filter(p => p.persoontype === filterStore.persoontype)
+      if (filterStore.persoontype === 'Contractor') {
+        result = result.filter(p => p.persoontype !== 'Bezoeker')
+      } else {
+        result = result.filter(p => p.persoontype === filterStore.persoontype)
+      }
     }
 
     if (filterStore.status.length) {
@@ -119,7 +124,7 @@ export function usePersonen() {
   const counts = computed(() => ({
     alle: store.personen.length,
     bezoekers: store.personen.filter(p => p.persoontype === 'Bezoeker').length,
-    contractors: store.personen.filter(p => p.persoontype === 'Contractor').length,
+    contractors: store.personen.filter(p => p.persoontype !== 'Bezoeker').length,
   }))
 
   return {

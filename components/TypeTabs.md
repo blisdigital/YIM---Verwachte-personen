@@ -8,8 +8,8 @@ Gesegmenteerde knoppengroep voor filteren op persoontype, met count-badges.
 
 | Prop | Type | Default | Beschrijving |
 |------|------|---------|--------------|
-| `modelValue` | `'Bezoeker' \| 'Contractor' \| null` | `null` | Actief type (null = Alle) |
-| `counts` | `{ alle: number, bezoekers: number, contractors: number }` | — | Aantallen per categorie |
+| `modelValue` | `'Bezoeker' \| 'Contractor' \| null` | `null` | Actief type (`null` = Alle, `'Contractor'` filtert op alle niet-Bezoeker persoontypen) |
+| `counts` | `{ alle: number, bezoekers: number, contractors: number }` | — | Aantallen per categorie (`contractors` = alle personen met `persoontype !== 'Bezoeker'`) |
 
 **Events:** `@update:modelValue`
 

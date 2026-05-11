@@ -45,6 +45,14 @@
     "description": "Verwachte aankomsttijd in HH:mm"
   },
   {
+    "key": "locaties",
+    "label": "Locatie(s)",
+    "width": 160,
+    "sortable": true,
+    "filter": "text",
+    "description": "Kommagescheiden locaties, afgekapt met ellipsis + tooltip"
+  },
+  {
     "key": "naam",
     "label": "Naam persoon",
     "width": 160,
@@ -77,6 +85,15 @@
     "description": "E-mailadres van de persoon. Standaard verborgen; aan te zetten via kolominstellingen."
   },
   {
+    "key": "persoontype",
+    "label": "Persoonstype",
+    "width": 144,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Bezoeker", "Warehouse", "Technisch", "Logistiek", "Maintenance", "IT", "Inspection", "Construction"],
+    "description": "Type persoon. Bezoekers hebben type 'Bezoeker'; contractors hebben een specifiek type (Warehouse, Technisch, etc.). TypeTabs 'Contractors' filtert op alle niet-Bezoeker types."
+  },
+  {
     "key": "vip",
     "label": "VIP",
     "width": 88,
@@ -84,24 +101,6 @@
     "filter": "dropdown",
     "filterOptions": ["Alle", "Ja", "Nee"],
     "description": "Ster-icoon als true, streepje als false"
-  },
-  {
-    "key": "persoontype",
-    "label": "Persoonstype",
-    "width": 144,
-    "sortable": true,
-    "filter": "dropdown",
-    "filterOptions": ["Alle", "Bezoeker", "Contractor"],
-    "description": "Type persoon"
-  },
-  {
-    "key": "contractortype",
-    "label": "Contractortype",
-    "width": 152,
-    "sortable": true,
-    "filter": "dropdown",
-    "filterOptions": ["Alle", "Elektromonteur", "Schoonmaker", "Lasser"],
-    "description": "Specifiek contractortype, streepje als null"
   },
   {
     "key": "bedrijf",
@@ -137,14 +136,6 @@
     "filter": "dropdown",
     "filterOptions": ["Alle", "Gereserveerd", "Niet gereserveerd"],
     "description": "Parkeer-indicator"
-  },
-  {
-    "key": "locaties",
-    "label": "Locatie(s)",
-    "width": 160,
-    "sortable": true,
-    "filter": "text",
-    "description": "Kommagescheiden locaties, afgekapt met ellipsis + tooltip"
   },
   {
     "key": "contactpersoon",

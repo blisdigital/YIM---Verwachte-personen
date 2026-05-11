@@ -94,11 +94,6 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
         >{{ person.locaties.join(', ') }}</span>
       </template>
 
-      <!-- Contractortype -->
-      <template v-else-if="col.key === 'contractortype'">
-        <span v-if="person.contractortype">{{ person.contractortype }}</span>
-      </template>
-
       <!-- Default text -->
       <template v-else>
         <span class="cell-truncate">{{ person[col.key] ?? '—' }}</span>

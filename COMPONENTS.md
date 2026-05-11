@@ -8,7 +8,13 @@ Gedetailleerde specificaties per component staan in `components/`:
 | [`components/PageHeader.md`](components/PageHeader.md) | PageHeader |
 | [`components/BaseButton.md`](components/BaseButton.md) | BaseButton |
 | [`components/IconButton.md`](components/IconButton.md) | IconButton |
-| [`components/ui-atoms.md`](components/ui-atoms.md) | StatusBadge, PassStatusDot, CompliancePill, ComplianceCell, Modal, DatePopover, Toast, ToastContainer |
+| [`components/StatusBadge.md`](components/StatusBadge.md) | StatusBadge |
+| [`components/PassStatusDot.md`](components/PassStatusDot.md) | PassStatusDot |
+| [`components/CompliancePill.md`](components/CompliancePill.md) | CompliancePill |
+| [`components/ComplianceCell.md`](components/ComplianceCell.md) | ComplianceCell |
+| [`components/Modal.md`](components/Modal.md) | Modal |
+| [`components/DatePopover.md`](components/DatePopover.md) | DatePopover |
+| [`components/Toast.md`](components/Toast.md) | Toast, ToastContainer |
 | [`components/Tooltip.md`](components/Tooltip.md) | Tooltip |
 | [`components/DatePickerCalendar.md`](components/DatePickerCalendar.md) | DatePickerCalendar |
 | [`components/TypeTabs.md`](components/TypeTabs.md) | TypeTabs |
@@ -24,8 +30,8 @@ Gedetailleerde specificaties per component staan in `components/`:
 | [`components/Bulkbar.md`](components/Bulkbar.md) | BulkBar |
 | [`components/ActionPopup.md`](components/ActionPopup.md) | ActionPopup |
 | [`components/CheckinModal.md`](components/CheckinModal.md) | CheckinModal |
-| `components/NoShowModal.md` | NoShowModal *(spec todo)* |
-| `components/AnnulerenModal.md` | AnnulerenModal *(spec todo)* |
+| [`components/NoShowModal.md`](components/NoShowModal.md) | NoShowModal |
+| [`components/AnnulerenModal.md`](components/AnnulerenModal.md) | AnnulerenModal |
 | [`components/BezoekDetail.md`](components/BezoekDetail.md) | DetailPanel |
 | [`components/Settings.md`](components/Settings.md) | InstellingenMenu, KolomInstellingenPanel |
 
@@ -42,10 +48,11 @@ ui/
   StatusBadge          — Kleur-badge per status (Verwacht, Aangekomen, etc.) — border-radius 4px
   PassStatusDot        — Gekleurde stip + label voor passtatus
   ComplianceCell       — Compositie van 0-2 CompliancePills per tabelcel
-  CompliancePill       — Enkele dossier- of e-learning pill met hover-tooltip (via Tooltip)
+  CompliancePill       — Enkele dossier- of e-learning pill met hover-tooltip (tooltip inline geïmplementeerd)
   Tooltip              — Generieke hover-tooltip wrapper (content: string | string[])
+  ActionPopup          — Basis wrapper voor alle actie-popups (480px, bottom-sheet op tablet)
   Modal                — Modale dialoog (slots: default, footer)
-  Toast / ToastContainer — Notificatie toasts via useToast() composable; standaard: Neutral · cancel=true (zie toast-messages-tokens.md)
+  Toast / ToastContainer — Notificatie toasts via useToast() composable; standaard: Neutral · cancel=true (zie Toast.md)
   DatePopover          — Gedeeld datum-filterpaneel (Filter titel, datumveld, presets, footer)
   DatePickerCalendar   — Custom kalender in YIM-stijl (maand-nav, dag-grid, states)
 
@@ -68,9 +75,6 @@ actions/
   CheckinModal      — Bevestigingsdialoog voor inchecken / uitchecken (gebruikt ActionPopup)
   NoShowModal       — No-show registratie met reden-dropdown + opmerking (gebruikt ActionPopup)
   AnnulerenModal    — Destructieve bevestiging voor annuleren (gebruikt ActionPopup)
-
-ui/ (actie-popups)
-  ActionPopup       — Basis wrapper voor alle actie-popups (480px, bottom-sheet op tablet)
 
 detail/
   DetailPanel       — Gecentreerde modal (832px) met volledige persoonsgegevens en acties per status

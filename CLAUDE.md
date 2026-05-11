@@ -16,15 +16,16 @@ src/
 │   ├── filters/       # FilterStrip, TypeTabs, DateFilterChip, FilterChip, SearchBox
 │   ├── table/         # DataTable, ColumnFilters, TableRow, Pagination
 │   ├── detail/        # DetailPanel
-│   ├── actions/       # BulkBar, ActionMenu, CheckinModal
-│   └── ui/            # BaseButton, IconButton, StatusBadge, PassStatusDot, ComplianceCell, CompliancePill, Modal, DatePopover, DatePickerCalendar, Tooltip, Toast, ToastContainer
+│   ├── actions/       # BulkBar, ActionMenu, CheckinModal, NoShowModal, AnnulerenModal
+│   ├── settings/      # KolomInstellingenPanel
+│   └── ui/            # BaseButton, IconButton, StatusBadge, PassStatusDot, ComplianceCell, CompliancePill, Modal, DatePopover, DatePickerCalendar, Tooltip, Toast, ToastContainer, ActionPopup
 ├── composables/       # usePersonen, useSelection, useToast
-├── stores/            # Pinia stores (personenStore, filterStore)
+├── stores/            # Pinia stores (personenStore, filterStore, columnStore)
 ├── views/             # VerwachtePersonenView.vue
 ├── data/              # mockPersonen.js
 └── assets/
     ├── styles/        # _tokens.css, main.css
-    ├── logo.svg       # YiM logo
+    ├── logo.svg       # YIM logo
     └── header-vorm.svg # Header decorative shape
 ```
 
@@ -81,8 +82,10 @@ interface Person {
   naam: string
   personeelsnr: string              // bijv. "P0000002393"
   bedrijf: string
-  persoontype: 'Bezoeker' | 'Contractor'
-  contractortype: string | null     // bijv. "Elektromonteur", "Schoonmaker"
+  persoontype: 'Bezoeker' | 'Warehouse' | 'Technisch' | 'Logistiek' | 'Maintenance' | 'IT' | 'Inspection' | 'Construction'
+  // Bezoekers hebben persoontype 'Bezoeker'. Contractors hebben een specifiek subtype.
+  // TypeTabs 'Contractors' tab filtert op persoontype !== 'Bezoeker'.
+  // Nieuwe types worden in configuratie toegevoegd — geen code-wijziging nodig.
   bezoekreden: string               // verborgen kolom (horizontale scroll)
   locaties: string[]                // bijv. ["Hoofdkantoor Sh...", "Locatie Zuid"]
   datumVanaf: string                // "DD-MM-YYYY"
@@ -253,16 +256,20 @@ Voer stap 1–3 altijd uit, ook als de bewerking klein lijkt. Sla stap 3 nooit o
 
 ## Referentie Documenten
 
-- `ARCHITECTURE.md` — Gedetailleerde componentenboom en dataflow
-- `COMPONENTS.md` — Index naar component specificaties
+- `ARCHITECTURE.md` — Componentenboom, dataflow, composables API, store API
+- `COMPONENTS.md` — Index naar alle component specificaties
   - `components/AppHeader.md`, `components/PageHeader.md` — Layout
-  - `components/BaseButton.md`, `components/IconButton.md` — BaseButton, IconButton
-  - `components/ui-atoms.md` — StatusBadge, PassStatusDot, CompliancePill, ComplianceCell, Modal, DatePopover, Toast, ToastContainer
+  - `components/BaseButton.md`, `components/IconButton.md` — Knoppen
+  - `components/StatusBadge.md`, `components/PassStatusDot.md` — Status indicators
+  - `components/CompliancePill.md`, `components/ComplianceCell.md` — Compliance
   - `components/Tooltip.md` — Tooltip
-  - `components/DatePickerCalendar.md` — DatePickerCalendar
+  - `components/Modal.md`, `components/ActionPopup.md` — Dialogen
+  - `components/DatePopover.md`, `components/DatePickerCalendar.md` — Datum UI
+  - `components/Toast.md` — Toast / ToastContainer
   - `components/TypeTabs.md`, `components/DateFilterChip.md`, `components/FilterChip.md`, `components/FilterStrip.md`, `components/SearchBox.md` — Filters
   - `components/DataTable.md`, `components/TableRow.md`, `components/ColumnFilters.md`, `components/Pagination.md` — Tabel
-  - `components/ActionMenu.md`, `components/Bulkbar.md`, `components/CheckinModal.md` — Acties
+  - `components/ActionMenu.md`, `components/Bulkbar.md` — Acties (rij + bulk)
+  - `components/CheckinModal.md`, `components/NoShowModal.md`, `components/AnnulerenModal.md` — Actie-modals
   - `components/BezoekDetail.md` — DetailPanel
   - `components/Settings.md` — InstellingenMenu, KolomInstellingenPanel
 - `columns.json` — Kolomconfiguratie (single source of truth voor de tabel)

@@ -7,9 +7,9 @@ const LOCKED_COLUMNS = ['naam']
 const DEFAULT_VISIBLE = [
   'naam',
   'status', 'datumVanaf', 'aankomsttijd',
-  'vip', 'persoontype', 'contractortype', 'bedrijf',
+  'locaties', 'persoontype', 'vip', 'bedrijf',
   'passtatus', 'compliance', 'parkeren',
-  'locaties', 'contactpersoon', 'bezoekreden',
+  'contactpersoon', 'bezoekreden',
 ]
 
 const LS_KEY = 'yim-column-sets'

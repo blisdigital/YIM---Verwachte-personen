@@ -102,14 +102,13 @@ Wordt weergegeven met 45% opacity en is niet klikbaar.
 | `status` | Status |
 | `datumVanaf` | Aankomstdatum |
 | `aankomsttijd` | Aankomsttijd |
-| `vip` | VIP |
+| `locaties` | Locatie(s) |
 | `persoontype` | Persoonstype |
-| `contractortype` | Contractortype |
+| `vip` | VIP |
 | `bedrijf` | Bedrijf |
 | `passtatus` | Passtatus |
 | `compliance` | Compliance |
 | `parkeren` | Parkeren |
-| `locaties` | Locatie(s) |
 | `contactpersoon` | Contactpersoon |
 | `bezoekreden` | Bezoekreden |
 
@@ -221,9 +220,9 @@ const LOCKED_COLUMNS = ['naam']          // altijd zichtbaar
 const DEFAULT_VISIBLE = [
   'naam',
   'status', 'datumVanaf', 'aankomsttijd',
-  'vip', 'persoontype', 'contractortype', 'bedrijf',
+  'locaties', 'persoontype', 'vip', 'bedrijf',
   'passtatus', 'compliance', 'parkeren',
-  'locaties', 'contactpersoon', 'bezoekreden',
+  'contactpersoon', 'bezoekreden',
   // 'personeelsnr', 'telefoonnummer', 'emailadres' — standaard UIT
 ]
 
