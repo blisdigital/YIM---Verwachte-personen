@@ -6,25 +6,29 @@ const props = defineProps({
 
 const dotColor = computed(() => {
   const map = {
-    'niet-gekoppeld': 'var(--n400)',
-    'gekoppeld': 'var(--info)',
-    'geprint': 'var(--ok)',
+    'niet-actief':  'var(--n400)',
+    'actief':       'var(--ok)',
+    'verlopen':     'var(--warn)',
+    'ingetrokken':  'var(--n500)',
+    'geblokkeerd':  'var(--err)',
   }
   return map[props.status] || 'var(--n400)'
 })
 
 const label = computed(() => {
   const map = {
-    'niet-gekoppeld': 'Niet gekoppeld',
-    'gekoppeld': 'Gekoppeld',
-    'geprint': 'Geprint',
+    'niet-actief':  'Niet actief',
+    'actief':       'Actief',
+    'verlopen':     'Verlopen',
+    'ingetrokken':  'Ingetrokken',
+    'geblokkeerd':  'Geblokkeerd',
   }
   return map[props.status] || props.status
 })
 </script>
 
 <template>
-  <span :class="['pass-dot-wrap', { muted: status === 'niet-gekoppeld' }]">
+  <span :class="['pass-dot-wrap', { muted: status === 'niet-actief' }]">
     <span class="dot" :style="{ background: dotColor }"></span>
     <span class="pass-label">{{ label }}</span>
   </span>

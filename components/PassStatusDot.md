@@ -1,6 +1,6 @@
 # PassStatusDot
 
-Gekleurde stip met label die de passtatus van een persoon toont.
+Gekleurde stip met label die de credentialStatus van een persoon toont.
 
 **Figma:** nog te definiëren  
 **Versie:** 0.1  
@@ -11,9 +11,11 @@ Gekleurde stip met label die de passtatus van een persoon toont.
 ## Gebruik
 
 ```vue
-<PassStatusDot status="niet-gekoppeld" />
-<PassStatusDot status="gekoppeld" />
-<PassStatusDot status="geprint" />
+<PassStatusDot status="niet-actief" />
+<PassStatusDot status="actief" />
+<PassStatusDot status="verlopen" />
+<PassStatusDot status="ingetrokken" />
+<PassStatusDot status="geblokkeerd" />
 ```
 
 ---
@@ -22,14 +24,16 @@ Gekleurde stip met label die de passtatus van een persoon toont.
 
 | Prop | Type | Default | Beschrijving |
 |------|------|---------|--------------|
-| `status` | `'niet-gekoppeld' \| 'gekoppeld' \| 'geprint'` | — | Passtatus waarde |
+| `status` | `'niet-actief' \| 'actief' \| 'verlopen' \| 'ingetrokken' \| 'geblokkeerd'` | — | Credentialstatus waarde |
 
 ---
 
 ## Kleurmapping
 
-| Status | Stip kleur | Label |
-|--------|-----------|-------|
-| `niet-gekoppeld` | `--n400` (grijs) | "Niet gekoppeld" |
-| `gekoppeld` | blauw | "Gekoppeld" |
-| `geprint` | `--ok` (groen) | "Geprint" |
+| Status | Stip kleur | Label | Toelichting |
+|--------|-----------|-------|-------------|
+| `niet-actief` | `--n400` (grijs) | "Niet actief" | Beginstatus; geen credentialnummer; na ontkoppelen |
+| `actief` | `--ok` (groen) | "Actief" | Gekoppeld of geprint met credentialnummer |
+| `verlopen` | `--warn` (oranje) | "Verlopen" | Geldigheidsperiode verstreken (printbare passen) |
+| `ingetrokken` | `--n500` (donkergrijs) | "Ingetrokken" | Tijdelijk; herbruikbaar; na nieuwe credential of handmatig |
+| `geblokkeerd` | `--err` (rood) | "Geblokkeerd" | Permanent buiten gebruik; handmatige actie |

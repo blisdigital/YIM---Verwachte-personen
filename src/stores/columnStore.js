@@ -6,10 +6,11 @@ const LOCKED_COLUMNS = ['naam']
 
 const DEFAULT_VISIBLE = [
   'naam',
-  'status', 'datumVanaf', 'aankomsttijd',
+  'status', 'datumVanaf', 'aankomsttijd', 'vertrekTijd',
   'locaties', 'persoontype', 'vip', 'bedrijf',
-  'passtatus', 'compliance', 'parkeren',
+  'credentialType', 'credentialStatus', 'compliance', 'parkeren',
   'contactpersoon', 'bezoekreden',
+  // 'personeelsnr', 'telefoonnummer', 'emailadres' — standaard UIT, verschijnen na VIP
 ]
 
 const LS_KEY = 'yim-column-sets'

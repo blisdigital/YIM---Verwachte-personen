@@ -64,7 +64,7 @@ function displayDate(isoStr) {
       >
         <span class="date-text">{{ displayDate(isoDate) || '—' }}</span>
         <div class="date-icon-area">
-          <span class="mi" style="font-size:24px">today</span>
+          <span class="mi date-icon">today</span>
         </div>
       </div>
 
@@ -92,7 +92,7 @@ function displayDate(isoStr) {
     <div class="popover-divider" />
 
     <div class="popover-actions">
-      <button class="btn-reset" @click="$emit('reset')">Resetten</button>
+      <button class="btn-reset" @click="$emit('reset')">Reset</button>
       <button class="btn-apply" @click="$emit('apply')">Toepassen</button>
     </div>
   </div>
@@ -168,6 +168,7 @@ function displayDate(isoStr) {
   color: var(--n700);
   flex-shrink: 0;
 }
+.date-icon { font-size: 24px; }
 
 .popover-presets {
   display: flex;

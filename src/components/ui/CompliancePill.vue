@@ -87,7 +87,7 @@ function onMouseLeave() {
   gap: var(--sp-xs);
   padding: 4px 12px 4px 8px;
   border-radius: var(--r-xl);
-  background: var(--p50);
+  background: var(--p100);
   color: var(--n900);
   white-space: nowrap;
   cursor: default;
@@ -115,7 +115,7 @@ function onMouseLeave() {
   font-weight: 400;
   line-height: 18px;
   padding: 6px 10px;
-  border-radius: 4px;
+  border-radius: var(--r-s);
   white-space: nowrap;
   pointer-events: none;
   z-index: 9999;

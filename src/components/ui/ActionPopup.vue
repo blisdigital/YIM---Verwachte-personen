@@ -5,6 +5,7 @@ import IconButton from '@/components/ui/IconButton.vue'
 const props = defineProps({
   open:  { type: Boolean, default: false },
   title: { type: String,  default: '' },
+  width: { type: String,  default: null },
 })
 const emit = defineEmits(['update:open'])
 
@@ -24,7 +25,7 @@ watch(() => props.open, (val) => {
   <Teleport to="body">
     <Transition name="popup">
       <div v-if="open" class="popup-backdrop">
-        <div class="popup-box" role="dialog" aria-modal="true" :aria-labelledby="title ? titleId : undefined">
+        <div class="popup-box" role="dialog" aria-modal="true" :aria-labelledby="title ? titleId : undefined" :style="width ? { width } : undefined">
           <div class="popup-header">
             <h2 :id="titleId" class="popup-title">{{ title }}</h2>
             <IconButton icon="close" aria-label="Sluiten" size="md" variant="ghost" @click="close" />
@@ -56,13 +57,13 @@ watch(() => props.open, (val) => {
 .popup-box {
   background: var(--n0);
   border-radius: var(--r-l);
-  box-shadow: var(--shadow-l);
+  box-shadow: var(--shadow-xl);
   border: 1px solid var(--n300);
   display: flex;
   flex-direction: column;
   width: 480px;
   max-width: 90vw;
-  max-height: 80vh;
+  max-height: 92vh;
 }
 
 .popup-header {

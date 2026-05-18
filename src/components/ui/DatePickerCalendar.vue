@@ -151,11 +151,11 @@ function selectYear(year) {
       <button class="cal-label-btn" @click="goUp">{{ navLabel }}</button>
       <div class="cal-nav-group">
         <button class="cal-icon-btn" @click="prev">
-          <span class="mi" style="font-size:16px; line-height:1">chevron_left</span>
+          <span class="mi cal-nav-icon">chevron_left</span>
         </button>
         <button class="cal-today-btn" @click="goToday">Vandaag</button>
         <button class="cal-icon-btn" @click="next">
-          <span class="mi" style="font-size:16px; line-height:1">chevron_right</span>
+          <span class="mi cal-nav-icon">chevron_right</span>
         </button>
       </div>
     </div>
@@ -261,6 +261,7 @@ function selectYear(year) {
 .cal-icon-btn:hover { background: var(--n50); }
 .cal-icon-btn:disabled { color: var(--n300); cursor: default; }
 .cal-icon-btn:disabled:hover { background: transparent; }
+.cal-nav-icon { font-size: 16px; line-height: 1; }
 
 .cal-today-btn {
   padding: 8px 12px;

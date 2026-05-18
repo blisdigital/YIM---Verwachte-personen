@@ -1,9 +1,9 @@
 # AnnulerenModal
 
-Destructieve bevestigingsdialoog voor het annuleren van een verwachte persoon. Gebouwd op `<ActionPopup>`.
+Bevestigingsdialoog voor het annuleren van een verwachte persoon. Gebouwd op `<ActionPopup>`.
 
-**Figma:** nog te definiëren  
-**Versie:** 0.1  
+**Figma:** [Epic: Verwachte personen — node 208:99269](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=208-99269)  
+**Versie:** 0.2  
 **Datum:** mei 2026
 
 ---
@@ -34,27 +34,32 @@ Destructieve bevestigingsdialoog voor het annuleren van een verwachte persoon. G
 | Event | Payload | Beschrijving |
 |-------|---------|--------------|
 | `update:open` | `boolean` | Modal sluiten |
-| `confirm` | `{ person }` | Gebruiker heeft bevestigd — ouder verantwoordelijk voor statuswijziging |
+| `confirm` | `{ person, reden, toelichting, notifyContact }` | Gebruiker heeft bevestigd — ouder verantwoordelijk voor statuswijziging |
 
 ---
 
 ## Inhoud
 
-Waarschuwingsblok met:
-- Icoon: `warning` (Material Icons Round, 20px)
-- Tekst: "Weet je zeker dat je **[naam]** wil annuleren? De persoon moet opnieuw worden aangemeld."
+1. **Intro-tekst** — "Je staat op het punt de aanmelding van deze persoon te annuleren. Dit kan niet ongedaan worden gemaakt. Persoon moet dan opnieuw geregistreerd en aangemeld worden."
 
-Als geen persoon meegegeven: "Weet je zeker dat je **deze verwachte persoon** wil annuleren?"
+2. **Persoon-card** (achtergrond `--p50`) — toont naam + VIP-ster (indien van toepassing), bedrijf, en contactpersoon-rij (wit balkje met `account_box`-icoon, naam en e-mail contactpersoon).
 
-**Footer:** Annuleren (ghost) + Bevestigen (destructive — rode achtergrond).
+3. **Reden (optioneel)** — select-dropdown met placeholder "Selecteer een reden". Opties worden geconfigureerd in het prototype.
+
+4. **Toelichting (optioneel)** — textarea (96px hoog).
+
+5. **E-mail toggle** — "Verstuur e-mail naar contactpersoon dat persoon is geannuleerd." — standaard uit.
+
+**Footer:** Annuleren (ghost) + Bevestigen (filled — primair teal).
 
 ---
 
 ## Gedrag
 
-- Geen formulierveld — directe bevestiging zonder extra invoer
-- Bevestigen: emit `confirm` → modal sluit direct
-- Bevestigingsknop gebruikt `variant="destructive"` (rode achtergrond)
+- Formuliervelden worden gereset bij sluiten of bevestigen
+- Bevestigen: emit `confirm` met `{ person, reden, toelichting, notifyContact }` → modal sluit
+- Status wijzigt naar `'Geannuleerd'` in de parent (`handleAnnulerenConfirm`)
+- Toast na bevestigen: "De aankomst van [naam] is geannuleerd."
 
 ---
 
@@ -62,7 +67,14 @@ Als geen persoon meegegeven: "Weet je zeker dat je **deze verwachte persoon** wi
 
 | Element | Token | Beschrijving |
 |---------|-------|--------------|
-| Waarschuwingsblok achtergrond | `--popup-cancel-bg` | Popup-specifieke token |
-| Waarschuwingsblok border | `--popup-cancel-border` | Popup-specifieke token |
-| Waarschuwingsicoon kleur | `--popup-cancel-icon` | Popup-specifieke token |
-| Afronding blok | `--r-m` | 8px |
+| Persoon-card achtergrond | `--p50` | Licht teal |
+| Persoon naam kleur | `--p700` | Donker teal |
+| Persoon bedrijf kleur | `--n700` | Grijs |
+| Contact-rij achtergrond | `--n0` | Wit |
+| Veld achtergrond | `--n0` | Wit |
+| Veld rand | `--n400` | Grijs |
+| Veld rand focus | `--p500` | Teal |
+| Toggle actief | `--p500` | Teal |
+| Toggle inactief | `--n300` | Licht grijs |
+| Toggle label kleur | `--p800` | Donker teal |
+| Afronding card | `--r-s` | 4px |

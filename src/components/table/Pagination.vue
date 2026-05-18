@@ -84,6 +84,55 @@ onUnmounted(() => document.removeEventListener('click', onClickAway))
 <template>
   <div class="pagination">
     <div class="page-left">
+      <div class="page-btns">
+        <button
+          class="page-btn page-btn--nav"
+          :class="{ 'page-btn--disabled': page <= 1 }"
+          :disabled="page <= 1"
+          @click="goTo(1)"
+          aria-label="Eerste pagina"
+        >
+          <span class="mi">first_page</span>
+        </button>
+        <button
+          class="page-btn page-btn--nav"
+          :class="{ 'page-btn--disabled': page <= 1 }"
+          :disabled="page <= 1"
+          @click="goTo(page - 1)"
+          aria-label="Vorige pagina"
+        >
+          <span class="mi">chevron_left</span>
+        </button>
+
+        <template v-for="p in pages" :key="p">
+          <span v-if="p === '...'" class="page-ellipsis">…</span>
+          <button
+            v-else
+            :class="['page-btn', 'page-num', { active: p === page }]"
+            @click="goTo(p)"
+          >{{ p }}</button>
+        </template>
+
+        <button
+          class="page-btn page-btn--nav"
+          :class="{ 'page-btn--disabled': page >= totalPages }"
+          :disabled="page >= totalPages"
+          @click="goTo(page + 1)"
+          aria-label="Volgende pagina"
+        >
+          <span class="mi">chevron_right</span>
+        </button>
+        <button
+          class="page-btn page-btn--nav"
+          :class="{ 'page-btn--disabled': page >= totalPages }"
+          :disabled="page >= totalPages"
+          @click="goTo(totalPages)"
+          aria-label="Laatste pagina"
+        >
+          <span class="mi">last_page</span>
+        </button>
+      </div>
+
       <!-- Custom per-page dropdown -->
       <div class="page-size" :class="{ 'page-size--open': dropdownOpen }">
         <button
@@ -95,7 +144,7 @@ onUnmounted(() => document.removeEventListener('click', onClickAway))
         >
           <span class="page-size__label">{{ pageSize }}</span>
           <span class="page-size__icon">
-            <span class="mi">{{ dropdownOpen ? 'expand_less' : 'expand_more' }}</span>
+            <span class="mi">arrow_drop_down</span>
           </span>
         </button>
 
@@ -111,54 +160,9 @@ onUnmounted(() => document.removeEventListener('click', onClickAway))
           </div>
         </Teleport>
       </div>
-
-      <span class="page-info">resultaten per pagina | {{ rangeStart }}-{{ rangeEnd }} van {{ total }}</span>
     </div>
 
-    <div class="page-btns">
-      <button
-        class="page-btn"
-        :disabled="page <= 1"
-        @click="goTo(1)"
-        aria-label="Eerste pagina"
-      >
-        <span class="mi">first_page</span>
-      </button>
-      <button
-        class="page-btn"
-        :disabled="page <= 1"
-        @click="goTo(page - 1)"
-        aria-label="Vorige pagina"
-      >
-        <span class="mi">chevron_left</span>
-      </button>
-
-      <template v-for="p in pages" :key="p">
-        <span v-if="p === '...'" class="page-ellipsis">…</span>
-        <button
-          v-else
-          :class="['page-btn', 'page-num', { active: p === page }]"
-          @click="goTo(p)"
-        >{{ p }}</button>
-      </template>
-
-      <button
-        class="page-btn"
-        :disabled="page >= totalPages"
-        @click="goTo(page + 1)"
-        aria-label="Volgende pagina"
-      >
-        <span class="mi">chevron_right</span>
-      </button>
-      <button
-        class="page-btn"
-        :disabled="page >= totalPages"
-        @click="goTo(totalPages)"
-        aria-label="Laatste pagina"
-      >
-        <span class="mi">last_page</span>
-      </button>
-    </div>
+    <span class="page-info">{{ rangeStart }}-{{ rangeEnd }} van {{ total }} items</span>
   </div>
 </template>
 
@@ -167,8 +171,7 @@ onUnmounted(() => document.removeEventListener('click', onClickAway))
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--sp-s) var(--sp-l);
-  height: 56px;
+  padding: var(--sp-xl) var(--sp-l) var(--sp-l);
   background: var(--n0);
   box-sizing: border-box;
 }
@@ -178,6 +181,52 @@ onUnmounted(() => document.removeEventListener('click', onClickAway))
   display: flex;
   align-items: center;
   gap: var(--sp-l);
+}
+
+/* ── Page buttons group ── */
+.page-btns {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-s);
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: var(--sp-s) var(--sp-m);
+  border: none;
+  border-radius: var(--r-xl);
+  background: var(--p50);
+  font: 600 14px/20px var(--font);
+  letter-spacing: 0.14px;
+  color: var(--p700);
+  cursor: pointer;
+  transition: background 0.15s;
+  box-sizing: border-box;
+}
+.page-btn .mi { font-family: 'Material Icons Round'; font-weight: 400; font-size: 24px; color: var(--n800); }
+.page-btn:hover:not(:disabled) { background: var(--p100, #d9edf0); }
+.page-btn.active { background: var(--p500); color: var(--n0); }
+.page-btn.active .mi { color: var(--n0); }
+
+.page-btn--nav { background: var(--p50); }
+.page-btn--nav.page-btn--disabled { background: var(--n50); cursor: default; }
+.page-btn--nav.page-btn--disabled .mi { color: var(--n400); }
+
+.page-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font: 600 14px/20px var(--font);
+  letter-spacing: 0.14px;
+  color: var(--p700);
+  background: var(--p50);
+  border-radius: var(--r-xl);
 }
 
 /* ── Per-page dropdown ── */
@@ -213,7 +262,8 @@ onUnmounted(() => document.removeEventListener('click', onClickAway))
   height: 40px;
   display: grid;
   place-items: center;
-  background: var(--n50);
+  border-left: 1px solid var(--n400);
+  background: var(--n0);
   flex-shrink: 0;
 }
 .page-size__icon .mi {
@@ -223,52 +273,11 @@ onUnmounted(() => document.removeEventListener('click', onClickAway))
   color: var(--n800);
 }
 
-
 /* ── Counter text ── */
 .page-info {
   font: 600 14px/20px var(--font);
   letter-spacing: 0.14px;
   color: var(--n800);
-}
-
-/* ── Right group: page buttons ── */
-.page-btns {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-s);
-}
-
-.page-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 1px solid var(--n400);
-  border-radius: var(--r-s);
-  background: var(--n0);
-  font: 600 14px/20px var(--font);
-  letter-spacing: 0.14px;
-  color: var(--n800);
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-  box-sizing: border-box;
-}
-.page-btn .mi { font-family: 'Material Icons Round'; font-weight: 400; font-size: 24px; color: var(--n800); }
-.page-btn:hover:not(:disabled) { background: var(--n50); border-color: var(--p500); }
-.page-btn:disabled { border-color: var(--n300); cursor: default; }
-.page-btn:disabled .mi { color: var(--n400); }
-.page-btn.active { background: var(--p500); border-color: var(--p500); color: var(--n0); }
-
-.page-ellipsis {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  font-size: 14px;
-  color: var(--n500);
 }
 </style>
 

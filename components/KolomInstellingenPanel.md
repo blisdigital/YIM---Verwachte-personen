@@ -26,7 +26,7 @@ Custom dropdown button in de PageHeader. Geen SplitButton — eigen implementati
 | Kolominstellingen | Opent `KolomInstellingenPanel` |
 | Opgeslagen set toepassen | Toont submenu met opgeslagen kolomsets, of neutral toast¹ als er geen zijn |
 
-¹ Neutral toast · trailing close icon · zie [toast-messages-tokens.md](toast-messages-tokens.md)
+¹ Neutral toast · trailing close icon · zie [Toast.md](Toast.md)
 
 **Button styling:**
 
@@ -98,24 +98,26 @@ Wordt weergegeven met 45% opacity en is niet klikbaar.
 **Standaard AAN (bij eerste gebruik):**
 
 | Key | Label |
-|-----|-------|
+| --- | --- |
 | `status` | Status |
 | `datumVanaf` | Aankomstdatum |
 | `aankomsttijd` | Aankomsttijd |
+| `vertrekTijd` | Vertrektijd |
 | `locaties` | Locatie(s) |
 | `persoontype` | Persoonstype |
 | `vip` | VIP |
 | `bedrijf` | Bedrijf |
-| `passtatus` | Passtatus |
+| `credentialType` | Credential |
+| `credentialStatus` | Credential status |
 | `compliance` | Compliance |
 | `parkeren` | Parkeren |
 | `contactpersoon` | Contactpersoon |
 | `bezoekreden` | Bezoekreden |
 
-**Standaard UIT (persoonsinformatie, na Naam persoon):**
+**Standaard UIT (persoonsinformatie, verschijnt na VIP):**
 
 | Key | Label |
-|-----|-------|
+| --- | --- |
 | `personeelsnr` | Personeelsnr |
 | `telefoonnummer` | Telefoonnummer |
 | `emailadres` | E-mailadres |
@@ -219,11 +221,11 @@ Footer padding: `8px 16px` (`py-0 px-l`). "Reset standaard" staat links, "Set op
 const LOCKED_COLUMNS = ['naam']          // altijd zichtbaar
 const DEFAULT_VISIBLE = [
   'naam',
-  'status', 'datumVanaf', 'aankomsttijd',
+  'status', 'datumVanaf', 'aankomsttijd', 'vertrekTijd',
   'locaties', 'persoontype', 'vip', 'bedrijf',
-  'passtatus', 'compliance', 'parkeren',
+  'credentialType', 'credentialStatus', 'compliance', 'parkeren',
   'contactpersoon', 'bezoekreden',
-  // 'personeelsnr', 'telefoonnummer', 'emailadres' — standaard UIT
+  // 'personeelsnr', 'telefoonnummer', 'emailadres' — standaard UIT, verschijnen na VIP
 ]
 
 // Store exposeert:
@@ -242,4 +244,4 @@ const DEFAULT_VISIBLE = [
 - Minimum: minstens 1 niet-vergrendelde kolom moet geselecteerd blijven
 - "Naam persoon" is altijd geselecteerd en niet togglebaar
 - "Set opslaan" opent een inline tekstveld in de footer (vervangt de drie knoppen tijdelijk)
-- "Opgeslagen set toepassen" in het InstellingenMenu toont een neutral toast (trailing close icon) als er geen sets zijn — zie [toast-messages-tokens.md](toast-messages-tokens.md)
+- "Opgeslagen set toepassen" in het InstellingenMenu toont een neutral toast (trailing close icon) als er geen sets zijn — zie [Toast.md](Toast.md)

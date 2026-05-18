@@ -21,28 +21,28 @@ Figma node: `6:45704` — [Epic - Verwachte personen](https://www.figma.com/desi
 
 **Lay-out:**
 ```
-[N geselecteerd]  [↑ Inchecken] [↓ Uitchecken] [🪪 Pas koppelen] [🔓 Pas ontkoppelen] [🖨️ Pas printen] [👤 No-show] [✕ Annuleren]        [×]
+[N geselecteerd]  [↑ Aanmelden] [↓ Afmelden] [🪪 Credential koppelen] [🔓 Credential ontkoppelen] [🖨️ Credential printen] [⛔ Niet aangekomen] [✕ Persoon annuleren]        [×]
 ```
 
 **Enabled/disabled per actie:**
 
 | Actie | Enabled als selectie ≥1 persoon bevat met status |
 | --- | --- |
-| Inchecken | `Verwacht` of `No-show` |
-| Uitchecken | `Aangekomen` |
-| Pas koppelen | `Verwacht` of `No-show` |
-| Pas ontkoppelen | `Aangekomen` |
-| Pas printen | `Aangekomen` |
-| No-show | `Verwacht` |
-| Annuleren | `Verwacht` of `No-show` |
+| Aanmelden | `Verwacht`, `Nog niet aangekomen` of `Niet aangekomen` |
+| Afmelden | `Aangemeld` |
+| Credential koppelen | `Verwacht`, `Nog niet aangekomen` of `Niet aangekomen` |
+| Credential ontkoppelen | `Aangemeld` |
+| Credential printen | `Aangemeld` |
+| Niet aangekomen | `Verwacht` of `Nog niet aangekomen` |
+| Persoon annuleren | `Verwacht`, `Nog niet aangekomen` of `Niet aangekomen` |
 
-Personen met status `Geannuleerd` of `Vertrokken` dragen nergens aan bij — een selectie uitsluitend van deze statussen heeft alle knoppen disabled.
+Personen met status `Geannuleerd` of `Afgemeld` dragen nergens aan bij — een selectie uitsluitend van deze statussen heeft alle knoppen disabled.
 
-**Gemengde selecties:** de actie wordt uitgevoerd op de relevante subset. Inchecken bij een mix van `Verwacht` + `Aangekomen` checkt alleen de `Verwacht`-personen in; Uitchecken alleen de `Aangekomen`.
+**Gemengde selecties:** de actie wordt uitgevoerd op de relevante subset. Inchecken bij een mix van `Verwacht` + `Aangemeld` meldt alleen de `Verwacht`-personen aan; Uitchecken alleen de `Aangemeld`.
 
 **Events:**
 
-- `@action` — Bulk actie (`{ action: 'inchecken' | 'uitchecken' | 'pas-koppelen' | 'pas-ontkoppelen' | 'pas-printen' | 'no-show' | 'annuleren' }`)
+- `@action` — Bulk actie (`{ action: 'inchecken' | 'uitchecken' | 'pas-koppelen' | 'pas-ontkoppelen' | 'pas-printen' | 'niet-aangekomen' | 'annuleren' }`)
 - `@clear` — Selectie wissen (× knop)
 
 **Sluitknop (×):** `<IconButton variant="ghost" size="md" icon="close" aria-label="Selectie wissen" />` — triggert `@clear`. Hit-area 32×32px, `border-radius: var(--r-xl)` op hover (volledig rond).

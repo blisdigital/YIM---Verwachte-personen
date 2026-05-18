@@ -26,7 +26,7 @@ App.vue
     │   ├── ColumnFilters.vue (filterrij per kolom: tekst, dropdown, datum of tijd)
     │   ├── TableRow.vue (per persoon)
     │   │   ├── ActionMenu.vue
-    │   │   ├── StatusBadge.vue
+    │   │   ├── StatusDot.vue
     │   │   ├── PassStatusDot.vue
     │   │   ├── ComplianceCell.vue
     │   │   └── CompliancePill.vue
@@ -34,8 +34,7 @@ App.vue
     │
     ├── DetailPanel.vue (gecentreerde modal 832px; sections: Bezoekgegevens, Compliance, Contactpersoon, Toegangspas + footer-acties per status)
     │
-    ├── CheckinModal.vue   (check-in / check-out bevestiging)
-    ├── NoShowModal.vue    (no-show registratie met formulier)
+    ├── AanmeldenModal.vue (check-in / check-out bevestiging)
     ├── AnnulerenModal.vue (destructieve bevestiging)
     │
     └── ToastContainer.vue
@@ -149,7 +148,7 @@ Zie [Toast.md](components/Toast.md) voor de volledige Toast / ToastContainer doc
 | `error` | `Ref<string\|null>` | Foutmelding |
 | `fetch()` | `async function` | Laad `MOCK_PERSONEN`; klont `parkeren` object per persoon |
 | `updateStatus(id, status)` | `function` | Update status; zet `checkinTime` bij `Aangekomen`, `checkoutTime` bij `Vertrokken` |
-| `updatePassStatus(id, passtatus)` | `function` | Update `passtatus` van één persoon |
+| `updateCredentialStatus(id, credentialStatus)` | `function` | Update `credentialStatus` van één persoon |
 
 ### filterStore
 

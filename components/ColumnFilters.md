@@ -2,7 +2,7 @@
 
 Rij met per-kolom filter-inputs direct onder de kolomheaders. Bestaat uit twee delen: **sticky cellen** links (boven de checkbox- en actiekolom) en **scrollbare filter-cellen** per data-kolom.
 
-Bron: Figma [Epic - Verwachte personen `53:15693`](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=53-15693&m=dev) + [Sticky columns `54:49592`](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=54-49592&m=dev).
+Bron: Figma [Epic - Verwachte personen `53:15693`](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=53-15693&m=dev) + [Sticky columns `54:49592`](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=54-49592&m=dev) + [UI update `207:39083`](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=207-39083&m=dev).
 
 ```vue
 <ColumnFilters :columns="columns" :column-widths="columnWidths" v-model="columnFilters" />
@@ -13,11 +13,13 @@ Bron: Figma [Epic - Verwachte personen `53:15693`](https://www.figma.com/design/
 ## Structuur
 
 ```text
-┌───────────┬────────────┬────────┬────────────┬────────────┬──────────────────┬────────────┬──────
-│ Zoeken  🔍│ Zoeken  🔍 │Alle ▾  │ Alle    ▾  │ Alle    ▾  │ Zoeken       🔍  │08-04  📅  │…   │
-└───────────┴────────────┴────────┴────────────┴────────────┴──────────────────┴────────────┴──────
-  ↑ Naam     ↑ Pers.nr    ↑VIP     ↑Pers.type   ↑Contr.type  ↑Bedrijf           ↑Aankomst
+┌───────────┬────────────┬──────────┬────────────┬────────────┬──────────────────┬──────────────┬──────
+│ Zoeken  🔍│ Zoeken  🔍 │Filter  ∨ │ Filter   ∨ │ Filter   ∨ │ Zoeken       🔍  │Filter      ∨ │…   │
+└───────────┴────────────┴──────────┴────────────┴────────────┴──────────────────┴──────────────┴──────
+  ↑ Naam     ↑ Pers.nr    ↑VIP       ↑Pers.type   ↑Contr.type  ↑Bedrijf           ↑Aankomst
 ```
+
+Filtercel-achtergrond is nu altijd `--p700` (teal). Zoek-cellen (text) blijven wit.
 
 Twee sticky lege cellen (48×48) links → scrollbare filtercellen per datakolom. Celbreedtes matchen 1-op-1 de kolomheaders.
 
@@ -56,18 +58,20 @@ Twee lege cellen links in de filterrij, exact boven de sticky headerkolommen (ch
 
 | Prop | Waarde |
 |---|---|
-| Bg | `--n50` |
-| Border-bottom | 1px `--n300` |
-| Border-right | 1px `--n300` |
-| Padding | `8px` rondom het veld |
+| Bg | `--p700` |
+| Border-bottom | 1px `--p800` |
+| Border-right | 1px `--p800` |
+| Padding | `4px 8px` (spacing-xs spacing-s) |
 | Breedte | volgt column-header breedte |
 | Display | `flex`, `align-items: center` |
 
 ---
 
-## Veldtypes (allemaal small / 32px hoog)
+## Veldtypes (allemaal 32px hoog)
 
-Alle vier delen deze basis: bg `--n0`, `border: 1px solid var(--n400)`, `border-radius: var(--r-s)` (4px), hoogte 32px, `flex: 1`, `overflow: clip`.
+**Search-cellen:** bg `--n0`, `border: 1px solid var(--n400)`, `border-radius: var(--r-s)` (4px), hoogte 32px.
+
+**Chip-cellen** (dropdown / date / time): bg `--p700`, `border: none`, `border-radius: var(--r-s)` (4px), hoogte 32px, witte semibold tekst, chevron `expand_more`.
 
 ### 1. Search (type-to-filter)
 
@@ -75,31 +79,53 @@ Flex container: label/input links + 32×32px icon-area rechts.
 
 | Onderdeel | Waarde |
 |---|---|
-| Label/input | `padding: 8px`, Body M, kleur `--n500`, placeholder "Zoeken" |
-| Icon-action | 32×32, `padding: 8px`, icoon 20px `search`, kleur `--n800` |
+| Label/input | `padding: 6px 8px`, Body M, kleur `--n500`, placeholder "Zoeken" |
+| Icon-area | 32×32, icoon 20px `search`, kleur `--n800` |
 
-### 2. Select / dropdown
+### 2. Dropdown — chip + popover
 
-Tighter verticale padding (`6px` i.p.v. `8px`). Geen aparte icon-action container.
+Trigger-knop identiek aan Date/Time chip. Actief filter (waarde ≠ leeg): knop krijgt `--n0` achtergrond + `--p700` tekst/chevron.
 
-| Onderdeel | Waarde |
-|---|---|
-| Label | Body M / `--n900`, default "Alle" |
-| Chevron | 18×18 `arrow_drop_down`, kleur `--n800` |
-
-### 3. Date (small)
+**Popover panel** (via `<Teleport to="body">`, `position: fixed`, `z-index: 300`):
 
 | Onderdeel | Waarde |
 |---|---|
-| Label | `padding: 8px`, Body M / `--n900` (bv. "08-04-2026") |
-| Icon-action | 32×32, `padding: 8px`, 20px `today`-icoon, kleur `--n800` |
+| Bg / shadow | `--n0`, `var(--shadow-m)`, `border-radius: var(--r-s)` |
+| Breedte | 240px |
+| Padding | 16px |
+| Titel "Filter" | 18px / 700 / `--p700` |
+| Opties lijst | Klikbaar, één selectie tegelijk; geselecteerde optie: `--p50` bg + `--p700` tekst; "Alle" niet getoond (Reset-knop vervangt dit) |
+| Divider | 1px `--n300` |
+| Footer | `[Reset]` outlined links — `[Toepassen]` primary rechts (volgorde = DatePopover) |
 
-### 4. Time
+### 3b. Combobox (locaties) — chip + popover
+
+Trigger-knop identiek aan dropdown chip. Actief filter: zelfde active-state als dropdown.
+
+**Popover panel** (272px breed):
 
 | Onderdeel | Waarde |
 |---|---|
-| Label | `padding: 8px`, Body M / `--n900`, default "Alle" |
-| Icon-action | 32×32, `padding: 8px`, 20px `access_time`-icoon, kleur `--n800` |
+| Titel "Filter" | 18px / 700 / `--p700` |
+| Tekst input | Placeholder "Filter", `border: 1px solid --n400`, focus → `--p500` |
+| Suggestie-lijst | Gefilterde unieke locaties uit store; klikken vult input; geselecteerde optie highlighted |
+| Divider + footer | Identiek aan dropdown popover |
+
+### 3. Date — chip
+
+| Onderdeel | Waarde |
+|---|---|
+| Bg | `--p700` |
+| Label | `padding: 6px 8px`, Body M SemiBold / `--n0` (datum of "Filter") |
+| Chevron | 18px `expand_more`, kleur `--n0`, `position: absolute; right: 4px` |
+
+### 4. Time — chip
+
+| Onderdeel | Waarde |
+|---|---|
+| Bg | `--p700` (transparant in select, kleur van wrapper) |
+| Label | Body M SemiBold / `--n0`, default "Filter" |
+| Chevron | 18px `expand_more`, kleur `--n0`, `position: absolute; right: 4px` |
 
 ---
 
@@ -107,23 +133,23 @@ Tighter verticale padding (`6px` i.p.v. `8px`). Geen aparte icon-action containe
 
 | # | Kolom | Breedte | Veldtype | Standaard zichtbaar |
 |---|---|---|---|---|
-| 1 | Status | 130 | select | ja |
+| 1 | Status | 130 | dropdown | ja |
 | 2 | Aankomstdatum | 144 | date | ja — prefilled vandaag, volgt FilterStrip preset |
 | 3 | Aankomsttijd | 144 | time | ja |
-| 4 | Naam persoon | 160 | search | ja (vergrendeld) |
-| 5 | Personeelsnr | 152 | search | nee |
-| 6 | Telefoonnummer | 160 | search | nee |
-| 7 | E-mailadres | 200 | search | nee |
-| 8 | VIP | 88 | select | ja |
-| 9 | Persoonstype | 144 | select | ja |
-| 10 | Contractortype | 152 | select | ja |
-| 11 | Bedrijf | 160 | search | ja |
-| 12 | Passtatus | 176 | select | ja |
-| 13 | Compliance | 216 | select | ja |
-| 14 | Parkeren | 160 | select | ja |
-| 15 | Locatie(s) | 160 | search | ja |
-| 16 | Contactpersoon | 200 | search | ja |
-| 17 | Bezoekreden | 200 | search | ja |
+| 4 | Naam persoon | 160 | text | ja (vergrendeld) |
+| 5 | Personeelsnr | 152 | text | nee |
+| 6 | Telefoonnummer | 160 | text | nee |
+| 7 | E-mailadres | 200 | text | nee |
+| 8 | VIP | 88 | dropdown | ja |
+| 9 | Persoonstype | 144 | dropdown | ja |
+| 10 | Contractortype | 152 | dropdown | ja |
+| 11 | Bedrijf | 160 | text | ja |
+| 12 | Passtatus | 176 | dropdown | ja |
+| 13 | Compliance | 216 | dropdown | ja |
+| 14 | Parkeren | 160 | dropdown | ja |
+| 15 | Locatie(s) | 160 | combobox | ja |
+| 16 | Contactpersoon | 200 | text | ja |
+| 17 | Bezoekreden | 200 | text | ja |
 
 Zie `columns.json` voor de volledige kolomconfiguratie (single source of truth).
 
@@ -132,7 +158,8 @@ Zie `columns.json` voor de volledige kolomconfiguratie (single source of truth).
 ## Gedrag
 
 - **Search-velden** filteren live op typen (debounce applicable), substring match op `oninput`.
-- **Select-dropdowns** openen een menu zoals de filter-chip dropdowns (multi-select met checkboxes). "Alle" = geen filter actief.
+- **Dropdown-velden** openen een custom popover panel (DatePopover-stijl): "Filter" titel, klikbare optielijst (enkelvoudige selectie), divider, [Reset] [Toepassen] footer. "Alle" is niet als optie getoond — Reset-knop vervangt dit.
+- **Combobox (locaties)** opent een popover met tekst-input + gefilterde suggestielijst van unieke locaties uit de store. Dezelfde [Reset] [Toepassen] footer.
 - **Date-veld** opent `DatePopover` via `<Teleport to="body">`; gekoppeld aan `filterStore.datum`. Default = vandaag.
 - **Time-veld** opent een time-picker. Default "Alle".
 - Filters stapelen met de globale filterstrip — een kolom-filter is een extra AND-clause bovenop de strip.

@@ -1,8 +1,9 @@
 <script setup>
-import StatusBadge from '@/components/ui/StatusBadge.vue'
+import StatusDot from '@/components/ui/StatusDot.vue'
 import PassStatusDot from '@/components/ui/PassStatusDot.vue'
 import ComplianceCell from '@/components/ui/ComplianceCell.vue'
 import ActionMenu from '@/components/actions/ActionMenu.vue'
+import Tooltip from '@/components/ui/Tooltip.vue'
 
 const props = defineProps({
   person: { type: Object, required: true },
@@ -55,12 +56,12 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 
       <!-- Status -->
       <template v-else-if="col.key === 'status'">
-        <StatusBadge :status="person.status" />
+        <StatusDot :status="person.status" />
       </template>
 
-      <!-- Passtatus -->
-      <template v-else-if="col.key === 'passtatus'">
-        <PassStatusDot :status="person.passtatus" />
+      <!-- Credential status -->
+      <template v-else-if="col.key === 'credentialStatus'">
+        <PassStatusDot :status="person.credentialStatus" />
       </template>
 
       <!-- Compliance -->
@@ -69,13 +70,14 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
           :dossier="person.dossier"
           :dossier-missing="person.dossierMissing"
           :elearning="person.elearning"
-          :elearning-reason="person.elearningReason || null"
         />
       </template>
 
       <!-- VIP -->
       <template v-else-if="col.key === 'vip'">
-        <span v-if="person.vip" class="mi vip-star">star</span>
+        <div v-if="person.vip" class="vip-cell">
+          <span class="mi vip-icon">star</span>
+        </div>
       </template>
 
       <!-- Parkeren -->
@@ -83,15 +85,21 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
         <span v-if="person.parkeren.plek" class="cell-truncate">{{ person.parkeren.plek }}</span>
         <span v-else-if="person.parkeren.gereserveerd" class="park-badge">Gereserveerd</span>
         <span v-else-if="person.parkeren.nodig" class="cell-park-none">Niet gereserveerd</span>
-        <span v-else class="cell-park-none">Niet gereserveerd</span>
+        <span v-else class="cell-dash">—</span>
       </template>
 
       <!-- Locaties -->
       <template v-else-if="col.key === 'locaties'">
-        <span
-          class="cell-truncate"
-          :data-tip="person.locaties.length > 1 ? person.locaties.join(', ') : undefined"
-        >{{ person.locaties.join(', ') }}</span>
+        <div class="locaties-pills">
+          <span
+            v-for="loc in person.locaties.slice(0, 3)"
+            :key="loc"
+            class="loc-pill"
+          >{{ loc }}</span>
+          <Tooltip v-if="person.locaties.length > 3" :content="person.locaties.join(', ')">
+            <span class="loc-pill loc-pill-overflow">+{{ person.locaties.length - 3 }}</span>
+          </Tooltip>
+        </div>
       </template>
 
       <!-- Default text -->
@@ -105,19 +113,20 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 <style scoped>
 .trow {
   cursor: pointer;
+  background: var(--p50);
   transition: background 0.1s;
 }
-.trow:hover { background: var(--p50); }
-.trow-vip { border-left: 3px solid var(--vip-border); }
+.trow:hover { background: var(--p100); }
+.trow-vip .tcell:first-child { border-left: 3px solid var(--vip-border); }
 
 .tcell {
-  padding: 8px 16px;
-  height: 48px;
+  padding: 12px 16px;
+  height: 44px;
   font-size: 14px;
-  font-weight: 400;
-  color: var(--n900);
-  border-bottom: 1px solid var(--n300);
-  border-right: 1px solid var(--n300);
+  font-weight: 600;
+  letter-spacing: 0.14px;
+  color: var(--p800);
+  border-bottom: 1px solid var(--p100);
   white-space: nowrap;
   overflow: hidden;
   vertical-align: middle;
@@ -127,9 +136,9 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 .sticky {
   position: sticky;
   z-index: 2;
-  background: var(--n0);
+  background: var(--p50);
 }
-.trow:hover .sticky { background: var(--p50); }
+.trow:hover .sticky { background: var(--p100); }
 
 .tcell-actions { padding: 0; text-align: center; }
 .tcell-select { padding: 0; text-align: center; }
@@ -183,16 +192,15 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
   gap: var(--sp-xs);
 }
 
-.vip-star {
-  font-size: 20px;
-  color: var(--vip-border);
-  flex-shrink: 0;
+.vip-cell {
+  display: flex;
+  justify-content: center;
 }
 
 .naam-text {
   font-size: 14px;
-  font-weight: 400;
-  color: var(--n900);
+  font-weight: 600;
+  color: var(--p800);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -201,6 +209,7 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 }
 
 .cell-dash { color: var(--n400); }
+.vip-icon { color: var(--vip-border); font-size: 20px; font-weight: 400; }
 .cell-muted { color: var(--n700); font-size: 12px; }
 .cell-park-none { color: var(--n500); font-size: 14px; }
 
@@ -220,4 +229,32 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
   color: var(--info);
 }
 .park-badge .mi { font-size: 14px; }
+
+.locaties-pills {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.loc-pill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--p100);
+  color: var(--p700);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.14px;
+  border-radius: var(--r-xl);
+  padding: var(--sp-xs) var(--sp-m);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.loc-pill-overflow {
+  background: var(--n0);
+  color: var(--p500);
+  cursor: default;
+}
 </style>

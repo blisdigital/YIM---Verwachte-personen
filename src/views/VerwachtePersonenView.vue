@@ -7,9 +7,11 @@ import BulkBar from '@/components/actions/BulkBar.vue'
 import DataTable from '@/components/table/DataTable.vue'
 import Pagination from '@/components/table/Pagination.vue'
 import DetailPanel from '@/components/detail/DetailPanel.vue'
-import CheckinModal from '@/components/actions/CheckinModal.vue'
-import NoShowModal from '@/components/actions/NoShowModal.vue'
+import AanmeldenModal from '@/components/actions/AanmeldenModal.vue'
 import AnnulerenModal from '@/components/actions/AnnulerenModal.vue'
+import AankomstWijzigenModal from '@/components/actions/AankomstWijzigenModal.vue'
+import AfmeldenModal from '@/components/actions/AfmeldenModal.vue'
+import InformeerContactpersoonModal from '@/components/actions/InformeerContactpersoonModal.vue'
 import ToastContainer from '@/components/ui/ToastContainer.vue'
 import { usePersonenStore } from '@/stores/personenStore'
 import { useFilterStore } from '@/stores/filterStore'
@@ -50,33 +52,51 @@ function closeDetail() {
   detailPerson.value = null
 }
 
-// Checkin modal
-const checkinOpen = ref(false)
-const checkinPerson = ref(null)
-const checkinAction = ref('inchecken') // 'inchecken' | 'uitchecken'
+// Aanmelden modal
+const aanmeldenOpen = ref(false)
+const aanmeldenPerson = ref(null)
+const aanmeldenAction = ref('inchecken') // 'inchecken' | 'niet-aangekomen-ongedaan'
 
-function openCheckin(person, action) {
-  checkinPerson.value = person
-  checkinAction.value = action
-  checkinOpen.value = true
+function openAanmelden(person, action) {
+  aanmeldenPerson.value = person
+  aanmeldenAction.value = action
+  aanmeldenOpen.value = true
 }
 
-// No-show modal
-const noShowOpen   = ref(false)
-const noShowPerson = ref(null)
+// Afmelden modal
+const afmeldenOpen = ref(false)
+const afmeldenPerson = ref(null)
 
-function openNoShow(person) {
-  noShowPerson.value = person
-  noShowOpen.value   = true
+function openAfmelden(person) {
+  afmeldenPerson.value = person
+  afmeldenOpen.value = true
 }
 
 // Annuleren modal
 const annulerenOpen   = ref(false)
 const annulerenPerson = ref(null)
 
+// Aankomst wijzigen modal
+const aankomstWijzigenOpen   = ref(false)
+const aankomstWijzigenPerson = ref(null)
+
+function openAankomstWijzigen(person) {
+  aankomstWijzigenPerson.value = person
+  aankomstWijzigenOpen.value   = true
+}
+
 function openAnnuleren(person) {
   annulerenPerson.value = person
   annulerenOpen.value   = true
+}
+
+// Informeer contactpersoon modal
+const informeerOpen   = ref(false)
+const informeerPerson = ref(null)
+
+function openInformeer(person) {
+  informeerPerson.value = person
+  informeerOpen.value   = true
 }
 
 // Computed: selected persons data for BulkBar
@@ -87,71 +107,79 @@ const selectedPersons = computed(() =>
 // Handle row actions (from ActionMenu and DetailPanel)
 function handleAction({ person, action }) {
   switch (action) {
+    // ActionMenu actions
+    case 'persoon-aanmelden':
+      openAanmelden(person, 'inchecken')
+      break
+    case 'persoon-afmelden':
+      openAfmelden(person)
+      break
+    case 'persoon-annuleren':
+      openAnnuleren(person)
+      break
+    case 'credential-koppelen':
+      personenStore.updateCredentialStatus(person.id, 'actief')
+      show('Credential gekoppeld', `Credential is gekoppeld aan ${person.naam}.`)
+      if (detailPerson.value?.id === person.id) {
+        detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+      }
+      break
+    case 'credential-printen':
+      personenStore.updateCredentialStatus(person.id, 'actief')
+      show('Credential geprint', `Credential voor ${person.naam} is afgedrukt.`)
+      if (detailPerson.value?.id === person.id) {
+        detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+      }
+      break
+    case 'credential-ontkoppelen':
+      personenStore.updateCredentialStatus(person.id, 'niet-actief')
+      show('Credential ontkoppeld', `Credential is ontkoppeld van ${person.naam}.`)
+      if (detailPerson.value?.id === person.id) {
+        detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+      }
+      break
+    case 'informeer-contactpersoon':
+      openInformeer(person)
+      break
+    case 'aankomst-wijzigen':
+      openAankomstWijzigen(person)
+      break
+    case 'bekijk-dossier':
+      show('Dossier', `Dossier van ${person.naam} wordt geopend.`)
+      break
+    case 'bel-persoon':
+      show('Bel persoon', person.telefoonnummer
+        ? `${person.naam}: ${person.telefoonnummer}`
+        : `Geen telefoonnummer bekend voor ${person.naam}.`)
+      break
+    // DetailPanel legacy actions (still used until DetailPanel is updated)
     case 'inchecken':
-      openCheckin(person, 'inchecken')
+      openAanmelden(person, 'inchecken')
       break
     case 'uitchecken':
-      openCheckin(person, 'uitchecken')
+    case 'afmelden':
+      openAfmelden(person)
       break
-    case 'no-show':
-      openNoShow(person)
-      break
-    case 'no-show-ongedaan':
-      openCheckin(person, 'no-show-ongedaan')
+    case 'niet-aangekomen-ongedaan':
+      openAanmelden(person, 'niet-aangekomen-ongedaan')
       break
     case 'annuleren':
       openAnnuleren(person)
       break
     case 'pas-koppelen':
-      personenStore.updatePassStatus(person.id, 'gekoppeld')
+      personenStore.updateCredentialStatus(person.id, 'actief')
       show('Pas gekoppeld', `Pas is gekoppeld aan ${person.naam}.`)
-      break
-    case 'pas-printen':
-      personenStore.updatePassStatus(person.id, 'geprint')
-      show('Pas geprint', `Pas voor ${person.naam} is afgedrukt.`)
-      break
-    case 'pas-ontkoppelen':
-      personenStore.updatePassStatus(person.id, 'niet-gekoppeld')
-      show('Pas ontkoppeld', `Pas is ontkoppeld van ${person.naam}.`)
-      break
-    case 'bekijk-dossier':
-      show('Dossier', `Dossier van ${person.naam} wordt geopend.`)
-      break
-    case 'contact-opnemen':
-    case 'contactpersoon-informeren':
-      show('Contact', `Contactpersoon van ${person.naam}: ${person.contactpersoon} (${person.contactTel})`)
-      break
-    case 'bel-persoon':
-    case 'bel-contactpersoon':
-      show('Bellen', `Bel: ${person.contactTel}`)
       break
     default:
       show('Actie', `${action} voor ${person.naam}`)
   }
 }
 
-// Confirm checkin/checkout
-function handleCheckinConfirm({ person, action }) {
-  if (action === 'inchecken') {
-    personenStore.updateStatus(person.id, 'Aangekomen')
-    show('Ingecheckt', `${person.naam} is succesvol ingecheckt.`)
-  } else if (action === 'uitchecken') {
-    personenStore.updateStatus(person.id, 'Vertrokken')
-    show('Uitgecheckt', `${person.naam} is succesvol uitgecheckt.`)
-  } else if (action === 'no-show-ongedaan') {
-    personenStore.updateStatus(person.id, 'Verwacht')
-    show('No-show ongedaan gemaakt', `No-show van ${person.naam} is ongedaan gemaakt.`)
-  }
+// Bevestig aanmelden
+function handleAanmeldenConfirm({ person }) {
+  personenStore.updateStatus(person.id, 'Aangemeld')
+  show('Aangemeld', `${person.naam} is aangemeld.`)
   // Sync detail panel person
-  if (detailPerson.value?.id === person.id) {
-    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
-  }
-}
-
-// Confirm no-show
-function handleNoShowConfirm({ person }) {
-  personenStore.updateStatus(person.id, 'No-show')
-  show('No-show geregistreerd', `${person.naam} is gemarkeerd als no-show.`)
   if (detailPerson.value?.id === person.id) {
     detailPerson.value = personenStore.personen.find(p => p.id === person.id)
   }
@@ -160,8 +188,31 @@ function handleNoShowConfirm({ person }) {
 // Confirm annuleren — sluit ook detail panel (flow spec: geen detailweergave na annuleren)
 function handleAnnulerenConfirm({ person }) {
   personenStore.updateStatus(person.id, 'Geannuleerd')
-  show('Geannuleerd', `${person.naam} is geannuleerd.`)
+  show('Geannuleerd', `De aankomst van ${person.naam} is geannuleerd.`)
   closeDetail()
+}
+
+// Confirm aankomst wijzigen
+function handleAankomstWijzigenConfirm({ person, datum, aankomsttijd, vertrektijd }) {
+  personenStore.updateAankomst(person.id, datum, aankomsttijd, vertrektijd)
+  show('Aankomst gewijzigd', `Aankomst van ${person.naam} is gewijzigd naar ${datum} om ${aankomsttijd}.`)
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
+}
+
+// Bevestig informeer contactpersoon
+function handleInformeerConfirm({ person }) {
+  show('Contactpersoon geïnformeerd', `Contactpersoon van ${person.naam} is geïnformeerd.`)
+}
+
+// Bevestig afmelden
+function handleAfmeldenConfirm({ person }) {
+  personenStore.updateStatus(person.id, 'Afgemeld')
+  show('Afgemeld', `${person.naam} is afgemeld.`)
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
 }
 
 // Bulk actions
@@ -170,24 +221,17 @@ function handleBulkAction(action) {
 
   switch (action) {
     case 'inchecken':
-      persons.filter(p => ['Verwacht', 'No-show'].includes(p.status)).forEach(p => {
-        personenStore.updateStatus(p.id, 'Aangekomen')
+      persons.filter(p => ['Verwacht', 'Nog niet aangekomen', 'Niet aangekomen'].includes(p.status)).forEach(p => {
+        personenStore.updateStatus(p.id, 'Aangemeld')
       })
-      show('Bulk inchecken', `${persons.length} personen ingecheckt.`)
+      show('Bulk aanmelden', `${persons.length} personen aangemeld.`)
       clearAll()
       break
     case 'uitchecken':
-      persons.filter(p => p.status === 'Aangekomen').forEach(p => {
-        personenStore.updateStatus(p.id, 'Vertrokken')
+      persons.filter(p => p.status === 'Aangemeld').forEach(p => {
+        personenStore.updateStatus(p.id, 'Afgemeld')
       })
-      show('Bulk uitchecken', `Geselecteerde personen uitgecheckt.`)
-      clearAll()
-      break
-    case 'no-show':
-      persons.filter(p => ['Verwacht', 'No-show'].includes(p.status)).forEach(p => {
-        personenStore.updateStatus(p.id, 'No-show')
-      })
-      show('No-show', `Geselecteerde personen als no-show geregistreerd.`)
+      show('Bulk afmelden', `Geselecteerde personen afgemeld.`)
       clearAll()
       break
     case 'annuleren':
@@ -196,15 +240,29 @@ function handleBulkAction(action) {
       clearAll()
       break
     case 'pas-koppelen':
-      persons.forEach(p => personenStore.updatePassStatus(p.id, 'gekoppeld'))
+      persons.forEach(p => personenStore.updateCredentialStatus(p.id, 'actief'))
       show('Pas koppelen', `Passen gekoppeld aan ${persons.length} personen.`)
       clearAll()
       break
     case 'pas-printen':
-      persons.filter(p => p.status === 'Aangekomen').forEach(p => {
-        personenStore.updatePassStatus(p.id, 'geprint')
+      persons.filter(p => p.status === 'Aangemeld').forEach(p => {
+        personenStore.updateCredentialStatus(p.id, 'actief')
       })
       show('Pas printen', `Passen afgedrukt.`)
+      clearAll()
+      break
+    case 'pas-ontkoppelen':
+      persons.filter(p => p.status === 'Aangemeld').forEach(p => {
+        personenStore.updateCredentialStatus(p.id, 'niet-actief')
+      })
+      show('Pas ontkoppelen', `Passen ontkoppeld.`)
+      clearAll()
+      break
+    case 'niet-aangekomen':
+      persons.filter(p => ['Verwacht', 'Nog niet aangekomen'].includes(p.status)).forEach(p => {
+        personenStore.updateStatus(p.id, 'Niet aangekomen')
+      })
+      show('Niet aangekomen', `Geselecteerde personen geregistreerd als niet aangekomen.`)
       clearAll()
       break
   }
@@ -275,19 +333,13 @@ onMounted(() => {
       @action="handleAction"
     />
 
-    <!-- Checkin modal -->
-    <CheckinModal
-      v-model:open="checkinOpen"
-      :person="checkinPerson"
-      :action="checkinAction"
-      @confirm="handleCheckinConfirm"
-    />
-
-    <!-- No-show modal -->
-    <NoShowModal
-      v-model:open="noShowOpen"
-      :person="noShowPerson"
-      @confirm="handleNoShowConfirm"
+    <!-- Aanmelden modal -->
+    <AanmeldenModal
+      v-model:open="aanmeldenOpen"
+      :person="aanmeldenPerson"
+      :requiresIdentiteitscontrole="true"
+      :showContactpersoonToggle="true"
+      @confirm="handleAanmeldenConfirm"
     />
 
     <!-- Annuleren modal -->
@@ -295,6 +347,28 @@ onMounted(() => {
       v-model:open="annulerenOpen"
       :person="annulerenPerson"
       @confirm="handleAnnulerenConfirm"
+    />
+
+    <!-- Aankomst wijzigen modal -->
+    <AankomstWijzigenModal
+      v-model:open="aankomstWijzigenOpen"
+      :person="aankomstWijzigenPerson"
+      @confirm="handleAankomstWijzigenConfirm"
+    />
+
+    <!-- Afmelden modal -->
+    <AfmeldenModal
+      v-model:open="afmeldenOpen"
+      :person="afmeldenPerson"
+      :showContactpersoonToggle="true"
+      @confirm="handleAfmeldenConfirm"
+    />
+
+    <!-- Informeer contactpersoon modal -->
+    <InformeerContactpersoonModal
+      v-model:open="informeerOpen"
+      :person="informeerPerson"
+      @confirm="handleInformeerConfirm"
     />
 
     <!-- Toast notifications -->

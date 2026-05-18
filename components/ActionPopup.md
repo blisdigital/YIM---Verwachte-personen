@@ -78,7 +78,7 @@ Alle actie-modals (check-in, check-out, no-show, annuleren) zijn gebouwd op deze
 | Eigenschap | Waarde |
 |------------|--------|
 | Breedte | `480px` (max `90vw`) |
-| Max hoogte | `80vh` (body scrollt) |
+| Max hoogte | `92vh` (body scrollt) |
 | Border radius | `--r-l` (12px) |
 | Header min-hoogte | `64px` |
 | Footer min-hoogte | `64px` |
@@ -99,11 +99,10 @@ Alle actie-modals (check-in, check-out, no-show, annuleren) zijn gebouwd op deze
 
 ## Actie-modals gebouwd op ActionPopup
 
-| Component | Flow | Variant |
-|-----------|------|---------|
-| `CheckinModal.vue` | Check-in / check-out | Bevestiging + persoonskaart |
-| `NoShowModal.vue` | No-show registreren | Formulier (dropdown + textarea) |
-| `AnnulerenModal.vue` | Persoon annuleren | Destructieve bevestiging |
+| Component            | Flow                         | Variant                     |
+|----------------------|------------------------------|-----------------------------|
+| `AanmeldenModal.vue` | Persoon aanmelden / afmelden | Bevestiging + persoonskaart |
+| `AnnulerenModal.vue` | Persoon annuleren            | Destructieve bevestiging    |
 
 ---
 

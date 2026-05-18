@@ -73,8 +73,9 @@ function onMouseLeave() {
   line-height: 16px;
   letter-spacing: 0;
   padding: var(--sp-xs) var(--sp-s);
-  border-radius: var(--r-xs);
-  white-space: nowrap;
+  border-radius: var(--r-s);
+  white-space: normal;
+  max-width: 240px;
   display: flex;
   flex-direction: column;
   gap: 2px;

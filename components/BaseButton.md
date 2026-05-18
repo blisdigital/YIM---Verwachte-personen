@@ -25,7 +25,7 @@ Tekstbutton voor primaire, secundaire en tertiaire acties.
 
 - `lg` + `icon right` → PageHeader (Nieuwe registratie)
 - `lg` + `icon right` → PageHeader (Instellingen)
-- `md` → BezoekDetail, CheckinModal, NoShowModal (actiebuttons en annuleren)
+- `md` → BezoekDetail, AanmeldenModal, AnnulerenModal (actiebuttons en annuleren)
 - `md` + `destructive` → AnnulerenModal (onomkeerbare actie)
 
 ---

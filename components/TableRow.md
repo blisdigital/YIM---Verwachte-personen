@@ -121,15 +121,19 @@ Lege velden: lege cel (geen dash).
 | `select` | `<Checkbox />` — sticky, stopt propagatie |
 | `actions` | `<ActionMenu />` via ••• icoon — sticky, stopt propagatie |
 | `naam` | Plain tekst `<span>` — rij-click opent detail panel |
-| `personeelsnr` | Plain tekst Body M `--n900` |
+| `personeelsnr` | Plain tekst Body M `--n900` (standaard verborgen) |
+| `telefoonnummer` | Plain tekst Body M `--n900` (standaard verborgen) |
+| `emailadres` | Plain tekst Body M `--n900` (standaard verborgen) |
 | `vip` | Zie §3.1 |
 | `persoontype` | Plain tekst (bijv. "Bezoeker", "Warehouse", "Technisch") |
 | `bedrijf` | Plain tekst |
-| `locaties` | Kommagescheiden; ellipsis + `title`-attribuut bij overflow |
+| `locaties` | Pills (bg `--p100`, tekst `--p700`, radius `--r-xl`); max 3 zichtbaar. Bij >3 totaal: overflow-pill `+n` (bg `--n0`, tekst `--p500`) met `Tooltip` (alle locaties). |
 | `datumVanaf` | Geformatteerde datum `DD-MM-YYYY` |
 | `aankomsttijd` | Tijd `HH:mm` |
+| `vertrekTijd` | Tijd `HH:mm`; lege cel als null |
 | `status` | Zie §3.2 |
-| `passtatus` | Zie §3.3 |
+| `credentialType` | Plain tekst (bijv. "QR-code", "Bezoekerspas", "Vaste pas"); lege cel als null |
+| `credentialStatus` | Zie §3.3 |
 | `compliance` | Zie §3.4 |
 | `parkeren` | Zie §3.5 |
 | `contactpersoon` | Plain tekst |
@@ -158,22 +162,25 @@ Gebruik altijd de filled variant — niet `star_outline`.
 | Status | Achtergrond | Tekstkleur |
 |--------|-------------|------------|
 | Verwacht | `--b50` `#e9f0f8` | `--b500` `#2464bb` |
-| Aangekomen | `--g50` `#e9f8f3` | `--g500` `#24bb86` |
-| No-show | `--y50` `#fefbea` | `--y700` `#9f871c` |
+| Nog niet aangekomen | `--y50` `#fefbea` | `--y700` `#9f871c` |
+| Aangemeld | `--g50` `#e9f8f3` | `--g500` `#24bb86` |
+| Afgemeld | `--n100` `#f3f4f5` | `--n800` `#3e3f40` |
+| Niet aangekomen | `--r50` `#f8e9eb` | `--r500` `#bc243b` |
 | Geannuleerd | `--r50` `#f8e9eb` | `--r500` `#bc243b` |
-| Vertrokken | `--n100` `#f3f4f5` | `--n800` `#3e3f40` |
 
-### 3.3 Passtatus dot + label
+### 3.3 Credential status dot + label
 
 `display: inline-flex; align-items: center; gap: 8px` (`--s-s`). Dot: 12×12, `border-radius: 360px`.
 
-| Passtatus | Dot-kleur | Tekstkleur |
-|-----------|-----------|------------|
-| Niet gekoppeld | `--n500` `#999a9b` | `--n500` `#999a9b` |
-| Gekoppeld | `--b500` `#2464bb` | `--n900` `#1d1e1f` |
-| Geprint | `--g500` `#24bb86` | `--n900` `#1d1e1f` |
+| Credential status | Dot-kleur | Tekstkleur |
+| --- | --- | --- |
+| Niet actief | `--n400` | `--n500` (muted) |
+| Actief | `--ok` | `--n900` |
+| Verlopen | `--warn` | `--n900` |
+| Ingetrokken | `--n500` | `--n900` |
+| Geblokkeerd | `--err` | `--n900` |
 
-"Niet gekoppeld" heeft dimmere tekst (`--n500`) om aan te geven dat er nog niets is gekoppeld.
+"Niet actief" heeft dimmere tekst (`--n500`) om aan te geven dat er nog geen credential actief is.
 
 ### 3.4 Compliance (twee pills)
 

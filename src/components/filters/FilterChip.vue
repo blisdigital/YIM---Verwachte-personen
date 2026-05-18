@@ -54,10 +54,6 @@ function toggleOpen(event) {
   open.value = !open.value
 }
 
-function clear() {
-  emit('update:modelValue', [])
-  open.value = false
-}
 </script>
 
 <template>
@@ -95,9 +91,6 @@ function clear() {
             <span class="opt-label">{{ opt.label }}</span>
           </label>
 
-          <div v-if="activeCount > 0" class="chip-footer">
-            <button class="chip-clear" @click.stop="clear">Wis filters</button>
-          </div>
         </div>
       </template>
     </Teleport>
@@ -148,7 +141,7 @@ function clear() {
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
-  border-radius: 100px;
+  border-radius: var(--r-xl);
 }
 
 .chip-arrow { font-size: 18px; }
@@ -241,26 +234,6 @@ function clear() {
   line-height: 20px;
   white-space: nowrap;
 }
-
-/* ── Footer ── */
-.chip-footer {
-  padding: 8px 8px 0;
-  border-top: 1px solid var(--n300);
-  margin-top: 8px;
-}
-
-.chip-clear {
-  background: none;
-  border: none;
-  font-family: var(--font);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--p700);
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.15s;
-}
-.chip-clear:hover { color: var(--p500); }
 
 /* ── Click-away backdrop ── */
 .click-away {

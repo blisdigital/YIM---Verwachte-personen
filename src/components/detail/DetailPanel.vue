@@ -1,6 +1,6 @@
 <script setup>
 import { computed, watch } from 'vue'
-import StatusBadge from '@/components/ui/StatusBadge.vue'
+import StatusDot from '@/components/ui/StatusDot.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 
 const props = defineProps({
@@ -11,74 +11,111 @@ const emit = defineEmits(['close', 'action'])
 
 const subtitle = computed(() => {
   if (!props.person) return ''
-  const { persoontype, personeelsnr, bedrijf } = props.person
-  return [persoontype, personeelsnr, bedrijf].filter(Boolean).join(' | ')
+  const { persoontype, bedrijf } = props.person
+  return [persoontype, bedrijf].filter(Boolean).join(' • ')
 })
 
-function formatDatetime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return null
+function formatDatum(dateStr) {
+  if (!dateStr) return null
   const [d, m, y] = dateStr.split('-')
   const date = new Date(y, m - 1, d)
   const today = new Date()
   const isToday = date.toDateString() === today.toDateString()
-  return `${isToday ? 'Vandaag ' : ''}${dateStr}, ${timeStr}`
+  return `${d}/${m}/${y}${isToday ? ' (vandaag)' : ''}`
 }
 
-const aankomstDatetime = computed(() =>
-  props.person ? formatDatetime(props.person.datumVanaf, props.person.aankomsttijd) : null
+const datumFormatted = computed(() =>
+  props.person ? formatDatum(props.person.datumVanaf) : null
 )
 
-const vertrekDatetime = computed(() =>
-  props.person?.vertrekTijd ? formatDatetime(props.person.datumVanaf, props.person.vertrekTijd) : null
-)
-
-const passstatusLabel = computed(() => {
-  if (!props.person) return ''
-  return { 'niet-gekoppeld': 'Niet gekoppeld', 'gekoppeld': 'Gekoppeld', 'geprint': 'Geprint' }[props.person.passtatus] || props.person.passtatus
+const isCompliant = computed(() => {
+  if (!props.person) return true
+  return props.person.dossier === 'compleet' && props.person.elearning !== 'niet-behaald'
 })
 
-const passstatusColor = computed(() => {
-  if (!props.person) return 'var(--n400)'
-  return { 'niet-gekoppeld': 'var(--n400)', 'gekoppeld': 'var(--info)', 'geprint': 'var(--ok)' }[props.person.passtatus] || 'var(--n400)'
+const credentialStatusLabel = computed(() => {
+  if (!props.person) return ''
+  return {
+    'niet-actief': 'Niet gekoppeld',
+    'actief': 'Actief',
+    'verlopen': 'Verlopen',
+    'ingetrokken': 'Ingetrokken',
+    'geblokkeerd': 'Geblokkeerd',
+  }[props.person.credentialStatus] || props.person.credentialStatus
+})
+
+const credentialStatusColor = computed(() => {
+  if (!props.person) return 'var(--n500)'
+  return {
+    'niet-actief': 'var(--n500)',
+    'actief': 'var(--ok)',
+    'verlopen': 'var(--warn)',
+    'ingetrokken': 'var(--n500)',
+    'geblokkeerd': 'var(--err)',
+  }[props.person.credentialStatus] || 'var(--n500)'
 })
 
 const leftActions = computed(() => {
   if (!props.person) return []
   const s = props.person.status
-  if (s === 'Verwacht') return [
+  if (s === 'Verwacht' || s === 'Nog niet aangekomen') return [
     { value: 'annuleren', label: 'Persoon annuleren', danger: true },
-    { value: 'no-show', label: 'No-show' },
+    { value: 'aankomst-wijzigen', label: 'Aankomst wijzigen' },
   ]
-  if (s === 'No-show') return [
+  if (s === 'Niet aangekomen') return [
     { value: 'annuleren', label: 'Persoon annuleren', danger: true },
+    { value: 'aankomst-wijzigen', label: 'Aankomst wijzigen' },
   ]
+  return []
+})
+
+const rightActions = computed(() => {
+  if (!props.person) return []
+  const s = props.person.status
+  const hasCredential = !!props.person.credentialType
+  const isLinked = props.person.credentialStatus !== 'niet-actief'
+
+  const compliant = isCompliant.value
+  const isQr = props.person.credentialType === 'QR-code'
+
+  if (s === 'Verwacht' || s === 'Nog niet aangekomen') {
+    const actions = []
+    if (hasCredential && !isLinked) {
+      const label = isQr ? 'Credential printen' : 'Credential koppelen'
+      actions.push({ value: isQr ? 'credential-printen' : 'credential-koppelen', label, disabled: !compliant })
+    }
+    actions.push({ value: 'inchecken', label: 'Persoon aanmelden', filled: true, disabled: !compliant })
+    return actions
+  }
+  if (s === 'Aangemeld') {
+    const actions = []
+    if (hasCredential) {
+      if (!isLinked) {
+        const label = isQr ? 'Credential printen' : 'Credential koppelen'
+        actions.push({ value: isQr ? 'credential-printen' : 'credential-koppelen', label })
+      } else {
+        const label = isQr ? 'QR-code ontkoppelen' : 'Credential ontkoppelen'
+        actions.push({ value: 'credential-ontkoppelen', label })
+      }
+    }
+    actions.push({ value: 'afmelden', label: 'Persoon afmelden', filled: true })
+    return actions
+  }
+  if (s === 'Niet aangekomen') {
+    const actions = []
+    if (hasCredential && !isLinked) {
+      const label = isQr ? 'Credential printen' : 'Credential koppelen'
+      actions.push({ value: isQr ? 'credential-printen' : 'credential-koppelen', label, disabled: !compliant })
+    }
+    actions.push({ value: 'inchecken', label: 'Persoon aanmelden', filled: true, disabled: !compliant })
+    return actions
+  }
   return []
 })
 
 watch(() => props.open, (isOpen) => {
   document.body.style.overflow = isOpen ? 'hidden' : ''
 }, { immediate: true })
-
-const rightActions = computed(() => {
-  if (!props.person) return []
-  const s = props.person.status
-  const dossier = { value: 'bekijk-dossier', label: 'Bekijk dossier' }
-  if (s === 'Verwacht') return [
-    dossier,
-    { value: 'pas-koppelen', label: 'Pas koppelen' },
-    { value: 'inchecken', label: 'Persoon inchecken', filled: true },
-  ]
-  if (s === 'Aangekomen') return [
-    dossier,
-    { value: 'uitchecken', label: 'Uitchecken', filled: true },
-  ]
-  if (s === 'No-show') return [
-    dossier,
-    { value: 'no-show-ongedaan', label: 'No-show ongedaan' },
-    { value: 'inchecken', label: 'Persoon inchecken', filled: true },
-  ]
-  return [dossier]
-})
 </script>
 
 <template>
@@ -95,7 +132,9 @@ const rightActions = computed(() => {
           <p class="person-subtitle">{{ subtitle }}</p>
         </div>
         <div class="header-actions">
-          <StatusBadge :status="person.status" />
+          <BaseButton variant="outlined" size="md" @click="emit('action', { person, action: 'bekijk-dossier' })">
+            Bekijk dossier
+          </BaseButton>
           <button class="close-btn" @click="emit('close')" aria-label="Sluiten">
             <span class="mi">close</span>
           </button>
@@ -110,12 +149,20 @@ const rightActions = computed(() => {
           <h3 class="section-title">Bezoekgegevens</h3>
           <div class="info-list">
             <div class="info-row">
-              <span class="row-label">Aankomstdatum en -tijd</span>
-              <span class="row-value">{{ aankomstDatetime }}</span>
+              <span class="row-label">Status</span>
+              <StatusDot :status="person.status" />
             </div>
-            <div v-if="vertrekDatetime" class="info-row">
-              <span class="row-label">Vertrekdatum en -tijd</span>
-              <span class="row-value">{{ vertrekDatetime }}</span>
+            <div class="info-row">
+              <span class="row-label">Datum</span>
+              <span class="row-value">{{ datumFormatted }}</span>
+            </div>
+            <div class="info-row">
+              <span class="row-label">Aankomsttijd</span>
+              <span class="row-value">{{ person.aankomsttijd }}</span>
+            </div>
+            <div v-if="person.vertrekTijd" class="info-row">
+              <span class="row-label">Vertrektijd</span>
+              <span class="row-value">{{ person.vertrekTijd }}</span>
             </div>
             <div class="info-row">
               <span class="row-label">Locatie(s)</span>
@@ -127,27 +174,13 @@ const rightActions = computed(() => {
               <span class="row-label">VIP</span>
               <span class="mi vip-star-row">star</span>
             </div>
-            <div v-if="person.parkeren?.plek" class="info-row">
-              <span class="row-label">Parkeerplaats</span>
-              <span class="row-value">{{ person.parkeren.plek }}</span>
-            </div>
             <div v-if="person.telefoonnummer" class="info-row">
               <span class="row-label">Telefoonnummer</span>
-              <div class="row-value-flex">
-                <a :href="`tel:${person.telefoonnummer}`" class="action-link">{{ person.telefoonnummer }}</a>
-                <a :href="`tel:${person.telefoonnummer}`" class="icon-btn-sm" aria-label="Bellen">
-                  <span class="mi icon-sm">call</span>
-                </a>
-              </div>
+              <a :href="`tel:${person.telefoonnummer}`" class="action-link">{{ person.telefoonnummer }}</a>
             </div>
             <div v-if="person.emailadres" class="info-row">
               <span class="row-label">E-mailadres</span>
-              <div class="row-value-flex">
-                <a :href="`mailto:${person.emailadres}`" class="action-link">{{ person.emailadres }}</a>
-                <a :href="`mailto:${person.emailadres}`" class="icon-btn-sm" aria-label="E-mail sturen">
-                  <span class="mi icon-sm">mail</span>
-                </a>
-              </div>
+              <a :href="`mailto:${person.emailadres}`" class="action-link">{{ person.emailadres }}</a>
             </div>
           </div>
         </section>
@@ -161,7 +194,11 @@ const rightActions = computed(() => {
               <div class="compliance-state">
                 <span v-if="person.dossier === 'compleet'" class="mi compliance-ok icon-md">check_circle</span>
                 <span v-else class="mi compliance-warn icon-md">warning</span>
-                <span class="row-value">{{ person.dossier === 'compleet' ? 'Dossier compleet' : 'Dossier onvolledig' }}</span>
+                <span class="row-value">{{
+                  person.dossier === 'compleet'
+                    ? 'Dossier compleet'
+                    : `Dossier niet compleet: ${(person.dossierMissing || []).join(', ')}.`
+                }}</span>
               </div>
             </div>
             <div class="info-row">
@@ -172,7 +209,7 @@ const rightActions = computed(() => {
                 <span v-else class="mi compliance-neutral icon-md">remove_circle_outline</span>
                 <span class="row-value">{{
                   person.elearning === 'behaald' ? 'E-learning geldig en behaald'
-                  : person.elearning === 'niet-behaald' ? 'E-learning niet behaald'
+                  : person.elearning === 'niet-behaald' ? 'E-learning niet geldig.'
                   : 'E-learning niet vereist'
                 }}</span>
               </div>
@@ -190,43 +227,42 @@ const rightActions = computed(() => {
             </div>
             <div v-if="person.contactTel" class="info-row">
               <span class="row-label">Telefoonnummer</span>
-              <div class="row-value-flex">
-                <a :href="`tel:${person.contactTel}`" class="action-link">{{ person.contactTel }}</a>
-                <a :href="`tel:${person.contactTel}`" class="icon-btn-sm" aria-label="Bellen">
-                  <span class="mi icon-sm">call</span>
-                </a>
-              </div>
+              <a :href="`tel:${person.contactTel}`" class="action-link">{{ person.contactTel }}</a>
             </div>
             <div v-if="person.contactEmail" class="info-row">
               <span class="row-label">E-mailadres</span>
               <div class="row-value-flex">
                 <a :href="`mailto:${person.contactEmail}`" class="action-link">{{ person.contactEmail }}</a>
-                <a :href="`mailto:${person.contactEmail}`" class="icon-btn-sm" aria-label="E-mail sturen">
+                <button
+                  class="icon-btn-sm"
+                  aria-label="Informeer contactpersoon"
+                  @click="emit('action', { person, action: 'informeer-contactpersoon' })"
+                >
                   <span class="mi icon-sm">mail</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Toegangspas -->
+        <!-- Credential -->
         <section class="panel-section">
-          <h3 class="section-title">Toegangspas</h3>
+          <h3 class="section-title">Credential</h3>
           <div class="info-list">
-            <div v-if="person.credentialType" class="info-row">
+            <div class="info-row">
               <span class="row-label">Credential type</span>
-              <span class="row-value">{{ person.credentialType }}</span>
-            </div>
-            <div v-if="person.pasnummer" class="info-row">
-              <span class="row-label">Pasnummer</span>
-              <span class="row-value mono">{{ person.pasnummer }}</span>
+              <span class="row-value">{{ person.credentialType || '-' }}</span>
             </div>
             <div class="info-row">
               <span class="row-label">Status</span>
               <div class="pass-status">
-                <span class="pass-dot" :style="{ background: passstatusColor }"></span>
-                <span class="row-value">{{ passstatusLabel }}</span>
+                <span class="pass-dot" :style="{ background: credentialStatusColor }"></span>
+                <span class="row-value">{{ credentialStatusLabel }}</span>
               </div>
+            </div>
+            <div class="info-row">
+              <span class="row-label">Credential nummer</span>
+              <span class="row-value">{{ person.pasnummer || '-' }}</span>
             </div>
           </div>
         </section>
@@ -251,6 +287,7 @@ const rightActions = computed(() => {
             :key="act.value"
             :variant="act.filled ? 'filled' : 'outlined'"
             size="md"
+            :disabled="act.disabled ?? false"
             @click="emit('action', { person, action: act.value })"
           >{{ act.label }}</BaseButton>
         </div>
@@ -272,7 +309,7 @@ const rightActions = computed(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 832px;
+  width: 860px;
   max-height: 90vh;
   border-radius: var(--r-m);
   background: var(--n0);
@@ -324,10 +361,11 @@ const rightActions = computed(() => {
 }
 
 .person-subtitle {
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--n700);
-  line-height: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--p500);
+  line-height: 20px;
+  letter-spacing: 0.14px;
   margin: 0;
   margin-top: 2px;
   white-space: nowrap;
@@ -338,7 +376,7 @@ const rightActions = computed(() => {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: var(--sp-s);
+  gap: var(--sp-m);
   flex-shrink: 0;
 }
 
@@ -346,8 +384,8 @@ const rightActions = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--r-xl);
   background: none;
   border: none;
@@ -407,7 +445,7 @@ const rightActions = computed(() => {
   color: var(--p700);
   line-height: 20px;
   letter-spacing: 0.14px;
-  width: 180px;
+  width: 318px;
   flex-shrink: 0;
 }
 
@@ -418,11 +456,6 @@ const rightActions = computed(() => {
   line-height: 20px;
   flex: 1;
   min-width: 0;
-}
-
-.row-value.mono {
-  font-family: monospace;
-  font-size: 13px;
 }
 
 /* ── Location chips ── */
@@ -453,15 +486,7 @@ const rightActions = computed(() => {
   color: var(--vip-border);
 }
 
-/* ── Row with action link + icon button ── */
-.row-value-flex {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
+/* ── Action link (telefoon / email zonder icon button) ── */
 .action-link {
   font-size: 14px;
   font-weight: 600;
@@ -474,6 +499,15 @@ const rightActions = computed(() => {
 }
 .action-link:hover { opacity: 0.85; }
 
+/* ── Row with link + icon button (contactpersoon email) ── */
+.row-value-flex {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .icon-btn-sm {
   display: flex;
   align-items: center;
@@ -481,7 +515,7 @@ const rightActions = computed(() => {
   padding: var(--sp-s);
   border-radius: var(--r-s);
   background: var(--n0);
-  border: none;
+  border: 1px solid var(--n400);
   cursor: pointer;
   color: var(--n800);
   text-decoration: none;
@@ -501,11 +535,11 @@ const rightActions = computed(() => {
   flex: 1;
 }
 
-.compliance-ok   { color: var(--ok); }
-.compliance-warn { color: var(--warn); }
+.compliance-ok      { color: var(--ok); }
+.compliance-warn    { color: var(--err); }
 .compliance-neutral { color: var(--n400); }
 
-/* ── Pass status ── */
+/* ── Credential status ── */
 .pass-status {
   display: flex;
   align-items: center;

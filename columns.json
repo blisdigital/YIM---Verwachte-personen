@@ -25,8 +25,8 @@
     "width": 130,
     "sortable": true,
     "filter": "dropdown",
-    "filterOptions": ["Alle", "Verwacht", "Aangekomen", "No-show", "Geannuleerd", "Vertrokken"],
-    "description": "StatusBadge component met kleurcodering"
+    "filterOptions": ["Alle", "Verwacht", "Nog niet aangekomen", "Aangemeld", "Afgemeld", "Niet aangekomen", "Geannuleerd"],
+    "description": "StatusDot component met gekleurde stip"
   },
   {
     "key": "datumVanaf",
@@ -45,12 +45,20 @@
     "description": "Verwachte aankomsttijd in HH:mm"
   },
   {
+    "key": "vertrekTijd",
+    "label": "Vertrektijd",
+    "width": 144,
+    "sortable": true,
+    "filter": "time",
+    "description": "Geplande vertrektijd in HH:mm (zelfde datum als aankomstdatum). Null als niet ingevuld."
+  },
+  {
     "key": "locaties",
     "label": "Locatie(s)",
-    "width": 160,
+    "width": 220,
     "sortable": true,
-    "filter": "text",
-    "description": "Kommagescheiden locaties, afgekapt met ellipsis + tooltip"
+    "filter": "combobox",
+    "description": "Kommagescheiden locaties, afgekapt met ellipsis + tooltip. Combobox: zoekbalk + dropdown met unieke locatiewaarden uit de data."
   },
   {
     "key": "naam",
@@ -59,30 +67,6 @@
     "sortable": true,
     "filter": "text",
     "description": "Klikbare naam, opent detail panel. VIP-ster als prefix bij vip=true"
-  },
-  {
-    "key": "personeelsnr",
-    "label": "Personeelsnr",
-    "width": 152,
-    "sortable": true,
-    "filter": "text",
-    "description": "Personeelsnummer (P-format, bijv. P0000002393). Standaard verborgen; aan te zetten via kolominstellingen."
-  },
-  {
-    "key": "telefoonnummer",
-    "label": "Telefoonnummer",
-    "width": 160,
-    "sortable": false,
-    "filter": "text",
-    "description": "Telefoonnummer van de persoon. Standaard verborgen; aan te zetten via kolominstellingen."
-  },
-  {
-    "key": "emailadres",
-    "label": "E-mailadres",
-    "width": 200,
-    "sortable": false,
-    "filter": "text",
-    "description": "E-mailadres van de persoon. Standaard verborgen; aan te zetten via kolominstellingen."
   },
   {
     "key": "persoontype",
@@ -103,6 +87,30 @@
     "description": "Ster-icoon als true, streepje als false"
   },
   {
+    "key": "personeelsnr",
+    "label": "Personeelsnr",
+    "width": 152,
+    "sortable": true,
+    "filter": "text",
+    "description": "Personeelsnummer (P-format, bijv. P0000002393). Standaard verborgen; aan te zetten via kolominstellingen. Verschijnt na VIP."
+  },
+  {
+    "key": "telefoonnummer",
+    "label": "Telefoonnummer",
+    "width": 160,
+    "sortable": false,
+    "filter": "text",
+    "description": "Telefoonnummer van de persoon. Standaard verborgen; aan te zetten via kolominstellingen. Verschijnt na Personeelsnr."
+  },
+  {
+    "key": "emailadres",
+    "label": "E-mailadres",
+    "width": 200,
+    "sortable": false,
+    "filter": "text",
+    "description": "E-mailadres van de persoon. Standaard verborgen; aan te zetten via kolominstellingen. Verschijnt na Telefoonnummer."
+  },
+  {
     "key": "bedrijf",
     "label": "Bedrijf",
     "width": 160,
@@ -111,13 +119,22 @@
     "description": "Bedrijfsnaam"
   },
   {
-    "key": "passtatus",
-    "label": "Passtatus",
+    "key": "credentialType",
+    "label": "Credential",
+    "width": 160,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "QR-code", "Bezoekerspas", "Vaste pas"],
+    "description": "Type credential gekoppeld aan de persoon. Waarden zijn klantspecifiek configureerbaar; dit prototype gebruikt QR-code, Bezoekerspas en Vaste pas."
+  },
+  {
+    "key": "credentialStatus",
+    "label": "Credential status",
     "width": 176,
     "sortable": true,
     "filter": "dropdown",
-    "filterOptions": ["Alle", "Niet gekoppeld", "Gekoppeld", "Geprint"],
-    "description": "PassStatusDot component (gekleurde stip + label)"
+    "filterOptions": ["Alle", "Niet actief", "Actief", "Verlopen", "Ingetrokken", "Geblokkeerd"],
+    "description": "PassStatusDot component (gekleurde stip + label). Status van de gekoppelde credential."
   },
   {
     "key": "compliance",

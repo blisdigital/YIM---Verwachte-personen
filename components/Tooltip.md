@@ -52,7 +52,7 @@ Generiek hover-tooltip component. Toont één of meerdere regels tekst bij hover
 | Achtergrond | `#3E3F40` | `--n800` |
 | Tekstkleur | `#F8FAFB` | `--n50` |
 | Schaduw | `drop-shadow: 0px 2px 4px rgba(17, 19, 19, 0.16)` | Elevation/S |
-| Border-radius | `4px` | `--r-xs` |
+| Border-radius | `4px` | `--r-s` |
 | Padding | `4px 8px` | `var(--sp-xs) var(--sp-s)` |
 | Lettertype | Nunito Regular | — |
 | Tekstgrootte | `12px` | Body-S |

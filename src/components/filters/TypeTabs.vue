@@ -1,7 +1,6 @@
 <script setup>
 defineProps({
   modelValue: { type: String, default: null }, // null = Alle | 'Bezoeker' | 'Contractor' (filtert op alle niet-Bezoeker persoontypen)
-  counts: { type: Object, default: () => ({ alle: 0, bezoekers: 0, contractors: 0 }) }
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -18,7 +17,7 @@ function setTab(val) {
       :aria-selected="modelValue === null"
       @click="setTab(null)"
     >
-      Alle <span class="tab-count">{{ counts.alle }}</span>
+      Alle
     </button>
     <button
       role="tab"
@@ -26,7 +25,7 @@ function setTab(val) {
       :aria-selected="modelValue === 'Bezoeker'"
       @click="setTab('Bezoeker')"
     >
-      Bezoekers <span class="tab-count">{{ counts.bezoekers }}</span>
+      Bezoekers
     </button>
     <button
       role="tab"
@@ -34,7 +33,7 @@ function setTab(val) {
       :aria-selected="modelValue === 'Contractor'"
       @click="setTab('Contractor')"
     >
-      Contractors <span class="tab-count">{{ counts.contractors }}</span>
+      Contractors
     </button>
   </div>
 </template>
@@ -55,7 +54,6 @@ function setTab(val) {
   align-items: center;
   gap: var(--sp-s);
   padding: var(--sp-s) var(--sp-l);
-  padding-right: var(--sp-m);
   border: none;
   background: none;
   border-radius: var(--r-s);
@@ -75,18 +73,4 @@ function setTab(val) {
   color: var(--n0);
 }
 
-.tab-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--p100);
-  color: var(--p800);
-  font-size: 12px;
-  font-weight: 600;
-  min-width: 20px;
-  padding: 2px var(--sp-xs);
-  border-radius: var(--r-xl);
-  letter-spacing: 0.12px;
-  line-height: 16px;
-}
 </style>

@@ -17,7 +17,7 @@ export const useFilterStore = defineStore('filters', () => {
   const persoontype = ref(null)
   const search = ref('')
   const page = ref(1)
-  const pageSize = ref(10)
+  const pageSize = ref(20)
   const columnFilters = ref({ datumVanaf: todayFormatted() })
   const sortKey = ref('datumVanaf')
   const sortDir = ref('asc')

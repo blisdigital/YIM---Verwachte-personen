@@ -2,6 +2,15 @@ import { computed } from 'vue'
 import { usePersonenStore } from '@/stores/personenStore'
 import { useFilterStore } from '@/stores/filterStore'
 
+const STATUS_ORDER = {
+  'Verwacht': 0,
+  'Nog niet aangekomen': 1,
+  'Aangemeld': 2,
+  'Afgemeld': 3,
+  'Niet aangekomen': 4,
+  'Geannuleerd': 5,
+}
+
 export function usePersonen() {
   const store = usePersonenStore()
   const filterStore = useFilterStore()
@@ -109,6 +118,9 @@ export function usePersonen() {
         bv = parseDatum(bv)
       }
       let cmp = String(av).localeCompare(String(bv), 'nl')
+      if (cmp === 0) {
+        cmp = (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99)
+      }
       if (cmp === 0 && key === 'datumVanaf') {
         cmp = String(a.aankomsttijd ?? '').localeCompare(String(b.aankomsttijd ?? ''), 'nl')
       }
@@ -121,18 +133,11 @@ export function usePersonen() {
     return sorted.value.slice(start, start + filterStore.pageSize)
   })
 
-  const counts = computed(() => ({
-    alle: store.personen.length,
-    bezoekers: store.personen.filter(p => p.persoontype === 'Bezoeker').length,
-    contractors: store.personen.filter(p => p.persoontype !== 'Bezoeker').length,
-  }))
-
   return {
     personen: store.personen,
     filtered,
     sorted,
     paginated,
-    counts,
     total: computed(() => filtered.value.length),
     loading: computed(() => store.loading),
   }

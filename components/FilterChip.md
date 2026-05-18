@@ -18,10 +18,11 @@ Generieke filter-chip die een checkbox-dropdown opent.
 
 **Status opties:**
 - `verwacht` / Verwacht
-- `aangekomen` / Aangekomen
-- `no-show` / No-show
+- `nog niet aangekomen` / Nog niet aangekomen
+- `aangemeld` / Aangemeld
+- `afgemeld` / Afgemeld
+- `niet aangekomen` / Niet aangekomen
 - `geannuleerd` / Geannuleerd
-- `vertrokken` / Vertrokken
 
 **Compliance opties:**
 - `dossier-volledig` / Dossier volledig

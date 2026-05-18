@@ -94,7 +94,7 @@ const drawerItems = [
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 360px;
+  border-radius: var(--r-xl);
   border: none;
   background: transparent;
   cursor: pointer;

@@ -4,10 +4,9 @@
 
 | Component | Bestand |
 |-----------|---------|
-| StatusBadge | [StatusBadge.md](StatusBadge.md) |
+| StatusDot | [StatusDot.md](StatusDot.md) |
 | PassStatusDot | [PassStatusDot.md](PassStatusDot.md) |
 | CompliancePill | [CompliancePill.md](CompliancePill.md) |
-| ComplianceCell | [ComplianceCell.md](ComplianceCell.md) |
 | Modal | [Modal.md](Modal.md) |
 | DatePopover | [DatePopover.md](DatePopover.md) |
 | Toast / ToastContainer | [Toast.md](Toast.md) |

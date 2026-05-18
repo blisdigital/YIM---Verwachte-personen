@@ -3,40 +3,45 @@ import { ref } from 'vue'
 import { MOCK_PERSONEN } from '@/data/mockPersonen'
 
 export const usePersonenStore = defineStore('personen', () => {
-  const personen = ref([])
+  const personen = ref(MOCK_PERSONEN.map(p => ({ ...p, parkeren: { ...p.parkeren } })))
   const loading = ref(false)
   const error = ref(null)
 
   async function fetch() {
-    loading.value = true
-    try {
-      personen.value = MOCK_PERSONEN.map(p => ({ ...p, parkeren: { ...p.parkeren } }))
-    } catch (e) {
-      error.value = e.message
-    } finally {
-      loading.value = false
-    }
+    personen.value = MOCK_PERSONEN.map(p => ({ ...p, parkeren: { ...p.parkeren } }))
   }
 
   function updateStatus(id, status) {
     const person = personen.value.find(p => p.id === id)
     if (person) {
       person.status = status
-      if (status === 'Aangekomen') {
+      if (status === 'Aangemeld') {
         person.checkinTime = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
       }
-      if (status === 'Vertrokken') {
+      if (status === 'Afgemeld') {
         person.checkoutTime = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
       }
     }
   }
 
-  function updatePassStatus(id, passtatus) {
+  function updateCredentialStatus(id, credentialStatus) {
     const person = personen.value.find(p => p.id === id)
     if (person) {
-      person.passtatus = passtatus
+      person.credentialStatus = credentialStatus
+      if (credentialStatus === 'actief' && !person.pasnummer) {
+        person.pasnummer = String(Math.floor(10000000000000 + Math.random() * 89999999999999))
+      }
     }
   }
 
-  return { personen, loading, error, fetch, updateStatus, updatePassStatus }
+  function updateAankomst(id, datum, aankomsttijd, vertrektijd) {
+    const person = personen.value.find(p => p.id === id)
+    if (person) {
+      person.datumVanaf   = datum
+      person.aankomsttijd = aankomsttijd
+      person.vertrekTijd  = vertrektijd ?? null
+    }
+  }
+
+  return { personen, loading, error, fetch, updateStatus, updateCredentialStatus, updateAankomst }
 })

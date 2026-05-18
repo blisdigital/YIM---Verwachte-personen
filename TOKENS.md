@@ -9,10 +9,12 @@ Gebruik deze variabelen consequent in alle componenten.
 > Waar dit bestand afwijkt van de kit, wordt dat expliciet benoemd via een "Figma mapping" kolom of ⚠ markering.
 >
 > **Gewijzigd in deze revisie** (t.o.v. eerdere versie)
+>
 > - Kleur-hexwaardes uitgelijnd met Figma (`--p300`, `--p900`, `--n100`, `--n700` waren gedrift)
 > - Semantische kleuren (`--ok`, `--warn`, `--err`, `--info`) gebruiken nu de Figma Info/Success/Warning/Error schalen — consistent met de status-badge CSS
 > - Spacing en corner-radius tabellen tonen nu de Figma-tegenhanger per token
 > - Prototype-only toevoegingen (`--sp-m 12px`, `--sp-xl 20px`, `--r-l 12px`, typografie) expliciet gemarkeerd
+> - `--n200` toegevoegd (was al gebruikt in specs maar ontbrak in tokens)
 
 ---
 
@@ -23,10 +25,11 @@ Gebruik deze variabelen consequent in alle componenten.
 Gebruikt voor interactieve elementen, accenten en branding. Alle waardes komen 1:1 uit de Figma Brand schaal.
 
 | Token | Waarde | Figma | Gebruik |
-|-------|--------|-------|---------|
-| `--p50`  | `#f0f7f8` | `Color / Brand / P50`  | Hover backgrounds, subtle fills |
+| --- | --- | --- | --- |
+| `--p50` | `#f0f7f8` | `Color / Brand / P50` | Hover backgrounds, subtle fills |
 | `--p100` | `#d6e8ec` | `Color / Brand / P100` | Selected states, pill backgrounds |
 | `--p300` | `#a2cbd3` | `Color / Brand / P300` | Borders (hover) |
+| `--p400` | `#87bdc6` | `Color / Brand / P400` | Mid-tint — hover fills, focus rings |
 | `--p500` | `#6daeba` | `Color / Brand / P500` | **Primary** — buttons, links, active states |
 | `--p600` | `#598f99` | `Color / Brand / P600` | Sidebar active item background |
 | `--p700` | `#315161` | `Color / Brand / P700` | Text on light backgrounds, headings; sidebar background |
@@ -38,33 +41,36 @@ Gebruikt voor interactieve elementen, accenten en branding. Alle waardes komen 1
 Voor tekst, borders, achtergronden. Alle waardes komen 1:1 uit de Figma Neutrals schaal.
 
 | Token | Waarde | Figma | Gebruik |
-|-------|--------|-------|---------|
-| `--n0`   | `#ffffff` | `Color / Neutrals / N0`   | **Page background**, white surfaces |
-| `--n50`  | `#f8fafb` | `Color / Neutrals / N50`  | Subtle contrast, hover fills |
+| --- | --- | --- | --- |
+| `--n0` | `#ffffff` | `Color / Neutrals / N0` | **Page background**, white surfaces |
+| `--n50` | `#f8fafb` | `Color / Neutrals / N50` | Subtle contrast, hover fills |
 | `--n100` | `#f3f4f5` | `Color / Neutrals / N100` | Card backgrounds, dividers |
+| `--n200` | `#ebeced` | `Color / Neutrals / N200` | Toggle hover track, button pressed state, tabel rij-borders |
 | `--n300` | `#eaeced` | `Color / Neutrals / N300` | Borders, separators |
 | `--n400` | `#b8babb` | `Color / Neutrals / N400` | Input borders, disabled elements |
 | `--n500` | `#999a9b` | `Color / Neutrals / N500` | Placeholder text, subtle icons |
 | `--n700` | `#5d5e5e` | `Color / Neutrals / N700` | Secondary text |
 | `--n800` | `#3e3f40` | `Color / Neutrals / N800` | Body text |
 | `--n900` | `#1d1e1f` | `Color / Neutrals / N900` | Primary text, headings |
+| `--n1000` | `#111313` | `Color / Neutrals / N1000` | Deepest neutral — shadow base colour (`rgba(17,19,19,…)`) |
 
 ### Semantisch
 
 Voor feedback en status communicatie. De semantische tokens gebruiken nu de Figma Info (B), Success (G), Warning (Y) en Error (R) schalen — dezelfde waardes als de status-badges hieronder.
 
 | Token | Waarde | Figma | Gebruik |
-|-------|--------|-------|---------|
-| `--ok`       | `#24bb86` | `Color / Success / G500` | Success text/icons |
-| `--ok-bg`    | `#e9f8f3` | `Color / Success / G50`  | Success background |
-| `--warn`     | `#9f871c` | `Color / Warning / Y700` | Warning text/icons |
-| `--warn-bg`  | `#fefbea` | `Color / Warning / Y50`  | Warning background |
-| `--err`      | `#bc243b` | `Color / Error / R500`   | Error text/icons |
-| `--err-bg`   | `#f8e9eb` | `Color / Error / R50`    | Error background |
-| `--err-hover`  | `#a01e32` | ⚠ *prototype-only* | Destructive button hover (10% darker than R500) |
+| --- | --- | --- | --- |
+| `--ok` | `#24bb86` | `Color / Success / G500` | Success text/icons |
+| `--ok-bg` | `#e9f8f3` | `Color / Success / G50` | Success background |
+| `--warn` | `#9f871c` | `Color / Warning / Y700` | Warning text/icons |
+| `--warn-bg` | `#fefbea` | `Color / Warning / Y50` | Warning background |
+| `--warn-y500` | `#f8d32c` | `Color / Warning / Y500` | Status dot fill — "Nog niet aangekomen" (accent only, niet voor tekst) |
+| `--err` | `#bc243b` | `Color / Error / R500` | Error text/icons |
+| `--err-bg` | `#f8e9eb` | `Color / Error / R50` | Error background |
+| `--err-hover` | `#a01e32` | ⚠ *prototype-only* | Destructive button hover (10% darker than R500) |
 | `--err-active` | `#871929` | ⚠ *prototype-only* | Destructive button pressed (20% darker than R500) |
-| `--info`     | `#2464bb` | `Color / Info / B500`    | Info text/icons |
-| `--info-bg`  | `#e9f0f8` | `Color / Info / B50`     | Info background |
+| `--info` | `#2464bb` | `Color / Info / B500` | Info text/icons |
+| `--info-bg` | `#e9f0f8` | `Color / Info / B50` | Info background |
 
 > **Waarom Y700 voor `--warn`?** `Y500 #f8d32c` (het "hoofdgeel") voldoet niet aan WCAG-contrast op lichte achtergronden. `Y700` is een donkerder geel-bruin en is veilig voor tekst. De status-noshow badge gebruikt om dezelfde reden Y700 op Y50.
 
@@ -73,9 +79,9 @@ Voor feedback en status communicatie. De semantische tokens gebruiken nu de Figm
 Speciale styling voor VIP bezoekers. ⚠ **Prototype-specifiek** — geen equivalent in de YIM UI Kit.
 
 | Token | Waarde | Gebruik |
-|-------|--------|---------|
-| `--vip`        | `#92400e` | VIP text |
-| `--vip-bg`     | `#fef3c7` | VIP background |
+| --- | --- | --- |
+| `--vip` | `#92400e` | VIP text |
+| `--vip-bg` | `#fef3c7` | VIP background |
 | `--vip-border` | `#f59e0b` | VIP border, star icon |
 
 Als de kit in de toekomst een VIP/highlight schaal toevoegt: vervangen door die tokens.
@@ -123,19 +129,20 @@ Specifieke kleuren voor de 5 statuswaarden. Pill-shaped (`border-radius: 360px`)
 Consistente spacing schaal gebaseerd op een 4 px grid. Het prototype gebruikt een dichtere schaal dan de YIM UI Kit — twee stappen (12 px en 20 px) zijn niet in Figma aanwezig.
 
 | Token | Waarde | Figma | Gebruik |
-|-------|--------|-------|---------|
-| `--sp-xs`  | `4px`  | `Spacing-xs` | Tight spacing, icon gaps |
-| `--sp-s`   | `8px`  | `Spacing-s`  | Small gaps, compact elements |
-| `--sp-m`   | `12px` | ⚠ *niet in Figma* | Medium padding, standard gaps |
-| `--sp-l`   | `16px` | `Spacing-m`  | Large padding, section spacing |
-| `--sp-xl`  | `20px` | ⚠ *niet in Figma* | Extra large |
-| `--sp-xxl` | `24px` | `Spacing-l`  | Section margins, generous spacing |
+| --- | --- | --- | --- |
+| `--sp-xs` | `4px` | `Spacing-xs` | Tight spacing, icon gaps |
+| `--sp-s` | `8px` | `Spacing-s` | Small gaps, compact elements |
+| `--sp-m` | `12px` | ⚠ *niet in Figma* | Medium padding, standard gaps |
+| `--sp-l` | `16px` | `Spacing-m` | Large padding, section spacing |
+| `--sp-xl` | `20px` | ⚠ *niet in Figma* | Extra large |
+| `--sp-xxl` | `24px` | `Spacing-l` | Section margins, generous spacing |
 
 > **Let op — naam-verschuiving.** Het prototype en Figma gebruiken andere naamgeving voor dezelfde waardes:
 > prototype `--sp-l` = 16 px = Figma `Spacing-m`, prototype `--sp-xxl` = 24 px = Figma `Spacing-l`.
 > De CSS variabelnamen zijn hier ongewijzigd gelaten om bestaande prototype-code niet te breken. Voor productie: overwegen hernoemen of migreren naar de Figma namen.
 
 **Vuistregel:**
+
 - Binnen componenten: `--sp-s` tot `--sp-m`
 - Tussen componenten: `--sp-l` tot `--sp-xxl`
 - Page margins: `48px` (niet in tokens)
@@ -145,10 +152,10 @@ Consistente spacing schaal gebaseerd op een 4 px grid. Het prototype gebruikt ee
 ## Border Radius
 
 | Token | Waarde | Figma | Gebruik |
-|-------|--------|-------|---------|
-| `--r-s`  | `4px`   | `Corner-s`   | Buttons, inputs, small cards |
-| `--r-m`  | `8px`   | `Corner-m`   | Cards, dropdowns, panels |
-| `--r-l`  | `12px`  | ⚠ *niet in Figma* | Modals, large cards |
+| --- | --- | --- | --- |
+| `--r-s` | `4px` | `Corner-s` | Buttons, inputs, small cards |
+| `--r-m` | `8px` | `Corner-m` | Cards, dropdowns, panels |
+| `--r-l` | `12px` | ⚠ *niet in Figma* | Modals, large cards |
 | `--r-xl` | `360px` | `Corner-360` | Pills, avatars (fully rounded) |
 
 > `--r-l 12px` ligt tussen Figma's `Corner-m` (8) en `Corner-l` (16). Voor productie: overwegen te vervangen door `Corner-l` (16 px) of deze stap toe te voegen aan de kit.
@@ -164,6 +171,7 @@ Consistente spacing schaal gebaseerd op een 4 px grid. Het prototype gebruikt ee
 ```
 
 Laad via Google Fonts:
+
 ```html
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 ```
@@ -175,14 +183,14 @@ Dit komt overeen met `Typography/Font/Header` en `Typography/Font/Body` uit de F
 ⚠ **De prototype-schaal wijkt substantieel af van de Figma type-scale.** Het prototype gebruikt context-specifieke sizes (17 px card title, 10 px label) die niet in de kit zitten. Voor productie aanbevolen: migreren naar de Figma Display / H1–H5 / Body L–S / Label L–S / Caption schaal (zie `brand.md`).
 
 | Context | Size | Weight | Line Height | Dichtstbijzijnde Figma |
-|---------|------|--------|-------------|------------------------|
-| Page title    | `40px` | `700` | `48px` | `Header/H1` (40/48) |
+| --- | --- | --- | --- | --- |
+| Page title | `40px` | `700` | `48px` | `Header/H1` (40/48) |
 | Section title | `18px` | `700` | `24px` | `Header/H5` (18/24) |
-| Card title    | `17px` | `700` | —      | ⚠ geen directe match |
-| Body text     | `14px` | `400` | `20px` | `Body/Body M` (14/20) |
-| Caption       | `12px` | `400/600` | `16px` | `Body/Body S` (400) of `Labels/Label S` (600) |
-| Sectie-label  | `11px` | `700` uppercase | — | ⚠ geen directe match — kleinste Figma label is 12 px |
-| Status badge  | `12px` | `600` | `16px` | `Labels/Label S` (12/16/600) |
+| Card title | `17px` | `700` | — | ⚠ geen directe match |
+| Body text | `14px` | `400` | `20px` | `Body/Body M` (14/20) |
+| Caption | `12px` | `400/600` | `16px` | `Body/Body S` (400) of `Labels/Label S` (600) |
+| Sectie-label | `11px` | `700` uppercase | — | ⚠ geen directe match — kleinste Figma label is 12 px |
+| Status badge | `12px` | `600` | `16px` | `Labels/Label S` (12/16/600) |
 
 ### Letter Spacing
 
@@ -199,13 +207,31 @@ De Figma Label schaal gebruikt 1% letter-spacing (`0.16/0.14/0.12px` voor L/M/S)
 Vier shadow-tokens zijn opgenomen in `_tokens.css`. De meeste Figma Elevation-niveaus gebruiken `rgba(17,19,19,…)` als kleur (N1000); `--shadow-l` en `--shadow-panel` gebruiken transparant zwart omdat ze zwaarder of directioneel zijn. Voor productie aanbevolen: volledig afstemmen op de Figma Elevation-schaal (zie `brand.md → Elevations`).
 
 | Token | Waarde | Figma | Gebruik |
-|-------|--------|-------|---------|
-| `--shadow-s`     | `0 2px 8px rgba(17, 19, 19, 0.16)`       | `Elevation/s`  | Button hover, compliance pill tooltip |
-| `--shadow-m`     | `0 4px 16px -2px rgba(17, 19, 19, 0.16)` | `Elevation/m`  | Dropdowns, popovers, menus |
-| `--shadow-l`     | `0 12px 40px rgba(0, 0, 0, 0.22)`        | `Elevation/xl` | Modals |
-| `--shadow-panel` | `-4px 0 24px rgba(0, 0, 0, 0.12)`        | geen directe match | Detail panel (slide-in rechts) |
+| --- | --- | --- | --- |
+| `--shadow-xs` | `0 1px 2px rgba(17,19,19,.08), 0 1px 4px rgba(17,19,19,.12)` | `Elevation/xs` | Tabelrijen |
+| `--shadow-s` | `0 2px 8px rgba(17, 19, 19, 0.16)` | `Elevation/s` | Button hover, compliance pill tooltip |
+| `--shadow-m` | `0 4px 16px -2px rgba(17, 19, 19, 0.16)` | `Elevation/m` | Dropdowns, popovers, menus |
+| `--shadow-l` | `0 8px 16px -2px rgba(17, 19, 19, 0.16)` | `Elevation/l` | Floating panels, grote popovers |
+| `--shadow-xl` | `0 12px 16px -4px rgba(17, 19, 19, 0.20)` | `Elevation/xl` | Modals, dialogs |
+| `--shadow-panel` | `-4px 0 24px rgba(0, 0, 0, 0.12)` | geen directe match | Detail panel (slide-in rechts) |
 
 > **Sidebar shadow** (`AppHeader.vue` — `2px 0 16px rgba(0,0,0,0.15)`) is directioneel tegenovergesteld aan `--shadow-panel` en niet als token opgenomen.
+
+### Popup tokens
+
+⚠ **Prototype-specifiek** — afgeleide tokens voor de check-in/out en annuleren flows. Nog geen definitief Figma-ontwerp; waardes gebaseerd op semantische tokens.
+
+| Token | Waarde | Gebruik |
+| --- | --- | --- |
+| `--popup-person-bg` | `var(--n50)` | Persoon-card achtergrond in popup |
+| `--popup-field-bg` | `var(--n0)` | Formulier veld achtergrond |
+| `--popup-field-border` | `var(--n400)` | Formulier veld rand (rust) |
+| `--popup-field-radius` | `var(--r-s)` | Formulier veld hoekafronding |
+| `--popup-warn-bg` | `var(--warn-bg)` | Waarschuwingsblok achtergrond |
+| `--popup-warn-icon` | `var(--warn)` | Waarschuwingsblok icon kleur |
+| `--popup-cancel-bg` | `var(--err-bg)` | Annuleren-blok achtergrond |
+| `--popup-cancel-border` | `#eac8cc` | Annuleren-blok rand (err-bg verdonkerd) |
+| `--popup-cancel-icon` | `var(--err)` | Annuleren-blok icon kleur |
 
 ---
 
@@ -237,7 +263,7 @@ Gebruik met de `.mi` utility class:
 ### Veelgebruikte icons
 
 | Context | Icon |
-|---------|------|
+| --- | --- |
 | Inchecken | `login` |
 | Uitchecken | `logout` |
 | No-show | `person_off` |
@@ -265,7 +291,7 @@ Gebruik met de `.mi` utility class:
 ⚠ **Prototype-specifiek** — niet in de YIM UI Kit.
 
 | Layer | Z-Index | Gebruik |
-|-------|---------|---------|
+| --- | --- | --- |
 | Base | `1` | Inline elevated elements |
 | Dropdown backdrop | `100` | Click-away overlay achter dropdowns/panels |
 | Dropdown button | `101` | Instellingen-button (boven eigen backdrop) |
@@ -284,7 +310,7 @@ Gebruik met de `.mi` utility class:
 ⚠ **Prototype-specifiek** — niet in de YIM UI Kit. Het prototype is primair desktop-first, met tablet ondersteuning.
 
 | Breakpoint | Width | Context |
-|------------|-------|---------|
+| --- | --- | --- |
 | Desktop | `≥1280px` | Volledige tabel |
 | Tablet | `768px - 1279px` | Compacte tabel, hamburger menu |
 | Mobile | `<768px` | Niet primair ondersteund (receptie use case) |
@@ -299,6 +325,7 @@ Gebruik met de `.mi` utility class:
   --p50:  #f0f7f8;
   --p100: #d6e8ec;
   --p300: #a2cbd3;
+  --p400: #87bdc6;
   --p500: #6daeba;
   --p600: #598f99;
   --p700: #315161;
@@ -306,25 +333,30 @@ Gebruik met de `.mi` utility class:
   --p900: #132a35;
 
   /* Neutral (Grey) — Figma: Color / Neutrals / N* */
-  --n0:   #ffffff;
-  --n50:  #f8fafb;
-  --n100: #f3f4f5;  /* was #f0f2f3 — uitgelijnd met Figma */
-  --n300: #eaeced;
-  --n400: #b8babb;
-  --n500: #999a9b;
-  --n700: #5d5e5e;  /* was #6b6c6d — uitgelijnd met Figma */
-  --n800: #3e3f40;
-  --n900: #1d1e1f;
+  --n0:    #ffffff;
+  --n50:   #f8fafb;
+  --n100:  #f3f4f5;
+  --n200:  #ebeced;
+  --n300:  #eaeced;
+  --n400:  #b8babb;
+  --n500:  #999a9b;
+  --n700:  #5d5e5e;
+  --n800:  #3e3f40;
+  --n900:  #1d1e1f;
+  --n1000: #111313;  /* shadow base colour */
 
   /* Semantic — Figma: Info (B), Success (G), Warning (Y), Error (R) */
-  --ok:      #24bb86;  /* G500 */
-  --ok-bg:   #e9f8f3;  /* G50  */
-  --warn:    #9f871c;  /* Y700 */
-  --warn-bg: #fefbea;  /* Y50  */
-  --err:     #bc243b;  /* R500 */
-  --err-bg:  #f8e9eb;  /* R50  */
-  --info:    #2464bb;  /* B500 */
-  --info-bg: #e9f0f8;  /* B50  */
+  --ok:        #24bb86;  /* G500 */
+  --ok-bg:     #e9f8f3;  /* G50  */
+  --warn:      #9f871c;  /* Y700 */
+  --warn-bg:   #fefbea;  /* Y50  */
+  --warn-y500: #f8d32c;  /* Y500 — status dot accent, niet voor tekst */
+  --err:       #bc243b;  /* R500 */
+  --err-bg:    #f8e9eb;  /* R50  */
+  --err-hover:  #a01e32; /* ⚠ prototype-only */
+  --err-active: #871929; /* ⚠ prototype-only */
+  --info:      #2464bb;  /* B500 */
+  --info-bg:   #e9f0f8;  /* B50  */
 
   /* VIP — prototype-specific, not in Figma */
   --vip:        #92400e;
@@ -346,10 +378,23 @@ Gebruik met de `.mi` utility class:
   --r-xl: 360px;  /* Corner-360 */
 
   /* Shadows — Figma Elevation tokens */
-  --shadow-s:     0 2px 8px rgba(17, 19, 19, 0.16);       /* Elevation/s  */
-  --shadow-m:     0 4px 16px -2px rgba(17, 19, 19, 0.16); /* Elevation/m  */
-  --shadow-l:     0 12px 40px rgba(0, 0, 0, 0.22);        /* Elevation/xl */
-  --shadow-panel: -4px 0 24px rgba(0, 0, 0, 0.12);        /* directional  */
+  --shadow-xs:    0 1px 2px rgba(17, 19, 19, 0.08), 0 1px 4px rgba(17, 19, 19, 0.12); /* Elevation/xs */
+  --shadow-s:     0 2px 8px rgba(17, 19, 19, 0.16);                /* Elevation/s  */
+  --shadow-m:     0 4px 16px -2px rgba(17, 19, 19, 0.16);          /* Elevation/m  */
+  --shadow-l:     0 8px 16px -2px rgba(17, 19, 19, 0.16);          /* Elevation/l  */
+  --shadow-xl:    0 12px 16px -4px rgba(17, 19, 19, 0.20);         /* Elevation/xl */
+  --shadow-panel: -4px 0 24px rgba(0, 0, 0, 0.12);                 /* directional  */
+
+  /* Popup tokens — prototype-specific, awaiting definitive Figma design */
+  --popup-person-bg:     var(--n50);
+  --popup-field-bg:      var(--n0);
+  --popup-field-border:  var(--n400);
+  --popup-field-radius:  var(--r-s);
+  --popup-warn-bg:       var(--warn-bg);
+  --popup-warn-icon:     var(--warn);
+  --popup-cancel-bg:     var(--err-bg);
+  --popup-cancel-border: #eac8cc;
+  --popup-cancel-icon:   var(--err);
 
   /* Typography */
   --font: 'Nunito', sans-serif;
@@ -363,12 +408,14 @@ Gebruik met de `.mi` utility class:
 Een snel overzicht van wat uit de kit komt en wat het prototype zelf toevoegt:
 
 **Uit de Figma kit (brand.md):**
+
 - Alle kleuren — Primair, Neutraal, Semantisch (na deze revisie)
 - Spacing 4, 8, 16, 24 px
 - Corner radius 4, 8, 360 px
 - Font family Nunito
 
 **Prototype-specifieke toevoegingen:**
+
 - Spacing 12, 20 px
 - Corner radius 12 px
 - Typografie (context-named sizes, kleiner dan de kit)

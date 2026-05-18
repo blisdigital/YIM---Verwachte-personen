@@ -8,15 +8,17 @@ Gedetailleerde specificaties per component staan in `components/`:
 | [`components/PageHeader.md`](components/PageHeader.md) | PageHeader |
 | [`components/BaseButton.md`](components/BaseButton.md) | BaseButton |
 | [`components/IconButton.md`](components/IconButton.md) | IconButton |
-| [`components/StatusBadge.md`](components/StatusBadge.md) | StatusBadge |
+| [`components/InputField.md`](components/InputField.md) | InputField |
+| [`components/Toggle.md`](components/Toggle.md) | Toggle |
+| [`components/StatusDot.md`](components/StatusDot.md) | StatusDot |
 | [`components/PassStatusDot.md`](components/PassStatusDot.md) | PassStatusDot |
-| [`components/CompliancePill.md`](components/CompliancePill.md) | CompliancePill |
-| [`components/ComplianceCell.md`](components/ComplianceCell.md) | ComplianceCell |
+| [`components/CompliancePill.md`](components/CompliancePill.md) | CompliancePill, ComplianceCell |
 | [`components/Modal.md`](components/Modal.md) | Modal |
 | [`components/DatePopover.md`](components/DatePopover.md) | DatePopover |
 | [`components/Toast.md`](components/Toast.md) | Toast, ToastContainer |
 | [`components/Tooltip.md`](components/Tooltip.md) | Tooltip |
 | [`components/DatePickerCalendar.md`](components/DatePickerCalendar.md) | DatePickerCalendar |
+| [`components/TimePopover.md`](components/TimePopover.md) | TimePopover |
 | [`components/TypeTabs.md`](components/TypeTabs.md) | TypeTabs |
 | [`components/DateFilterChip.md`](components/DateFilterChip.md) | DateFilterChip |
 | [`components/FilterChip.md`](components/FilterChip.md) | FilterChip |
@@ -27,13 +29,15 @@ Gedetailleerde specificaties per component staan in `components/`:
 | [`components/ColumnFilters.md`](components/ColumnFilters.md) | ColumnFilters |
 | [`components/Pagination.md`](components/Pagination.md) | Pagination |
 | [`components/ActionMenu.md`](components/ActionMenu.md) | ActionMenu |
-| [`components/Bulkbar.md`](components/Bulkbar.md) | BulkBar |
+| [`components/BulkBar.md`](components/BulkBar.md) | BulkBar |
 | [`components/ActionPopup.md`](components/ActionPopup.md) | ActionPopup |
-| [`components/CheckinModal.md`](components/CheckinModal.md) | CheckinModal |
-| [`components/NoShowModal.md`](components/NoShowModal.md) | NoShowModal |
+| [`components/AanmeldenModal.md`](components/AanmeldenModal.md) | AanmeldenModal |
+| [`components/AfmeldenModal.md`](components/AfmeldenModal.md) | AfmeldenModal |
 | [`components/AnnulerenModal.md`](components/AnnulerenModal.md) | AnnulerenModal |
-| [`components/BezoekDetail.md`](components/BezoekDetail.md) | DetailPanel |
-| [`components/Settings.md`](components/Settings.md) | InstellingenMenu, KolomInstellingenPanel |
+| [`components/AankomstWijzigenModal.md`](components/AankomstWijzigenModal.md) | AankomstWijzigenModal |
+| [`components/InformeerContactpersoonModal.md`](components/InformeerContactpersoonModal.md) | InformeerContactpersoonModal |
+| [`components/DetailPanel.md`](components/DetailPanel.md) | DetailPanel |
+| [`components/KolomInstellingenPanel.md`](components/KolomInstellingenPanel.md) | InstellingenMenu, KolomInstellingenPanel |
 
 ## Snel overzicht
 
@@ -45,16 +49,19 @@ layout/
 ui/
   BaseButton           — Generieke knop met tekstlabel (filled / outlined / ghost / gray)
   IconButton           — Icon-only knop zonder label (filled / outlined / ghost / gray)
-  StatusBadge          — Kleur-badge per status (Verwacht, Aangekomen, etc.) — border-radius 4px
-  PassStatusDot        — Gekleurde stip + label voor passtatus
-  ComplianceCell       — Compositie van 0-2 CompliancePills per tabelcel
+  InputField           — Tekstveld met label, states (default/hover/focus/filled/disabled/readonly/error) en optionele leading/trailing icon
+  Toggle               — On/off-schakelaar met label en states (default/hover/focus/disabled)
+  StatusDot            — Gekleurde stip + label per status (Verwacht, Aangemeld, etc.)
+  PassStatusDot        — Gekleurde stip + label voor credentialStatus
   CompliancePill       — Enkele dossier- of e-learning pill met hover-tooltip (tooltip inline geïmplementeerd)
+  ComplianceCell       — Dunne wrapper (CompliancePill.md) die 0-2 pills rendert in tabelcel
   Tooltip              — Generieke hover-tooltip wrapper (content: string | string[])
   ActionPopup          — Basis wrapper voor alle actie-popups (480px, bottom-sheet op tablet)
   Modal                — Modale dialoog (slots: default, footer)
   Toast / ToastContainer — Notificatie toasts via useToast() composable; standaard: Neutral · cancel=true (zie Toast.md)
   DatePopover          — Gedeeld datum-filterpaneel (Filter titel, datumveld, presets, footer)
   DatePickerCalendar   — Custom kalender in YIM-stijl (maand-nav, dag-grid, states)
+  TimePopover          — Scrollbare tijdkiezer (uren/minuten kolommen, Nu-knop)
 
 filters/
   TypeTabs          — Segmented tabs (Alle / Bezoekers / Contractors) met counts
@@ -72,9 +79,11 @@ table/
 actions/
   ActionMenu        — Context menu per rij (acties afhankelijk van status)
   BulkBar           — Toolbar bij selectie (inchecken, uitchecken, etc.)
-  CheckinModal      — Bevestigingsdialoog voor inchecken / uitchecken (gebruikt ActionPopup)
-  NoShowModal       — No-show registratie met reden-dropdown + opmerking (gebruikt ActionPopup)
-  AnnulerenModal    — Destructieve bevestiging voor annuleren (gebruikt ActionPopup)
+  AanmeldenModal    — Bevestigingsdialoog voor persoon aanmelden (gebruikt ActionPopup)
+  AfmeldenModal     — Bevestigingsdialoog voor persoon afmelden (gebruikt ActionPopup)
+  AnnulerenModal          — Destructieve bevestiging voor annuleren (gebruikt ActionPopup)
+  AankomstWijzigenModal   — Datum/tijd wijzigen voor verwachte aankomst (gebruikt ActionPopup)
+  InformeerContactpersoonModal — E-mail sturen naar contactpersoon (gebruikt ActionPopup)
 
 detail/
   DetailPanel       — Gecentreerde modal (832px) met volledige persoonsgegevens en acties per status

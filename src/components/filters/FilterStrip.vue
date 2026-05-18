@@ -4,17 +4,16 @@ import DateFilterChip from './DateFilterChip.vue'
 import FilterChip from './FilterChip.vue'
 import SearchBox from './SearchBox.vue'
 import { useFilterStore } from '@/stores/filterStore'
-import { usePersonen } from '@/composables/usePersonen'
 
 const filterStore = useFilterStore()
-const { counts } = usePersonen()
 
 const statusOptions = [
   { value: 'verwacht', label: 'Verwacht' },
-  { value: 'aangekomen', label: 'Aangekomen' },
-  { value: 'no-show', label: 'No-show' },
+  { value: 'nog niet aangekomen', label: 'Nog niet aangekomen' },
+  { value: 'aangemeld', label: 'Aangemeld' },
+  { value: 'afgemeld', label: 'Afgemeld' },
+  { value: 'niet aangekomen', label: 'Niet aangekomen' },
   { value: 'geannuleerd', label: 'Geannuleerd' },
-  { value: 'vertrokken', label: 'Vertrokken' },
 ]
 
 const complianceOptions = [
@@ -35,7 +34,6 @@ const parkerenOptions = [
     <div class="filter-left">
       <TypeTabs
         :model-value="filterStore.persoontype"
-        :counts="counts"
         @update:model-value="val => { filterStore.persoontype = val; filterStore.page = 1 }"
       />
     </div>

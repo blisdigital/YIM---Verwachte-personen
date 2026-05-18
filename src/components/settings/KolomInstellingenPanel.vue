@@ -211,7 +211,7 @@ function confirmSaveSet() {
 
 .col-list::-webkit-scrollbar-thumb {
   background: var(--p700);
-  border-radius: 8px;
+  border-radius: var(--r-m);
   border: 4px solid var(--n50);
 }
 

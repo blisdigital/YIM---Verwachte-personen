@@ -201,4 +201,4 @@ interface Column {
 }
 ```
 
-Zie [`columns.json`](../columns.json) voor de volledige configuratie met 19 kolommen (2 sticky + 17 scrollbaar, waarvan 3 standaard verborgen).
+Zie [`columns.json`](../columns.json) voor de volledige configuratie met 21 kolommen (2 sticky + 19 scrollbaar, waarvan 3 standaard verborgen).

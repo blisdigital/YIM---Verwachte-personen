@@ -26,12 +26,12 @@ Figma-bronnen: [Epic – Verwachte personen `6:32511`](https://www.figma.com/des
 
 ```
 ┌─ Pagination bar ────────────────────────────────────────────────────────────┐
-│ ┌──────┐                                                                     │
-│ │ 10 ▾ │  resultaten per pagina | 1-10 van 20      |◀  ◀  [1]  2  ▶  ▶|    │
-│ └──────┘                                                                     │
+│  |◀  ◀  [1]  2  ▶  ▶|  ┌──────┐                      1-20 van 40 items     │
+│                         │ 20 ▾ │                                             │
+│                         └──────┘                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
-  └ dropdown    └ tellertekst                          └ paginaknoppen
-  └──── linker groep (gap 16px) ────┘                 └── rechter groep (gap 8px) ┘
+  └ paginaknoppen       └ dropdown                      └ tellertekst
+  └──────────── linker groep (gap 16px) ────────┘       └── rechts ──┘
   └────────────────────── justify-between ──────────────────────────────────────┘
 ```
 
@@ -54,57 +54,56 @@ Figma-bronnen: [Epic – Verwachte personen `6:32511`](https://www.figma.com/des
 
 ## Container
 
-Hoogte 56px, padding `pt-xl pb-s px-l` (top 20 / bottom 8 / horizontaal 16), `flex`, `justify-between`, `align-items: center`, `width: 100%`. Geen eigen achtergrond of border.
+Padding `pt-xl pb-l px-l` (top 20 / bottom 16 / horizontaal 16), `flex`, `justify-between`, `align-items: center`, `width: 100%`. Geen vaste hoogte. Geen eigen achtergrond of border.
 
 ---
 
-## Links — per-page dropdown + tellertekst
+## Links — paginaknoppen + per-page dropdown
 
 | Prop | Waarde |
 | --- | --- |
 | Group gap | `Spacing-l` (16px) |
 | Display | `flex`, `align-items: center` |
 
-### Dropdown (YIM UI Kit `2410:5327`)
-
-Bg `N0`, `Corner-s` (4px), overflow clip, hoogte 40px. Labeldeel: padding `Spacing-s`, breedte 48px, Body M. Icon-action: 40×40, bg `N50`, padding `Spacing-s`, 24px icoon.
-
-| State | Border | Tekst | Icoon |
-| --- | --- | --- | --- |
-| Enabled | 1px `N400` | `N900` | `expand-more` (▾) |
-| Hover | 1px `N800` | `N900` | `expand-more` (▾) |
-| Focus/Open | **2px** `P500` | `N900` | `expand-less` (▴) |
-| Disabled | 1px `N200` | `N500` | `expand-more` (▾) |
-
-### Tellertekst
-
-Label M / `N800`. Formaat: `{start}-{end} van {total}` waarbij `{end} = min(start + pageSize − 1, total)`.
-Voorbeeld: `resultaten per pagina | 1-10 van 20`.
-
----
-
-## Rechts — paginaknoppen
+### Paginaknoppen
 
 | Prop | Waarde |
 | --- | --- |
-| Group gap | `Spacing-s` (8px) |
+| Knop-groep gap | `Spacing-s` (8px) |
 | Knop-afmeting | 40×40 (`px-m` 12, `py-s` 8) |
-| Knop-radius | `Corner-s` (4px) |
+| Knop-radius | `Corner-360` (360px) — pill |
 | Icoon-afmeting | 24px |
+| Geen border | — |
 
 Volgorde: `first-page` · `chevron-left` · [paginanummers + ellipsis] · `chevron-right` · `last-page`
 
-| Knop-state | Bg | Border | Inhoud | Wanneer |
-| --- | --- | --- | --- | --- |
-| Page — active | `P500` | — | `N0`, Label M | huidige pagina |
-| Page — inactive | `N0` | 1px `N400` | `N800`, Label M | klikbare pagina |
-| Ellipsis (…) | `N0` | 1px `N400` | `N800`, Label M | afgekorte reeks (niet klikbaar) |
-| Nav — enabled | `N0` | 1px `N400` | icoon `N800` 24px | kan navigeren |
-| Nav — disabled | `N0` | 1px **`N300`** | icoon `N400` 24px | einde reeks |
+| Knop-state | Bg | Tekst / Icoon | Wanneer |
+| --- | --- | --- | --- |
+| Page — active | `P500` | `N0`, Label M | huidige pagina |
+| Page — inactive | `P50` | `P700`, Label M | klikbare pagina |
+| Ellipsis (…) | `P50` | `P700`, Label M | afgekorte reeks (niet klikbaar) |
+| Nav — enabled | `P50` | icoon `N800` 24px | kan navigeren |
+| Nav — disabled | `N50` | icoon `N400` 24px | einde reeks |
 
 Icons (Material): `first-page` ⏮ · `chevron-left` ‹ · `chevron-right` › · `last-page` ⏭
 
-Opmerking: disabled nav-knoppen hebben **border-kleur `N300`** (vs `N400` enabled) en **icoonkleur `N400`** (vs `N800` enabled) om de inactieve staat duidelijk zichtbaar te maken. `opacity: 0.5` staat niet in de Figma-tokens.
+### Dropdown (YIM UI Kit `2410:5327`)
+
+Bg `N0`, `Corner-s` (4px), overflow clip, hoogte 40px. Labeldeel: padding `Spacing-s`, breedte 48px, Body M. Icon-action: 40×40, border-left 1px `N400`, padding `Spacing-s`, 24px icoon `arrow_drop_down`.
+
+| State | Border | Tekst | Icoon |
+| --- | --- | --- | --- |
+| Enabled | 1px `N400` | `N900` | `arrow_drop_down` |
+| Hover | 1px `N800` | `N900` | `arrow_drop_down` |
+| Focus/Open | **2px** `P500` | `N900` | `arrow_drop_down` |
+| Disabled | 1px `N200` | `N500` | `arrow_drop_down` |
+
+---
+
+## Rechts — tellertekst
+
+Label M / `N800`. Formaat: `{start}-{end} van {total} items` waarbij `{end} = min(start + pageSize − 1, total)`.
+Voorbeeld: `1-20 van 40 items`.
 
 ---
 

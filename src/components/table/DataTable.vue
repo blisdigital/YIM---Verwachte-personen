@@ -15,7 +15,9 @@ const emit = defineEmits(['row-click', 'sort', 'select', 'select-all', 'action']
 
 const filterStore = useFilterStore()
 const columnStore = useColumnStore()
-const columnWidths = ref({})
+const columnWidths = ref(
+  Object.fromEntries(columnsConfig.filter(c => !c.sticky).map(c => [c.key, c.width]))
+)
 
 // Sticky shadow on scroll
 const tableWrapRef = ref(null)
@@ -43,6 +45,12 @@ const visibleCols = computed(() => {
 // Resize logic
 const resizing = ref(null)
 
+function getMinWidth(col) {
+  // ~8.5px per char at 14px/600, 32px padding, 20px sort icon
+  const labelMin = Math.ceil(col.label.length * 8.5) + 32 + (col.sortable ? 20 : 0)
+  return Math.max(60, col.minWidth ?? labelMin)
+}
+
 function startResize(e, col) {
   e.preventDefault()
   const startX = e.clientX
@@ -51,7 +59,7 @@ function startResize(e, col) {
 
   function onMove(e) {
     const diff = e.clientX - startX
-    const newW = Math.max(50, startW + diff)
+    const newW = Math.max(getMinWidth(col), startW + diff)
     columnWidths.value = { ...columnWidths.value, [col.key]: newW }
   }
 
@@ -231,7 +239,11 @@ function colWidth(col) {
 }
 
 /* Header */
-.thead-row { background: var(--n50); }
+.thead-row {
+  background: var(--p700);
+  position: relative;
+  z-index: 3;
+}
 
 .th-cell {
   padding: 8px 16px;
@@ -239,26 +251,25 @@ function colWidth(col) {
   text-align: left;
   font-size: 14px;
   font-weight: 600;
-  color: var(--p700);
+  color: var(--n0);
   letter-spacing: 0.14px;
-  border-bottom: 1px solid var(--n300);
-  border-right: 1px solid var(--n300);
+  border-right: 1px solid var(--p800);
   white-space: nowrap;
   vertical-align: middle;
   user-select: none;
   position: relative;
-  background: var(--n50);
+  background: var(--p700);
 }
 
 .th-cell.sticky {
   position: sticky;
   z-index: 4;
-  background: var(--n50);
+  background: var(--p700);
 }
 
 .th-cell.sortable { cursor: pointer; }
-.th-cell.sortable:hover { background: var(--n100); }
-.th-cell.sorted { color: var(--p700); }
+.th-cell.sortable:hover { background: var(--p800); }
+.th-cell.sorted { color: var(--n0); }
 
 .th-inner {
   display: flex;
@@ -272,7 +283,7 @@ function colWidth(col) {
 
 .sort-icon {
   font-size: 16px;
-  color: var(--n400);
+  color: var(--n300);
   flex-shrink: 0;
   line-height: 1;
   width: 16px;
@@ -283,7 +294,7 @@ function colWidth(col) {
   flex-direction: column;
   flex-shrink: 0;
   align-items: center;
-  color: var(--n400);
+  color: var(--n300);
   width: 16px;
 }
 .sort-icon-dual .mi {
@@ -291,7 +302,7 @@ function colWidth(col) {
   line-height: 0.6;
   display: block;
 }
-.sorted .sort-icon { color: var(--p700); }
+.sorted .sort-icon { color: var(--n0); }
 
 /* Sticky shadow when scrolled */
 .table-wrap[data-scrolled="true"] :deep(.sticky-last) {
@@ -314,7 +325,7 @@ function colWidth(col) {
   top: 20%;
   bottom: 20%;
   width: 2px;
-  background: var(--n300);
+  background: var(--p100);
   border-radius: 2px;
   opacity: 0;
   transition: opacity 0.15s;

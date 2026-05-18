@@ -31,12 +31,14 @@ Atomic pill-component dat één compliance-item toont (dossier óf e-learning) m
 
 ## Kleurmapping
 
-| Type | Status | Pill | Kleur |
-|------|--------|------|-------|
-| `dossier` | `compleet` | `✓ Dossier` | Groen (`--ok` / `--ok-bg`) |
-| `dossier` | `onvolledig` | `▲ Dossier` | Oranje (`--warn` / `--warn-bg`) |
-| `elearning` | `behaald` | `✓ E-learning` | Groen (`--ok` / `--ok-bg`) |
-| `elearning` | `niet-behaald` | `▲ E-learning` | Oranje (`--warn` / `--warn-bg`) |
+Achtergrond altijd `--p100`, tekstkleur `--n900`. Icoonkleur varieert per staat:
+
+| Type | Status | Pill | Icoonkleur |
+|------|--------|------|------------|
+| `dossier` | `compleet` | `✓ Dossier` | `--ok` (groen) |
+| `dossier` | `onvolledig` | `▲ Dossier` | `--err` (oranje) |
+| `elearning` | `behaald` | `✓ E-learning` | `--ok` (groen) |
+| `elearning` | `niet-behaald` | `▲ E-learning` | `--err` (oranje) |
 
 ---
 
@@ -64,3 +66,28 @@ Tooltip toont redenen uit `reasons[]`, elke reden op eigen regel.
 | `"niet-afgerond"` | "E-learning verplicht, nog niet afgerond" |
 | `"op-locatie"` | "E-learning moet op locatie gehaald worden" |
 | `null` | "E-learning niet behaald" |
+
+---
+
+## Gebruik in tabel (ComplianceCell)
+
+`ComplianceCell.vue` is een dunne wrapper die bepaalt welke pills in een tabelcel verschijnen. Props:
+
+| Prop | Type | Beschrijving |
+|------|------|--------------|
+| `dossier` | `'compleet' \| 'onvolledig'` | Dossier status |
+| `dossierMissing` | `string[] \| null` | Redenen voor onvolledigheid |
+| `elearning` | `'behaald' \| 'niet-behaald' \| 'niet-vereist'` | E-learning status |
+| `elearningReason` | `'niet-afgerond' \| 'verlopen' \| null` | Reden bij niet-behaald |
+
+Render logica:
+
+```text
+altijd:     <CompliancePill type="dossier" :status="dossier" :reasons="dossierMissing" />
+
+als elearning !== 'niet-vereist':
+            <CompliancePill type="elearning" :status="elearning" :reason="elearningReason" />
+
+als elearning === 'niet-vereist':
+            (niet gerenderd)
+```

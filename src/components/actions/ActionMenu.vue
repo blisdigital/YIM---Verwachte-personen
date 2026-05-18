@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import moreIconDefault from '../../assets/icons/more-icon-default.svg'
+import moreIconActive from '../../assets/icons/more-icon-active.svg'
 
 const props = defineProps({
   person: { type: Object, required: true }
@@ -7,46 +9,65 @@ const props = defineProps({
 const emit = defineEmits(['action'])
 
 const open = ref(false)
+const hovered = ref(false)
 const menuRef = ref(null)
 const btnRef = ref(null)
 const menuStyle = ref({})
 
+// Credential types that are printable (QR-code based). All other non-null types are physical.
+const PRINTABLE_CREDENTIAL_TYPES = new Set(['QR-code'])
+
+const credentialAction = computed(() => {
+  const type = props.person.credentialType
+  if (!type) return null
+  if (PRINTABLE_CREDENTIAL_TYPES.has(type)) {
+    return { value: 'credential-printen', label: 'Credential printen' }
+  }
+  // Physical: ontkoppelen als al gekoppeld, anders koppelen
+  if (props.person.credentialStatus === 'actief') {
+    return { value: 'credential-ontkoppelen', label: 'Credential ontkoppelen' }
+  }
+  return { value: 'credential-koppelen', label: 'Credential koppelen' }
+})
+
 const actions = computed(() => {
   const status = props.person.status
-  if (status === 'Verwacht') return [
-    { value: 'inchecken', label: 'Inchecken' },
-    { value: 'pas-koppelen', label: 'Pas koppelen' },
-    { value: 'no-show', label: 'No-show' },
-    { value: 'annuleren', label: 'Annuleren', danger: true },
+  const credItems = credentialAction.value ? [credentialAction.value] : []
+
+  if (status === 'Verwacht' || status === 'Nog niet aangekomen') return [
+    { value: 'persoon-aanmelden', label: 'Persoon aanmelden' },
+    ...credItems,
+    { value: 'aankomst-wijzigen', label: 'Aankomst wijzigen' },
+    { value: 'persoon-annuleren', label: 'Persoon annuleren', danger: true },
     { divider: true },
+    { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
     { value: 'bel-persoon', label: 'Bel persoon' },
-    { value: 'contactpersoon-informeren', label: 'Contactpersoon informeren' },
   ]
-  if (status === 'Aangekomen') return [
-    { value: 'uitchecken', label: 'Uitchecken' },
-    { value: 'pas-printen', label: 'Pas printen' },
-    { value: 'pas-ontkoppelen', label: 'Pas ontkoppelen' },
+  if (status === 'Aangemeld') return [
+    ...credItems,
+    { value: 'persoon-afmelden', label: 'Persoon afmelden' },
     { divider: true },
+    { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
     { value: 'bel-persoon', label: 'Bel persoon' },
-    { value: 'contactpersoon-informeren', label: 'Contactpersoon informeren' },
   ]
-  if (status === 'No-show') return [
-    { value: 'no-show-ongedaan', label: 'No-show ongedaan maken' },
-    { value: 'inchecken', label: 'Inchecken' },
-    { value: 'pas-koppelen', label: 'Pas koppelen' },
-    { value: 'annuleren', label: 'Annuleren', danger: true },
+  if (status === 'Niet aangekomen') return [
+    { value: 'niet-aangekomen-ongedaan', label: 'Niet aangekomen ongedaan' },
+    { value: 'persoon-aanmelden', label: 'Persoon aanmelden' },
+    ...credItems,
+    { value: 'aankomst-wijzigen', label: 'Aankomst wijzigen' },
+    { value: 'persoon-annuleren', label: 'Persoon annuleren', danger: true },
     { divider: true },
+    { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
     { value: 'bel-persoon', label: 'Bel persoon' },
-    { value: 'contactpersoon-informeren', label: 'Contactpersoon informeren' },
   ]
-  // Geannuleerd / Vertrokken
+  // Geannuleerd / Afgemeld
   return [
+    { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
     { value: 'bel-persoon', label: 'Bel persoon' },
-    { value: 'contactpersoon-informeren', label: 'Contactpersoon informeren' },
   ]
 })
 
@@ -96,11 +117,13 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickAway))
   <div class="action-menu-wrap">
     <button
       ref="btnRef"
-      class="action-trigger"
+      :class="['action-trigger', { 'is-active': open }]"
       @click.stop="openMenu"
+      @mouseenter="hovered = true"
+      @mouseleave="hovered = false"
       aria-label="Acties"
     >
-      <span class="mi">more_horiz</span>
+      <img :src="(open || hovered) ? moreIconActive : moreIconDefault" class="more-icon" alt="" />
     </button>
 
     <Teleport to="body">
@@ -136,18 +159,22 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickAway))
   background: none;
   border: none;
   border-radius: var(--r-s);
-  color: var(--n700);
   cursor: pointer;
-  transition: background 0.15s;
+  padding: 0;
 }
-.action-trigger:hover { background: var(--n100); color: var(--n900); }
+
+.more-icon {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
 
 .action-dropdown {
   background: var(--n0);
   border: none;
   border-radius: var(--r-s);
   box-shadow: var(--shadow-m);
-  min-width: 266px;
+  width: max-content;
   overflow: hidden;
   padding: 16px 0;
   display: flex;
@@ -168,7 +195,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickAway))
   padding: 4px 16px;
   background: none;
   border: none;
-  font-family: Nunito, var(--font), sans-serif;
+  font-family: var(--font);
   font-size: 16px;
   font-weight: 600;
   color: var(--p700);

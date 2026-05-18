@@ -20,47 +20,60 @@ Dropdown menu met acties per rij. De beschikbare acties zijn afhankelijk van de 
 
 **Acties per status:**
 
-**Verwacht:**
+**Verwacht / Nog niet aangekomen:**
 ```
-Inchecken
-Pas koppelen
-No-show
-Annuleren          ← rood (danger)
+Persoon aanmelden
+Credential koppelen (bij fysieke credential types, zoals vaste passen, bezoekerspassen of tijdelijke passen) of Credential printen (bij printbare passen, zoals QR-code)
+Aankomst wijzigen
+Persoon annuleren          ← rood (danger)
 ──────────
+Informeer contactpersoon
 Bekijk dossier
 Bel persoon
-Contactpersoon informeren
 ```
 
-**Aangekomen:**
+**Aangemeld:**
 ```
-Uitchecken
-Pas printen
-Pas ontkoppelen
+Credential koppelen (bij fysieke credential types, zoals vaste passen, bezoekerspassen of tijdelijke passen) of Credential printen (bij printbare passen, zoals QR-code)
+Persoon afmelden
 ──────────
+Informeer contactpersoon
 Bekijk dossier
 Bel persoon
-Contactpersoon informeren
 ```
 
-**No-show:**
+**Niet aangekomen:**
 ```
-No-show ongedaan maken
-Inchecken
-Pas koppelen
-Annuleren          ← rood (danger)
+Niet aangekomen ongedaan
+Persoon aanmelden
+Credential koppelen (bij fysieke credential types, zoals vaste passen, bezoekerspassen of tijdelijke passen) of Credential printen (bij printbare passen, zoals QR-code)
+Aankomst wijzigen
+Persoon annuleren          ← rood (danger)
 ──────────
+Informeer contactpersoon
 Bekijk dossier
 Bel persoon
-Contactpersoon informeren
 ```
 
-**Geannuleerd / Vertrokken:**
+**Geannuleerd / Afgemeld:**
 ```
+Informeer contactpersoon
 Bekijk dossier
 Bel persoon
-Contactpersoon informeren
 ```
+
+**Bij credential status 'actief'**
+'Credential ontkoppelen' in plaats van 'Credential koppelen'. Alleen van toepassing in situaties met fysieke credential types.
+
+### Credential type classificatie
+
+| Type | Categorie | Logica |
+| ---- | --------- | ------ |
+| `QR-code` | Printbaar | Altijd "Credential printen"; geen ontkoppelen (vervalt automatisch op geldigheidsdatum) |
+| `Bezoekerspas`, `Contractorpas`, `Vaste pas`, overige | Fysiek | "Credential koppelen" of "Credential ontkoppelen" (afhankelijk van `credentialStatus`) |
+| `null` | Geen | Geen credential-actie getoond |
+
+Nieuwe printbare types toevoegen: voeg de `credentialType`-waarde toe aan `PRINTABLE_CREDENTIAL_TYPES` in `ActionMenu.vue`.
 
 ### Design tokens
 

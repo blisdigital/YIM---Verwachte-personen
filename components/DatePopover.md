@@ -39,7 +39,7 @@ Gedeeld popover-paneel voor datumfilters. Gebruikt in `DateFilterChip` (filterst
 | `update:isoDate` | `string` | Nieuwe ISO-datum |
 | `update:preset` | `string \| null` | Nieuwe preset |
 | `apply` | — | Gebruiker klikt "Toepassen" |
-| `reset` | — | Gebruiker klikt "Resetten" |
+| `reset` | — | Gebruiker klikt "Reset" |
 
 ---
 
@@ -50,7 +50,7 @@ Gedeeld popover-paneel voor datumfilters. Gebruikt in `DateFilterChip` (filterst
 - `DatePickerCalendar` — conditioneel, inline; zie [DatePickerCalendar.md](DatePickerCalendar.md)
 - Label "Selecteer" + preset-chips: Vandaag / Morgen / Deze week
 - Divider
-- Footer: Resetten (outlined) + Toepassen (filled), beide `flex: 1`
+- Footer: Reset (outlined) + Toepassen (filled), beide `flex: 1`
 
 **Breedte:** `272px` (vaste breedte, `box-sizing: border-box`)
 
@@ -81,5 +81,5 @@ Gedeeld popover-paneel voor datumfilters. Gebruikt in `DateFilterChip` (filterst
 
 | Knop | Achtergrond | Tekst |
 |------|------------|-------|
-| Resetten | `--n0` | `--n900` (border: `1px solid --n400`) |
+| Reset | `--n0` | `--n900` (border: `1px solid --n400`) |
 | Toepassen | `--p500` | `--n0` |

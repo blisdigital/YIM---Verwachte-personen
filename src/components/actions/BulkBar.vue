@@ -7,17 +7,17 @@ const props = defineProps({
 })
 const emit = defineEmits(['action', 'clear'])
 
-// Aangekomen → Uitchecken, Pas ontkoppelen, Pas printen
-const hasAangekomen = computed(() =>
-  props.selectedPersons.some(p => p.status === 'Aangekomen')
+// Aangemeld → Uitchecken, Pas ontkoppelen, Pas printen
+const hasAangemeld = computed(() =>
+  props.selectedPersons.some(p => p.status === 'Aangemeld')
 )
-// Verwacht of No-show → Inchecken, Pas koppelen, Annuleren
+// Verwacht, Nog niet aangekomen of Niet aangekomen → Inchecken, Pas koppelen, Annuleren
 const hasVerwachtOrNoshow = computed(() =>
-  props.selectedPersons.some(p => p.status === 'Verwacht' || p.status === 'No-show')
+  props.selectedPersons.some(p => ['Verwacht', 'Nog niet aangekomen', 'Niet aangekomen'].includes(p.status))
 )
-// Alleen Verwacht → No-show
-const hasVerwacht = computed(() =>
-  props.selectedPersons.some(p => p.status === 'Verwacht')
+// Alleen Verwacht / Nog niet aangekomen → Niet aangekomen markeren
+const hasNietAangekomenEligible = computed(() =>
+  props.selectedPersons.some(p => ['Verwacht', 'Nog niet aangekomen'].includes(p.status))
 )
 </script>
 
@@ -34,16 +34,16 @@ const hasVerwacht = computed(() =>
           @click="emit('action', 'inchecken')"
         >
           <span class="mi">login</span>
-          Inchecken
+          Aanmelden
         </button>
 
         <button
           class="bulk-action"
-          :disabled="!hasAangekomen"
+          :disabled="!hasAangemeld"
           @click="emit('action', 'uitchecken')"
         >
           <span class="mi">logout</span>
-          Uitchecken
+          Afmelden
         </button>
 
         <button
@@ -52,34 +52,34 @@ const hasVerwacht = computed(() =>
           @click="emit('action', 'pas-koppelen')"
         >
           <span class="mi">credit_card</span>
-          Pas koppelen
+          Credential koppelen
         </button>
 
         <button
           class="bulk-action"
-          :disabled="!hasAangekomen"
+          :disabled="!hasAangemeld"
           @click="emit('action', 'pas-ontkoppelen')"
         >
           <span class="mi">credit_card_off</span>
-          Pas ontkoppelen
+          Credential ontkoppelen
         </button>
 
         <button
           class="bulk-action"
-          :disabled="!hasAangekomen"
+          :disabled="!hasAangemeld"
           @click="emit('action', 'pas-printen')"
         >
           <span class="mi">print</span>
-          Pas printen
+          Credential printen
         </button>
 
         <button
           class="bulk-action"
-          :disabled="!hasVerwacht"
-          @click="emit('action', 'no-show')"
+          :disabled="!hasNietAangekomenEligible"
+          @click="emit('action', 'niet-aangekomen')"
         >
           <span class="mi">person_off</span>
-          No-show
+          Niet aangekomen
         </button>
 
         <button
@@ -88,7 +88,7 @@ const hasVerwacht = computed(() =>
           @click="emit('action', 'annuleren')"
         >
           <span class="mi">close</span>
-          Annuleren
+          Persoon annuleren
         </button>
       </div>
     </div>
@@ -107,7 +107,7 @@ const hasVerwacht = computed(() =>
   justify-content: space-between;
   background: var(--p50);
   height: 48px;
-  border-radius: 4px;
+  border-radius: var(--r-s);
   padding: 0 16px;
   overflow: clip;
   margin-bottom: var(--sp-s);
@@ -142,7 +142,7 @@ const hasVerwacht = computed(() =>
   padding: 0 12px 0 8px;
   background: var(--n0);
   border: 1px solid var(--n400);
-  border-radius: 4px;
+  border-radius: var(--r-s);
   font-family: var(--font);
   font-size: 12px;
   font-weight: 600;
@@ -182,7 +182,7 @@ const hasVerwacht = computed(() =>
 }
 
 .bulk-action--danger:hover:not(:disabled) {
-  background: var(--err-bg, #fdf0f2);
+  background: var(--err-bg);
 }
 
 /* ── Close button ──────────────────────────── */
