@@ -6,6 +6,7 @@ Gedetailleerde specificaties per component staan in `components/`:
 | --- | --- |
 | [`components/AppHeader.md`](components/AppHeader.md) | AppHeader |
 | [`components/PageHeader.md`](components/PageHeader.md) | PageHeader |
+| [`components/ProcessNav.md`](components/ProcessNav.md) | ProcessNav |
 | [`components/BaseButton.md`](components/BaseButton.md) | BaseButton |
 | [`components/IconButton.md`](components/IconButton.md) | IconButton |
 | [`components/InputField.md`](components/InputField.md) | InputField |
@@ -36,8 +37,10 @@ Gedetailleerde specificaties per component staan in `components/`:
 | [`components/AnnulerenModal.md`](components/AnnulerenModal.md) | AnnulerenModal |
 | [`components/AankomstWijzigenModal.md`](components/AankomstWijzigenModal.md) | AankomstWijzigenModal |
 | [`components/InformeerContactpersoonModal.md`](components/InformeerContactpersoonModal.md) | InformeerContactpersoonModal |
+| [`components/ProcessBottomBar.md`](components/ProcessBottomBar.md) | ProcessBottomBar |
 | [`components/DetailPanel.md`](components/DetailPanel.md) | DetailPanel |
 | [`components/KolomInstellingenPanel.md`](components/KolomInstellingenPanel.md) | InstellingenMenu, KolomInstellingenPanel |
+| [`components/InfoSection.md`](components/InfoSection.md) | InfoSection |
 
 ## Snel overzicht
 
@@ -45,9 +48,11 @@ Gedetailleerde specificaties per component staan in `components/`:
 layout/
   AppHeader            — App-balk met hamburger, YIM-logo, taal/gebruiker
   PageHeader           — Paginatitel + Instellingen + Nieuwe registratie knoppen
+  ProcessNav           — Zijbalk-navigatie voor multi-step processen (Credential koppelen / printen)
 
 ui/
-  BaseButton           — Generieke knop met tekstlabel (filled / outlined / ghost / gray)
+  BaseButton           — Generieke knop met tekstlabel (filled / outlined / outlined-brand / ghost / gray)
+  ProcessBottomBar     — Vaste actie-balk onderaan processpagina's (koppelen / printen flows)
   IconButton           — Icon-only knop zonder label (filled / outlined / ghost / gray)
   InputField           — Tekstveld met label, states (default/hover/focus/filled/disabled/readonly/error) en optionele leading/trailing icon
   Toggle               — On/off-schakelaar met label en states (default/hover/focus/disabled)
@@ -62,6 +67,7 @@ ui/
   DatePopover          — Gedeeld datum-filterpaneel (Filter titel, datumveld, presets, footer)
   DatePickerCalendar   — Custom kalender in YIM-stijl (maand-nav, dag-grid, states)
   TimePopover          — Scrollbare tijdkiezer (uren/minuten kolommen, Nu-knop)
+  InfoSection          — Sectie-kaart met h3-titel + label/waarde rijen; gebruikt in credential-pagina's
 
 filters/
   TypeTabs          — Segmented tabs (Alle / Bezoekers / Contractors) met counts

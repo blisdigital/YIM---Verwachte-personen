@@ -13,7 +13,7 @@ Tekstbutton voor primaire, secundaire en tertiaire acties.
 
 | Prop | Type | Default | Beschrijving |
 |------|------|---------|--------------|
-| `variant` | `'filled' \| 'outlined' \| 'ghost' \| 'gray' \| 'destructive'` | `'filled'` | Visuele stijl |
+| `variant` | `'filled' \| 'outlined' \| 'outlined-brand' \| 'ghost' \| 'gray' \| 'destructive'` | `'filled'` | Visuele stijl |
 | `size` | `'lg' \| 'md' \| 'sm'` | `'md'` | Grootte |
 | `icon` | `string` | — | Material icon naam (optioneel) |
 | `iconPosition` | `'left' \| 'right'` | `'left'` | Icon positie |
@@ -27,6 +27,7 @@ Tekstbutton voor primaire, secundaire en tertiaire acties.
 - `lg` + `icon right` → PageHeader (Instellingen)
 - `md` → BezoekDetail, AanmeldenModal, AnnulerenModal (actiebuttons en annuleren)
 - `md` + `destructive` → AnnulerenModal (onomkeerbare actie)
+- `lg` + `outlined-brand` → ProcessBottomBar (Printen-knop in credential printen flow)
 
 ---
 
@@ -90,6 +91,17 @@ Tertiaire actie. Geen achtergrond of rand in rust. Hover toont lichte achtergron
 | Focus | `--n0` `#ffffff` | `--n900` `#1d1e1f` | `2px solid --n50` `#f8fafb` |
 | Pressed | `--n100` `#f3f4f5` | `--n900` `#1d1e1f` | — |
 | Disabled | transparent | `--n400` `#b8babb` | — |
+
+### Outlined Brand
+
+⚠ **Prototype-specifiek** — niet in de Figma UI Kit. Gebruikt voor secundaire brand-acties naast een primaire knop (bijv. "Printen" in ProcessBottomBar). Transparante achtergrond met `--p500` rand en tekst.
+
+| State | Achtergrond | Tekst | Border |
+|-------|-------------|-------|--------|
+| Enabled | transparent | `--p500` `#6daeba` | `1px solid --p500` |
+| Hover | `--p50` `#f0f7f8` | `--p600` `#598f99` | `1px solid --p600` |
+| Pressed | `--p100` `#d6e8ec` | `--p700` `#315161` | `1px solid --p700` |
+| Disabled | transparent | `--p300` `#a2cbd3` | `1px solid --p300` |
 
 ### Gray
 

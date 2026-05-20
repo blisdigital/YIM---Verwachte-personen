@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  variant: { type: String, default: 'filled' }, // 'filled' | 'outlined' | 'ghost' | 'gray'
+  variant: { type: String, default: 'filled' }, // 'filled' | 'outlined' | 'outlined-brand' | 'ghost' | 'gray' | 'destructive'
   size: { type: String, default: 'md' },        // 'lg' | 'md' | 'sm'
   icon: { type: String, default: null },
   iconPosition: { type: String, default: 'left' },
@@ -152,6 +152,27 @@ const padding = computed(() => {
 .btn-destructive:disabled {
   background: var(--err-bg);
   color: var(--n400);
+}
+
+/* ── Outlined Brand ── */
+.btn-outlined-brand {
+  background: var(--n0);
+  color: var(--p500);
+  border-color: var(--p500);
+}
+.btn-outlined-brand:hover:not(:disabled) {
+  background: var(--p50);
+  color: var(--p600);
+  border-color: var(--p600);
+}
+.btn-outlined-brand:active:not(:disabled) {
+  background: var(--p100);
+  color: var(--p700);
+  border-color: var(--p700);
+}
+.btn-outlined-brand:disabled {
+  color: var(--p300);
+  border-color: var(--p300);
 }
 
 /* ── Gray ── */

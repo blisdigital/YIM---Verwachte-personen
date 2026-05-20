@@ -12,16 +12,16 @@ Een receptie-dashboard voor het beheren van bezoekers en contractors.
 ```
 src/
 ├── components/
-│   ├── layout/        # AppHeader (incl. nav drawer), PageHeader
+│   ├── layout/        # AppHeader (incl. nav drawer), PageHeader, ProcessNav
 │   ├── filters/       # FilterStrip, TypeTabs, DateFilterChip, FilterChip, SearchBox
 │   ├── table/         # DataTable, ColumnFilters, TableRow, Pagination
 │   ├── detail/        # DetailPanel
 │   ├── actions/       # BulkBar, ActionMenu, AanmeldenModal, AfmeldenModal, AnnulerenModal, AankomstWijzigenModal, InformeerContactpersoonModal
 │   ├── settings/      # KolomInstellingenPanel
-│   └── ui/            # BaseButton, IconButton, InputField, Toggle, StatusDot, PassStatusDot, ComplianceCell, CompliancePill, Modal, DatePopover, DatePickerCalendar, TimePopover, Tooltip, Toast, ToastContainer, ActionPopup
+│   └── ui/            # BaseButton, IconButton, InputField, Toggle, StatusDot, PassStatusDot, ComplianceCell, CompliancePill, Modal, DatePopover, DatePickerCalendar, TimePopover, Tooltip, Toast, ToastContainer, ActionPopup, ProcessBottomBar, InfoSection
 ├── composables/       # usePersonen, useSelection, useToast
 ├── stores/            # Pinia stores (personenStore, filterStore, columnStore)
-├── views/             # VerwachtePersonenView.vue
+├── views/             # VerwachtePersonenView.vue, CredentialKoppelenView.vue, CredentialPrintenView.vue
 ├── data/              # mockPersonen.js
 └── assets/
     ├── styles/        # _tokens.css, main.css
@@ -314,7 +314,7 @@ Na het aanmaken van een nieuw component: voeg het toe aan `COMPONENTS.md` (index
 
 - `ARCHITECTURE.md` — Componentenboom, dataflow, composables API, store API
 - `COMPONENTS.md` — Index naar alle component specificaties
-  - `components/AppHeader.md`, `components/PageHeader.md` — Layout
+  - `components/AppHeader.md`, `components/PageHeader.md`, `components/ProcessNav.md` — Layout
   - `components/BaseButton.md`, `components/IconButton.md` — Knoppen
   - `components/InputField.md`, `components/Toggle.md` — Formulier elementen
   - `components/StatusDot.md`, `components/PassStatusDot.md` — Status indicators
@@ -330,6 +330,7 @@ Na het aanmaken van een nieuw component: voeg het toe aan `COMPONENTS.md` (index
   - `components/InformeerContactpersoonModal.md` — Informeer contactpersoon modal
   - `components/DetailPanel.md` — DetailPanel
   - `components/KolomInstellingenPanel.md` — InstellingenMenu, KolomInstellingenPanel
+  - `components/InfoSection.md` — InfoSection (sectie-kaart voor credential-pagina's)
 - `columns.json` — Kolomconfiguratie (single source of truth voor de tabel)
 - `TOKENS.md` — Design tokens referentie (prototype-implementatie)
 - `brand.md` — YIM UI Kit foundations: kleuren, typografie, elevaties, spacing — Figma bron

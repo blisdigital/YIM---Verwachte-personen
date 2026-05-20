@@ -1,16 +1,34 @@
 # PageHeader
 
-Paginatitel + actieknoppen voor de huidige view. Bevat de "Instellingen"-knop (custom dropdown) en "Nieuwe registratie" (inline `<BaseButton>` + dropdown — geen `<SplitButton>`).
+Paginatitel + actieknoppen voor de huidige view. Heeft twee modi:
+
+- **Standaard** (`showBack: false`) — toont "Instellingen" en "Nieuwe registratie" knoppen
+- **Back-modus** (`showBack: true`) — toont een terug-knop + optionele subtitle; geen actieknoppen
 
 ```vue
+<!-- Standaard -->
 <PageHeader title="Verwachte personen" />
+
+<!-- Back-modus (bijv. detail-/actie-pagina's) -->
+<PageHeader
+  title="Credential koppelen"
+  subtitle="Jan de Vries · Bedrijf BV"
+  :show-back="true"
+  @back="nav.goBack()"
+/>
 ```
 
-| Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
-| `title` | `string` | `'Verwachte personen'` | Paginatitel |
+| Prop       | Type      | Default                 | Beschrijving                                                              |
+| ---------- | --------- | ----------------------- | ------------------------------------------------------------------------- |
+| `title`    | `string`  | `'Verwachte personen'`  | Paginatitel                                                               |
+| `subtitle` | `string`  | `''`                    | Optionele subtitel (bijv. persoonsnaam). Alleen zichtbaar in back-modus.  |
+| `showBack` | `boolean` | `false`                 | Schakel terug-knop in; verbergt actieknoppen                              |
 
-Geen events — acties worden intern afgehandeld via `useToast` en `useColumnStore`.
+| Event  | Payload | Beschrijving                              |
+| ------ | ------- | ----------------------------------------- |
+| `back` | —       | Terug-knop geklikt (alleen in back-modus) |
+
+Acties ("Instellingen", "Nieuwe registratie") worden intern afgehandeld via `useToast` en `useColumnStore` — alleen beschikbaar in standaardmodus.
 
 ## Titel
 

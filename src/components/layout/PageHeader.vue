@@ -5,9 +5,13 @@ import KolomInstellingenPanel from '@/components/settings/KolomInstellingenPanel
 import { useToast } from '@/composables/useToast'
 import { useColumnStore } from '@/stores/columnStore'
 
-defineProps({
-  title: { type: String, default: 'Verwachte personen' }
+const props = defineProps({
+  title:    { type: String,  default: 'Verwachte personen' },
+  subtitle: { type: String,  default: '' },
+  showBack: { type: Boolean, default: false },
 })
+
+const emit = defineEmits(['back'])
 
 const { show } = useToast()
 const columnStore = useColumnStore()
@@ -74,8 +78,15 @@ function handleRegistratieSelect(val) {
 
 <template>
   <div class="page-header">
-    <h1 class="page-title">{{ title }}</h1>
-    <div class="page-actions">
+    <div class="page-header-left">
+      <button v-if="showBack" class="back-btn" @click="emit('back')">
+        <span class="mi">arrow_back</span>
+        Terug
+      </button>
+      <h1 class="page-title">{{ title }}</h1>
+      <p v-if="subtitle" class="page-subtitle">{{ subtitle }}</p>
+    </div>
+    <div v-if="!showBack" class="page-actions">
 
       <!-- Instellingen custom button + panel wrapper -->
       <div class="instellingen-wrap">
@@ -171,12 +182,43 @@ function handleRegistratieSelect(val) {
   margin-bottom: 48px;
 }
 
+.page-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--n600);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+  transition: color 0.15s;
+}
+.back-btn:hover { color: var(--p700); }
+.back-btn .mi { font-size: 18px; }
+
 .page-title {
   font-size: 40px;
   font-weight: 700;
   color: var(--p700);
   letter-spacing: -0.4px;
   line-height: 48px;
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 16px;
+  color: var(--n600);
+  margin: 0;
 }
 
 .page-actions {

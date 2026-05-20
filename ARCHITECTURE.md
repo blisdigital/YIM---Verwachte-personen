@@ -4,7 +4,7 @@
 
 ```text
 App.vue
-└── VerwachtePersonenView.vue
+├── VerwachtePersonenView.vue
     ├── AppHeader.vue (hamburger + logo + user/taal; sidebar schuift in van links zonder overlay)
     │
     ├── PageHeader.vue
@@ -39,6 +39,14 @@ App.vue
     │
     └── ToastContainer.vue
         └── Toast.vue
+│
+├── CredentialKoppelenView.vue
+│   ├── AppHeader.vue
+│   └── ProcessNav.vue (title="Credential koppelen", @back → navigationStore.goBack())
+│
+└── CredentialPrintenView.vue
+    ├── AppHeader.vue
+    └── ProcessNav.vue (title="Credential printen", @back → navigationStore.goBack())
 ```
 
 ## Dataflow

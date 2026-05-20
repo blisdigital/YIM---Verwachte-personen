@@ -12,15 +12,18 @@ import AnnulerenModal from '@/components/actions/AnnulerenModal.vue'
 import AankomstWijzigenModal from '@/components/actions/AankomstWijzigenModal.vue'
 import AfmeldenModal from '@/components/actions/AfmeldenModal.vue'
 import InformeerContactpersoonModal from '@/components/actions/InformeerContactpersoonModal.vue'
+import CredentialOntkoppelenModal from '@/components/actions/CredentialOntkoppelenModal.vue'
 import ToastContainer from '@/components/ui/ToastContainer.vue'
 import { usePersonenStore } from '@/stores/personenStore'
 import { useFilterStore } from '@/stores/filterStore'
+import { useNavigationStore } from '@/stores/navigationStore'
 import { usePersonen } from '@/composables/usePersonen'
 import { useSelection } from '@/composables/useSelection'
 import { useToast } from '@/composables/useToast'
 
 const personenStore = usePersonenStore()
 const filterStore = useFilterStore()
+const nav = useNavigationStore()
 const { paginated, total, loading, filtered } = usePersonen()
 
 // Scroll to top before DOM updates when filters change, to prevent scroll-clamp jump
@@ -99,6 +102,15 @@ function openInformeer(person) {
   informeerOpen.value   = true
 }
 
+// Credential ontkoppelen modal
+const ontkoppelenOpen   = ref(false)
+const ontkoppelenPerson = ref(null)
+
+function openOntkoppelen(person) {
+  ontkoppelenPerson.value = person
+  ontkoppelenOpen.value   = true
+}
+
 // Computed: selected persons data for BulkBar
 const selectedPersons = computed(() =>
   personenStore.personen.filter(p => selectedIds.value.includes(p.id))
@@ -118,25 +130,13 @@ function handleAction({ person, action }) {
       openAnnuleren(person)
       break
     case 'credential-koppelen':
-      personenStore.updateCredentialStatus(person.id, 'actief')
-      show('Credential gekoppeld', `Credential is gekoppeld aan ${person.naam}.`)
-      if (detailPerson.value?.id === person.id) {
-        detailPerson.value = personenStore.personen.find(p => p.id === person.id)
-      }
+      nav.navigate('credential-koppelen', person)
       break
     case 'credential-printen':
-      personenStore.updateCredentialStatus(person.id, 'actief')
-      show('Credential geprint', `Credential voor ${person.naam} is afgedrukt.`)
-      if (detailPerson.value?.id === person.id) {
-        detailPerson.value = personenStore.personen.find(p => p.id === person.id)
-      }
+      nav.navigate('credential-printen', person)
       break
     case 'credential-ontkoppelen':
-      personenStore.updateCredentialStatus(person.id, 'niet-actief')
-      show('Credential ontkoppeld', `Credential is ontkoppeld van ${person.naam}.`)
-      if (detailPerson.value?.id === person.id) {
-        detailPerson.value = personenStore.personen.find(p => p.id === person.id)
-      }
+      openOntkoppelen(person)
       break
     case 'informeer-contactpersoon':
       openInformeer(person)
@@ -152,7 +152,7 @@ function handleAction({ person, action }) {
         ? `${person.naam}: ${person.telefoonnummer}`
         : `Geen telefoonnummer bekend voor ${person.naam}.`)
       break
-    // DetailPanel legacy actions (still used until DetailPanel is updated)
+    // DetailPanel legacy actions
     case 'inchecken':
       openAanmelden(person, 'inchecken')
       break
@@ -165,10 +165,6 @@ function handleAction({ person, action }) {
       break
     case 'annuleren':
       openAnnuleren(person)
-      break
-    case 'pas-koppelen':
-      personenStore.updateCredentialStatus(person.id, 'actief')
-      show('Pas gekoppeld', `Pas is gekoppeld aan ${person.naam}.`)
       break
     default:
       show('Actie', `${action} voor ${person.naam}`)
@@ -204,6 +200,15 @@ function handleAankomstWijzigenConfirm({ person, datum, aankomsttijd, vertrektij
 // Bevestig informeer contactpersoon
 function handleInformeerConfirm({ person }) {
   show('Contactpersoon geïnformeerd', `Contactpersoon van ${person.naam} is geïnformeerd.`)
+}
+
+// Bevestig credential ontkoppelen
+function handleOntkoppelenConfirm({ person }) {
+  personenStore.updateCredentialStatus(person.id, 'niet-actief')
+  show('Credential ontkoppeld', `Credential is ontkoppeld van ${person.naam}.`)
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
 }
 
 // Bevestig afmelden
@@ -369,6 +374,13 @@ onMounted(() => {
       v-model:open="informeerOpen"
       :person="informeerPerson"
       @confirm="handleInformeerConfirm"
+    />
+
+    <!-- Credential ontkoppelen modal -->
+    <CredentialOntkoppelenModal
+      v-model:open="ontkoppelenOpen"
+      :person="ontkoppelenPerson"
+      @confirm="handleOntkoppelenConfirm"
     />
 
     <!-- Toast notifications -->

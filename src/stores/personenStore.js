@@ -31,6 +31,9 @@ export const usePersonenStore = defineStore('personen', () => {
       if (credentialStatus === 'actief' && !person.pasnummer) {
         person.pasnummer = String(Math.floor(10000000000000 + Math.random() * 89999999999999))
       }
+      if (credentialStatus === 'niet-actief') {
+        person.pasnummer = null
+      }
     }
   }
 
