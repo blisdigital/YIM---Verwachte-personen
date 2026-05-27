@@ -19,6 +19,11 @@ Receptionist wil een aangemelde persoon uitchecken.
 - Toast: "[naam] is afgemeld."
 - *Als toggle aan:* e-mail naar contactpersoon
 
+## Automatisch afmelden
+- Afmelden kan ook **automatisch** gebeuren bij inleveren van pas (inslikker/inleverbox)
+- Pas inleveren → pas ontkoppelen → status afgemeld — één actie, geen twee losse stappen
+- Koppeling met toegangssysteem (AEOS) gewenst maar nog niet beschikbaar voor dit scenario
+
 ## Opmerkingen
 - Bevestigen is altijd enabled (geen verplichte velden)
 - Compliance is niet meer relevant — was al gecontroleerd bij aanmelden

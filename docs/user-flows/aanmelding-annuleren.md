@@ -20,6 +20,10 @@ Receptionist wil een gepland bezoek annuleren (persoon komt niet meer).
 - Toast: "De aankomst van [naam] is geannuleerd."
 - *Als toggle aan:* e-mail naar contactpersoon
 
+## Dossier-historie
+- Annulering (incl. reden en toelichting) wordt opgeslagen in de historie van het persoonsdossier
+- Annuleren hoort primair in het persoonsdossier — in dit scherm beschikbaar maar niet als must-have
+
 ## Belangrijk
 - **Onomkeerbaar** — geannuleerde persoon kan niet meer worden aangemeld
 - Reden en toelichting zijn optioneel

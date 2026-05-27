@@ -9,6 +9,12 @@ Bovenaan de tabel, van links naar rechts:
 - Bezoekers: `persoontype === 'Bezoeker'`
 - Contractors: alle andere persoontypen
 
+### Locatie filter
+- Chip "Locatie" — dropdown met beschikbare locaties
+- Default: receptie-locatie (bijv. "Hoofdkantoor Shell")
+- Preset wordt automatisch doorgesynchroniseerd naar kolomfilter `locaties`
+- Getoond als eerste chip in de filterstrip (vóór datum)
+
 ### Datum filter
 - Chip "Vandaag" — opent popup met datuminput + presets (Vandaag / Morgen / Deze week)
 - Default: vandaag
@@ -31,10 +37,12 @@ Bovenaan de tabel, van links naar rechts:
 ## Kolom filters
 - Filterrij direct onder kolomheaders
 - Per kolom: tekst, dropdown of datum filter (afhankelijk van kolomtype)
+- Default ingevuld: datumVanaf = vandaag, locaties = receptie-locatie
 
 ## Kolominstellingen
 - Via "Instellingen" knop in page header
 - Kolom zichtbaarheid aan/uit togglen
+- Kolomvolgorde is configureerbaar per klant als default; eindgebruiker kan zelf aanpassen
 - Sets opslaan en laden
 - Kolommen resizable via drag op rechterrand kolomheader
 

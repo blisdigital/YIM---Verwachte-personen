@@ -18,16 +18,17 @@ Horizontale balk die alle filtercomponenten combineert: type-tabs, datum, filter
 **Opbouw (links → rechts):**
 
 1. [`TypeTabs`](TypeTabs.md) — persoontype segmented control
-2. [`DateFilterChip`](DateFilterChip.md) — datumfilter chip
-3. [`FilterChip`](FilterChip.md) label="Status" — statusfilter
-4. [`FilterChip`](FilterChip.md) label="Compliance" — compliancefilter
-5. [`FilterChip`](FilterChip.md) label="Parkeren" — parkerenfilter
-6. [`SearchBox`](SearchBox.md) — zoekbalk
+2. `LocatieFilterChip` — locatie preset filter (default: receptie-locatie)
+3. [`DateFilterChip`](DateFilterChip.md) — datumfilter chip
+4. [`FilterChip`](FilterChip.md) label="Status" — statusfilter
+5. [`FilterChip`](FilterChip.md) label="Compliance" — compliancefilter
+6. [`FilterChip`](FilterChip.md) label="Parkeren" — parkerenfilter
+7. [`SearchBox`](SearchBox.md) — zoekbalk
 
 **Layout:** twee groepen in een `display: flex` container met `justify-content: space-between` en `gap: --sp-m` (12px) tussen de groepen.
 
 - **`filter-left`** — TypeTabs, `flex-shrink: 0`, `align-items: center`
-- **`filter-right`** — DateFilterChip + 3× FilterChip + SearchBox; `gap: --sp-s` (8px) tussen items; alle items `height: 40px` (chips stretchen mee met de SearchBox-hoogte)
+- **`filter-right`** — LocatieFilterChip + DateFilterChip + 3× FilterChip + SearchBox; `gap: --sp-s` (8px) tussen items; alle items `height: 40px` (chips stretchen mee met de SearchBox-hoogte)
 
 SearchBox is `320px` fixed breed (niet `flex: 1`).
 

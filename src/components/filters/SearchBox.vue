@@ -55,7 +55,7 @@ function clear() {
   border-radius: var(--r-s);
   background: var(--n0);
   height: 40px;
-  width: 320px;
+  width: 260px;
   overflow: clip;
   box-sizing: border-box;
 }

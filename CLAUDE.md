@@ -127,11 +127,12 @@ Zie `columns.json` voor alle kolommen met breedtes, filtertypes en dropdown-opti
 ## Filterstrip Layout
 
 ```
-[Alle 20] [Bezoekers 8] [Contractors 12]    [Vandaag ▾] [Status ▾] [Compliance ▾] [Parkeren ▾] [🔍 Zoek op naam, bedrijf, referentie...]
+[Alle 20] [Bezoekers 8] [Contractors 12]    [Hoofdkantoor Sh. ▾] [Vandaag ▾] [Status ▾] [Compliance ▾] [Parkeren ▾] [🔍 Zoek op naam, bedrijf, referentie...]
 ```
 
 - **Links:** TypeTabs — segmented button group met counts per type
 - **Rechts:**
+  - LocatieFilterChip "Hoofdkantoor Sh. ▾" — dropdown met beschikbare locaties; default: receptie-locatie; synct naar kolomfilter `locaties`
   - DateFilterChip "Vandaag ▾" — opent popup met datuminput + presets (Vandaag / Morgen / Deze week) + Reset/Toepassen knoppen
   - FilterChip "Status ▾" — checkboxes: Verwacht, Nog niet aangekomen, Aangemeld, Afgemeld, Niet aangekomen, Geannuleerd
   - FilterChip "Compliance ▾" — checkboxes: Dossier volledig, Dossier onvolledig, E-learning voltooid, E-learning niet voltooid

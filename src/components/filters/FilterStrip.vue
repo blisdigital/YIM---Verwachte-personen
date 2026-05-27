@@ -1,5 +1,6 @@
 <script setup>
 import TypeTabs from './TypeTabs.vue'
+import LocatieFilterChip from './LocatieFilterChip.vue'
 import DateFilterChip from './DateFilterChip.vue'
 import FilterChip from './FilterChip.vue'
 import SearchBox from './SearchBox.vue'
@@ -38,6 +39,10 @@ const parkerenOptions = [
       />
     </div>
     <div class="filter-right">
+      <LocatieFilterChip
+        :model-value="filterStore.locatie"
+        @update:model-value="val => { filterStore.locatie = val; filterStore.page = 1 }"
+      />
       <DateFilterChip
         :model-value="filterStore.datum"
         :preset="filterStore.datumPreset"

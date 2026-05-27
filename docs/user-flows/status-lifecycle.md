@@ -16,9 +16,9 @@
 | Status | Getriggerd door |
 |--------|-----------------|
 | Verwacht | Registratie van nieuw bezoek |
-| Nog niet aangekomen | **Automatisch** — aankomsttijd verstreken + niet aangemeld |
+| Nog niet aangekomen | **Automatisch** — aankomsttijd verstreken + niet aangemeld (drempel configureerbaar per klant) |
 | Aangemeld | Receptionist via "Persoon aanmelden" actie |
-| Afgemeld | Receptionist via "Persoon afmelden" actie |
+| Afgemeld | Receptionist via "Persoon afmelden" actie, of **automatisch** bij inleveren pas |
 | Niet aangekomen | Systeem (einde dag) of handmatig |
 | Geannuleerd | Receptionist via "Aanmelding annuleren" actie |
 

@@ -23,6 +23,10 @@ Receptionist wil datum of tijd van een verwacht bezoek aanpassen.
   - Persoon verdwijnt als nieuwe datum niet meer matcht met actief datumfilter
   - Sorteervolgorde past zich aan op basis van nieuwe aankomsttijd
 
+## Dossier-historie
+- Wijziging wordt opgeslagen in de historie van het bezoekersdossier
+- Aankomst wijzigen hoort primair in het bezoekersdossier — in dit scherm als nice-to-have, configureerbaar per klant
+
 ## Opmerkingen
 - Bevestigen altijd enabled (velden zijn vooraf gevuld)
 - Vier velden: aankomstdatum + tijd, vertrekdatum + tijd
