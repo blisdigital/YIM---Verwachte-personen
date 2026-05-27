@@ -71,7 +71,6 @@ watch(() => props.open, (val) => {
   align-items: center;
   justify-content: space-between;
   padding: 20px 20px 20px 24px;
-  border-bottom: 1px solid var(--n300);
   flex-shrink: 0;
   min-height: 64px;
   box-sizing: border-box;
@@ -85,7 +84,7 @@ watch(() => props.open, (val) => {
 }
 
 .popup-body {
-  padding: 24px;
+  padding: 16px 24px 24px;
   overflow-y: auto;
   flex: 1;
   display: flex;

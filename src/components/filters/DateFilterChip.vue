@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import DatePopover from '@/components/ui/DatePopover.vue'
+import { dateToIso, isoToDate, isoToDisplay } from '@/utils/dateFormat'
 
 const props = defineProps({
   modelValue: { type: Date, default: () => new Date() },
@@ -9,36 +10,20 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'update:preset'])
 
 const open = ref(false)
-const localDate = ref(toInputDate(props.modelValue))
+const localDate = ref(dateToIso(props.modelValue))
 const localPreset = ref(props.preset)
 const popoverPos = ref({ top: 0, right: 0 })
 const chipRef = ref(null)
 const popoverAnchorRef = ref(null)
 
-function toInputDate(d) {
-  if (!d) return ''
-  const date = d instanceof Date ? d : new Date(d)
-  return date.toISOString().slice(0, 10)
-}
-
-function fromInputDate(str) {
-  return str ? new Date(str) : new Date()
-}
-
 const chipLabel = computed(() => {
   const map = { vandaag: 'Vandaag', morgen: 'Morgen', week: 'Deze week' }
   return localPreset.value
-    ? map[localPreset.value] || formatDisplayDate(localDate.value)
-    : formatDisplayDate(localDate.value) || 'Datum'
+    ? map[localPreset.value] || isoToDisplay(localDate.value)
+    : isoToDisplay(localDate.value) || 'Datum'
 })
 
 const isActive = computed(() => !!(localPreset.value || localDate.value))
-
-function formatDisplayDate(isoStr) {
-  if (!isoStr) return ''
-  const [y, m, d] = isoStr.split('-')
-  return `${d}-${m}-${y}`
-}
 
 let rafId = null
 
@@ -80,7 +65,7 @@ function toggleOpen() {
 
 function reset() {
   localPreset.value = 'vandaag'
-  localDate.value = toInputDate(new Date())
+  localDate.value = dateToIso(new Date())
   open.value = false
   emit('update:preset', 'vandaag')
   emit('update:modelValue', new Date())
@@ -89,7 +74,7 @@ function reset() {
 function apply() {
   open.value = false
   emit('update:preset', localPreset.value)
-  emit('update:modelValue', fromInputDate(localDate.value))
+  emit('update:modelValue', isoToDate(localDate.value))
 }
 </script>
 

@@ -1,19 +1,34 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import logoSvg from '@/assets/logo.svg'
+import { useNavigationStore } from '@/stores/navigationStore'
 
+const nav = useNavigationStore()
 const drawerOpen = ref(false)
 
 const drawerItems = [
-  { label: 'Accreditaties', hasDropdown: true, active: false },
-  { label: 'Aanmeldingen', hasDropdown: false, active: false },
-  { label: 'Verwachte personen', hasDropdown: false, active: true },
-  { label: 'Aanwezigheidsregistratie', hasDropdown: false, active: false },
-  { label: 'Personen', hasDropdown: true, active: false },
-  { label: 'Credentials', hasDropdown: true, active: false },
-  { label: 'Rapporten', hasDropdown: false, active: false },
-  { label: 'Beheer', hasDropdown: false, active: false },
+  { label: 'Accreditaties', hasDropdown: true, page: null },
+  { label: 'Aanmeldingen', hasDropdown: false, page: null },
+  { label: 'Verwachte personen', hasDropdown: false, page: 'verwachte-personen' },
+  { label: 'Aanwezigheidsregistratie', hasDropdown: false, page: null },
+  { label: 'Personen', hasDropdown: true, page: null },
+  { label: 'Credentials', hasDropdown: true, page: null },
+  { label: 'Rapporten', hasDropdown: false, page: null },
+  { label: 'Beheer', hasDropdown: false, page: null },
 ]
+
+// Active item per page
+const activePageMap = {
+  'verwachte-personen': 'Verwachte personen',
+  'dossier': 'Personen',
+}
+
+const activeLabel = computed(() => activePageMap[nav.currentPage] ?? 'Verwachte personen')
+
+function handleNavClick(item) {
+  drawerOpen.value = false
+  if (item.page) nav.navigate(item.page)
+}
 </script>
 
 <template>
@@ -52,8 +67,8 @@ const drawerItems = [
           v-for="item in drawerItems"
           :key="item.label"
           href="#"
-          :class="['sidebar-link', { active: item.active }]"
-          @click.prevent="drawerOpen = false"
+          :class="['sidebar-link', { active: item.label === activeLabel }]"
+          @click.prevent="handleNavClick(item)"
         >
           <span>{{ item.label }}</span>
           <span v-if="item.hasDropdown" class="mi sidebar-caret">expand_more</span>

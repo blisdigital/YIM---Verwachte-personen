@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import { usePersonenStore } from '@/stores/personenStore'
 import { useFilterStore } from '@/stores/filterStore'
+import { displayToIso } from '@/utils/dateFormat'
 
 const STATUS_ORDER = {
   'Verwacht': 0,
@@ -42,13 +43,8 @@ export function usePersonen() {
       }
     }
 
-    // 'Bezoeker' → exact match; 'Contractor' → alle niet-Bezoeker types
     if (filterStore.persoontype) {
-      if (filterStore.persoontype === 'Contractor') {
-        result = result.filter(p => p.persoontype !== 'Bezoeker')
-      } else {
-        result = result.filter(p => p.persoontype === filterStore.persoontype)
-      }
+      result = result.filter(p => p.persoontype === filterStore.persoontype)
     }
 
     if (filterStore.status.length) {
@@ -86,7 +82,9 @@ export function usePersonen() {
     Object.entries(cf).forEach(([key, val]) => {
       if (!val || val === '' || val === 'Alle') return
       result = result.filter(p => {
-        const pval = p[key]
+        const pval = key === 'contactpersoon'
+          ? p.contactpersonen?.map(c => c.naam).join(', ') ?? null
+          : p[key]
         if (pval === null || pval === undefined) return false
         if (Array.isArray(pval)) return pval.some(v => v.toLowerCase().includes(val.toLowerCase()))
         if (typeof pval === 'boolean') {
@@ -100,22 +98,17 @@ export function usePersonen() {
     return result
   })
 
-  function parseDatum(v) {
-    const [d, m, y] = String(v).split('-')
-    return `${y}-${m}-${d}`
-  }
-
   const sorted = computed(() => {
     const key = filterStore.sortKey
     const dir = filterStore.sortDir
     return [...filtered.value].sort((a, b) => {
-      let av = a[key] ?? ''
-      let bv = b[key] ?? ''
+      let av = key === 'contactpersoon' ? (a.contactpersonen?.[0]?.naam ?? '') : (a[key] ?? '')
+      let bv = key === 'contactpersoon' ? (b.contactpersonen?.[0]?.naam ?? '') : (b[key] ?? '')
       if (typeof av === 'boolean') av = av ? 1 : 0
       if (typeof bv === 'boolean') bv = bv ? 1 : 0
       if (key === 'datumVanaf') {
-        av = parseDatum(av)
-        bv = parseDatum(bv)
+        av = displayToIso(av)
+        bv = displayToIso(bv)
       }
       let cmp = String(av).localeCompare(String(bv), 'nl')
       if (cmp === 0) {

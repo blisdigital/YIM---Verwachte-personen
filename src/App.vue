@@ -1,16 +1,15 @@
 <script setup>
-import VerwachtePersonenView from '@/views/VerwachtePersonenView.vue'
-import CredentialKoppelenView from '@/views/CredentialKoppelenView.vue'
-import CredentialPrintenView from '@/views/CredentialPrintenView.vue'
+import { computed } from 'vue'
 import { useNavigationStore } from '@/stores/navigationStore'
+import VerwachtePersonenView from '@/views/VerwachtePersonenView.vue'
+import DossierView from '@/views/DossierView.vue'
 
 const nav = useNavigationStore()
 </script>
 
 <template>
-  <VerwachtePersonenView v-if="nav.currentPage === 'verwachte-personen'" />
-  <CredentialKoppelenView v-else-if="nav.currentPage === 'credential-koppelen'" />
-  <CredentialPrintenView v-else-if="nav.currentPage === 'credential-printen'" />
+  <VerwachtePersonenView  v-if="nav.currentPage === 'verwachte-personen'" />
+  <DossierView            v-else-if="nav.currentPage === 'dossier'" />
 </template>
 
 <style>

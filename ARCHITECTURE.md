@@ -20,8 +20,6 @@ App.vue
     │   ├── FilterChip.vue (Parkeren ▾)
     │   └── SearchBox.vue
     │
-    ├── BulkBar.vue (conditioneel: bij selectie)
-    │
     ├── DataTable.vue
     │   ├── ColumnFilters.vue (filterrij per kolom: tekst, dropdown, datum of tijd)
     │   ├── TableRow.vue (per persoon)
@@ -40,13 +38,7 @@ App.vue
     └── ToastContainer.vue
         └── Toast.vue
 │
-├── CredentialKoppelenView.vue
-│   ├── AppHeader.vue
-│   └── ProcessNav.vue (title="Credential koppelen", @back → navigationStore.goBack())
-│
-└── CredentialPrintenView.vue
-    ├── AppHeader.vue
-    └── ProcessNav.vue (title="Credential printen", @back → navigationStore.goBack())
+└── DossierView.vue
 ```
 
 ## Dataflow
@@ -72,18 +64,18 @@ App.vue
           ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                      Composables                                 │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌──────────────────┐ │
-│  │  usePersonen()  │  │  useSelection() │  │   useToast()     │ │
-│  │                 │  │                 │  │                  │ │
-│  │ - filtered      │  │ - toggle()      │  │ - show(type,...) │ │
-│  │ - sorted        │  │ - selectAll()   │  │ - dismiss(id)    │ │
-│  │ - paginated     │  │ - clearAll()    │  │ - toasts[]       │ │
-│  │ - counts        │  │ - isSelected()  │  │                  │ │
-│  │ - total         │  │ - count         │  │                  │ │
-│  └────────┬────────┘  └────────┬────────┘  └──────────────────┘ │
-└───────────┼────────────────────┼────────────────────────────────┘
-            │                    │
-            ▼                    ▼
+│  ┌─────────────────┐  ┌──────────────────┐ │
+│  │  usePersonen()  │  │   useToast()     │ │
+│  │                 │  │                  │ │
+│  │ - filtered      │  │ - show(type,...) │ │
+│  │ - sorted        │  │ - dismiss(id)    │ │
+│  │ - paginated     │  │ - toasts[]       │ │
+│  │ - counts        │  │                  │ │
+│  │ - total         │  │                  │ │
+│  └────────┬────────┘  └──────────────────┘ │
+└───────────┼────────────────────────────────┘
+            │
+            ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Components                                │
 │                                                                  │
@@ -91,7 +83,7 @@ App.vue
 │                                                                  │
 │   DataTable ◀──reads── usePersonen().paginated                  │
 │       │                                                          │
-│       └── TableRow ──emits──▶ useSelection().toggle()           │
+│       └── TableRow                                               │
 │              │                                                   │
 │              └── @click ──emits──▶ openDetail(person)           │
 │                                                                  │
@@ -120,19 +112,6 @@ Berekent gefilterde, gesorteerde en gepagineerde data op basis van de actieve fi
 
 **Filtervolgorde:** datum → persoontype → status → compliance → parkeren → zoekterm → kolomfilters
 
-### useSelection
-
-Beheert multi-select state via een reactieve `Set`.
-
-| Export | Type | Beschrijving |
-|--------|------|--------------|
-| `selectedIds` | `ComputedRef<number[]>` | Array van geselecteerde IDs |
-| `count` | `ComputedRef<number>` | Aantal geselecteerden |
-| `toggle(id)` | `function` | Toggle één ID |
-| `selectAll(ids)` | `function` | Voeg IDs toe aan selectie |
-| `clearAll()` | `function` | Leeg de selectie |
-| `isSelected(id)` | `function` | `true` als ID geselecteerd is |
-
 ### useToast
 
 Module-level singleton — `toasts` ref is gedeeld tussen alle componenten die `useToast()` aanroepen.
@@ -143,7 +122,7 @@ Module-level singleton — `toasts` ref is gedeeld tussen alle componenten die `
 | `show(title, message?)` | `function` | Toont neutral toast; auto-dismiss na 4s |
 | `dismiss(id)` | `function` | Sluit toast direct |
 
-Zie [Toast.md](components/Toast.md) voor de volledige Toast / ToastContainer documentatie.
+Zie [Toast.md](docs/components/Toast.md) voor de volledige Toast / ToastContainer documentatie.
 
 ## State Management (Pinia)
 

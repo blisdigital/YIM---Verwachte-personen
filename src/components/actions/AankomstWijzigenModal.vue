@@ -1,10 +1,11 @@
 <script setup>
 import { ref, watch } from 'vue'
-import ActionPopup from '@/components/ui/ActionPopup.vue'
+import Modal from '@/components/ui/Modal.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import DatePickerCalendar from '@/components/ui/DatePickerCalendar.vue'
 import TimePopover from '@/components/ui/TimePopover.vue'
 import Toggle from '@/components/ui/Toggle.vue'
+import { isoToDisplay, displayToIso } from '@/utils/dateFormat'
 
 const props = defineProps({
   open:   { type: Boolean, default: false },
@@ -13,41 +14,31 @@ const props = defineProps({
 const emit = defineEmits(['update:open', 'confirm'])
 
 // ── Form state ──────────────────────────────────────────────────────────────
-const datum          = ref('')   // ISO YYYY-MM-DD (intern; weergave is DD-MM-YYYY)
+const aankomstdatum  = ref('')   // ISO YYYY-MM-DD
 const aankomsttijd   = ref('')   // HH:mm
+const vertrekdatum   = ref('')   // ISO YYYY-MM-DD
 const vertrektijd    = ref('')   // HH:mm
-const toelichting    = ref('')
+const opmerking      = ref('')
 const notifyContact  = ref(false)
 
 // ── Popover open state ──────────────────────────────────────────────────────
-const datumOpen    = ref(false)
-const aankomstOpen = ref(false)
-const vertrekOpen  = ref(false)
+const aankomstdatumOpen  = ref(false)
+const aankomsttijdOpen   = ref(false)
+const vertrekdatumOpen   = ref(false)
+const vertrektijdOpen    = ref(false)
 
+// ── Trigger refs + positions ────────────────────────────────────────────────
+const aankomstdatumRef  = ref(null)
+const aankomsttijdRef   = ref(null)
+const vertrekdatumRef   = ref(null)
+const vertrektijdRef    = ref(null)
 
-// ── Trigger refs + computed positions ──────────────────────────────────────
-const datumTriggerRef    = ref(null)
-const aankomstTriggerRef = ref(null)
-const vertrekTriggerRef  = ref(null)
+const aankomstdatumStyle = ref({})
+const aankomsttijdStyle  = ref({})
+const vertrekdatumStyle  = ref({})
+const vertrektijdStyle   = ref({})
 
-const datumStyle    = ref({})
-const aankomstStyle = ref({})
-const vertrekStyle  = ref({})
-
-// ── Helpers ─────────────────────────────────────────────────────────────────
-function isoToDisplay(iso) {
-  if (!iso) return ''
-  const [y, m, d] = iso.split('-')
-  return `${d}-${m}-${y}`
-}
-
-function displayToIso(display) {
-  if (!display) return ''
-  const parts = display.split('-')
-  if (parts.length !== 3) return ''
-  const [d, m, y] = parts
-  return `${y}-${m}-${d}`
-}
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function posBelow(el) {
   if (!el) return {}
@@ -55,18 +46,25 @@ function posBelow(el) {
   return { position: 'fixed', top: `${r.bottom + 4}px`, left: `${r.left}px`, zIndex: 1100, width: `${r.width}px` }
 }
 
+function closeAllPopovers() {
+  aankomstdatumOpen.value = false
+  aankomsttijdOpen.value  = false
+  vertrekdatumOpen.value  = false
+  vertrektijdOpen.value   = false
+}
+
 // ── Init ─────────────────────────────────────────────────────────────────────
 function initForm() {
   if (props.person) {
-    datum.value        = displayToIso(props.person.datumVanaf)
-    aankomsttijd.value = props.person.aankomsttijd || ''
-    vertrektijd.value  = props.person.vertrekTijd  || ''
+    const iso = displayToIso(props.person.datumVanaf)
+    aankomstdatum.value = iso
+    aankomsttijd.value  = props.person.aankomsttijd || ''
+    vertrekdatum.value  = iso   // zelfde datum als aankomst (geen apart vertrekdatum in data model)
+    vertrektijd.value   = props.person.vertrekTijd  || ''
   }
-  toelichting.value   = ''
+  opmerking.value     = ''
   notifyContact.value = false
-  datumOpen.value     = false
-  aankomstOpen.value  = false
-  vertrekOpen.value   = false
+  closeAllPopovers()
 }
 
 watch(() => [props.open, props.person], ([open]) => {
@@ -74,49 +72,61 @@ watch(() => [props.open, props.person], ([open]) => {
 }, { immediate: true })
 
 // ── Popover toggling ─────────────────────────────────────────────────────────
-function toggleDatum() {
-  aankomstOpen.value = false
-  vertrekOpen.value  = false
-  datumStyle.value   = posBelow(datumTriggerRef.value)
-  datumOpen.value    = !datumOpen.value
+function toggleAankomstdatum() {
+  const wasOpen = aankomstdatumOpen.value
+  closeAllPopovers()
+  if (!wasOpen) {
+    aankomstdatumStyle.value = posBelow(aankomstdatumRef.value)
+    aankomstdatumOpen.value  = true
+  }
 }
 
-function toggleAankomst() {
-  datumOpen.value    = false
-  vertrekOpen.value  = false
-  aankomstStyle.value = posBelow(aankomstTriggerRef.value)
-  aankomstOpen.value  = !aankomstOpen.value
+function toggleAankomsttijd() {
+  const wasOpen = aankomsttijdOpen.value
+  closeAllPopovers()
+  if (!wasOpen) {
+    aankomsttijdStyle.value = posBelow(aankomsttijdRef.value)
+    aankomsttijdOpen.value  = true
+  }
 }
 
-function toggleVertrek() {
-  datumOpen.value    = false
-  aankomstOpen.value = false
-  vertrekStyle.value = posBelow(vertrekTriggerRef.value)
-  vertrekOpen.value  = !vertrekOpen.value
+function toggleVertrekdatum() {
+  const wasOpen = vertrekdatumOpen.value
+  closeAllPopovers()
+  if (!wasOpen) {
+    vertrekdatumStyle.value = posBelow(vertrekdatumRef.value)
+    vertrekdatumOpen.value  = true
+  }
 }
 
-// ── DatePickerCalendar handler ───────────────────────────────────────────────
-function onDatumSelect(iso) {
-  datum.value    = iso
-  datumOpen.value = false
+function toggleVertrektijd() {
+  const wasOpen = vertrektijdOpen.value
+  closeAllPopovers()
+  if (!wasOpen) {
+    vertrektijdStyle.value = posBelow(vertrektijdRef.value)
+    vertrektijdOpen.value  = true
+  }
 }
+
+// ── DatePickerCalendar handlers ──────────────────────────────────────────────
+function onAankomstdatumSelect(iso) { aankomstdatum.value = iso; aankomstdatumOpen.value = false }
+function onVertrekdatumSelect(iso)  { vertrekdatum.value  = iso; vertrekdatumOpen.value  = false }
 
 // ── TimePopover handlers ─────────────────────────────────────────────────────
-function onAankomstApply(time) { aankomsttijd.value = time; aankomstOpen.value = false }
-function onAankomstCancel()    { aankomstOpen.value = false }
-function onVertrekApply(time)  { vertrektijd.value  = time; vertrekOpen.value  = false }
-function onVertrekCancel()     { vertrekOpen.value  = false }
+function onAankomsttijdApply(time)  { aankomsttijd.value = time; aankomsttijdOpen.value = false }
+function onAankomsttijdCancel()     { aankomsttijdOpen.value = false }
+function onVertrektijdApply(time)   { vertrektijd.value  = time; vertrektijdOpen.value  = false }
+function onVertrektijdCancel()      { vertrektijdOpen.value = false }
 
 // ── Cancel / Confirm ─────────────────────────────────────────────────────────
 function resetForm() {
-  datum.value        = ''
-  aankomsttijd.value = ''
-  vertrektijd.value  = ''
-  toelichting.value  = ''
+  aankomstdatum.value = ''
+  aankomsttijd.value  = ''
+  vertrekdatum.value  = ''
+  vertrektijd.value   = ''
+  opmerking.value     = ''
   notifyContact.value = false
-  datumOpen.value    = false
-  aankomstOpen.value = false
-  vertrekOpen.value  = false
+  closeAllPopovers()
 }
 
 function cancel() {
@@ -126,11 +136,12 @@ function cancel() {
 
 function confirm() {
   emit('confirm', {
-    person:       props.person,
-    datum:        isoToDisplay(datum.value),
-    aankomsttijd: aankomsttijd.value,
-    vertrektijd:  vertrektijd.value || null,
-    toelichting:  toelichting.value,
+    person:        props.person,
+    aankomstdatum: isoToDisplay(aankomstdatum.value),
+    aankomsttijd:  aankomsttijd.value,
+    vertrekdatum:  isoToDisplay(vertrekdatum.value),
+    vertrektijd:   vertrektijd.value || null,
+    opmerking:     opmerking.value,
     notifyContact: notifyContact.value,
   })
   emit('update:open', false)
@@ -139,143 +150,130 @@ function confirm() {
 </script>
 
 <template>
-  <ActionPopup :open="open" title="Aankomst wijzigen" width="560px" @update:open="emit('update:open', $event)">
-    <p class="intro-text">Wijzig de verwachte aankomst van:</p>
+  <Modal :open="open" title="Bezoek wijzigen" @update:open="emit('update:open', $event)">
+    <div class="modal-content">
+      <p class="intro-text">Wijzig het verwachte bezoek van:</p>
 
-    <!-- Persoon card -->
-    <div v-if="person" class="person-card">
-      <div class="person-header">
-        <div class="person-name">
-          <span class="name-text">{{ person.naam }}</span>
-          <span v-if="person.vip" class="mi vip-star">star</span>
+      <!-- Datum + tijd velden — 2×2 grid -->
+      <div class="fields-grid">
+        <!-- Rij 1: aankomstdatum + aankomsttijd -->
+        <div class="field-group">
+          <label class="field-label">Aankomstdatum wijzigen *</label>
+          <div
+            ref="aankomstdatumRef"
+            class="trigger-field"
+            :class="{ 'trigger-field--open': aankomstdatumOpen }"
+            @click="toggleAankomstdatum"
+          >
+            <span class="trigger-text">{{ isoToDisplay(aankomstdatum) || '—' }}</span>
+            <div class="trigger-icon"><span class="mi">today</span></div>
+          </div>
         </div>
-        <div class="person-company">{{ person.bedrijf }}</div>
-      </div>
-      <div class="info-rows">
-        <div class="info-row">
-          <span class="info-label">Contactpersoon:</span>
-          <span class="info-value">
-            {{ person.contactpersoon }}<template v-if="person.contactEmail"> ({{ person.contactEmail }})</template>
-          </span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Aankomstdatum:</span>
-          <span class="info-value">{{ person.datumVanaf }}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Aankomsttijd:</span>
-          <span class="info-value">{{ person.aankomsttijd }}</span>
-        </div>
-      </div>
-    </div>
 
-    <!-- Aankomstdatum -->
-    <div class="field-group">
-      <label class="field-label">Aankomstdatum wijzigen *</label>
-      <div
-        ref="datumTriggerRef"
-        class="trigger-field"
-        :class="{ 'trigger-field--open': datumOpen }"
-        @click="toggleDatum"
-      >
-        <span class="trigger-text">{{ isoToDisplay(datum) || '—' }}</span>
-        <div class="trigger-icon">
-          <span class="mi">today</span>
+        <div class="field-group">
+          <label class="field-label">Aankomsttijd wijzigen *</label>
+          <div
+            ref="aankomsttijdRef"
+            class="trigger-field"
+            :class="{ 'trigger-field--open': aankomsttijdOpen }"
+            @click="toggleAankomsttijd"
+          >
+            <span class="trigger-text">{{ aankomsttijd || '—' }}</span>
+            <div class="trigger-icon"><span class="mi">access_time</span></div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Aankomsttijd -->
-    <div class="field-group">
-      <label class="field-label">Aankomsttijd wijzigen *</label>
-      <div
-        ref="aankomstTriggerRef"
-        class="trigger-field"
-        :class="{ 'trigger-field--open': aankomstOpen }"
-        @click="toggleAankomst"
-      >
-        <span class="trigger-text">{{ aankomsttijd || '—' }}</span>
-        <div class="trigger-icon">
-          <span class="mi">access_time</span>
+        <!-- Rij 2: vertrekdatum + vertrektijd -->
+        <div class="field-group">
+          <label class="field-label">Vertrekdatum wijzigen *</label>
+          <div
+            ref="vertrekdatumRef"
+            class="trigger-field"
+            :class="{ 'trigger-field--open': vertrekdatumOpen }"
+            @click="toggleVertrekdatum"
+          >
+            <span class="trigger-text">{{ isoToDisplay(vertrekdatum) || '—' }}</span>
+            <div class="trigger-icon"><span class="mi">today</span></div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Vertrektijd -->
-    <div class="field-group">
-      <label class="field-label">Vertrektijd wijzigen *</label>
-      <div
-        ref="vertrekTriggerRef"
-        class="trigger-field"
-        :class="{ 'trigger-field--open': vertrekOpen }"
-        @click="toggleVertrek"
-      >
-        <span class="trigger-text">{{ vertrektijd || '—' }}</span>
-        <div class="trigger-icon">
-          <span class="mi">access_time</span>
+        <div class="field-group">
+          <label class="field-label">Vertrektijd wijzigen *</label>
+          <div
+            ref="vertrektijdRef"
+            class="trigger-field"
+            :class="{ 'trigger-field--open': vertrektijdOpen }"
+            @click="toggleVertrektijd"
+          >
+            <span class="trigger-text">{{ vertrektijd || '—' }}</span>
+            <div class="trigger-icon"><span class="mi">access_time</span></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Toelichting -->
-    <div class="field-group">
-      <label class="field-label">Toelichting (optioneel)</label>
-      <textarea v-model="toelichting" class="toelichting" rows="4" />
-    </div>
+      <!-- Opmerking -->
+      <div class="field-group">
+        <label class="field-label">Opmerking (optioneel)</label>
+        <textarea v-model="opmerking" class="opmerking" rows="4" />
+      </div>
 
-    <!-- Toggle -->
-    <Toggle
-      v-model="notifyContact"
-      label="Verstuur e-mail naar contactpersoon dat persoon is aangemeld."
-    />
+      <!-- Toggle -->
+      <Toggle
+        v-model="notifyContact"
+        label="Verstuur e-mail naar contactpersoon dat persoon is aangemeld."
+      />
+    </div>
 
     <template #footer>
       <BaseButton variant="ghost"  @click="cancel">Annuleren</BaseButton>
       <BaseButton variant="filled" @click="confirm">Bevestigen</BaseButton>
     </template>
-  </ActionPopup>
+  </Modal>
 
-  <!-- ── Datum popover ──────────────────────────────────────────────────────── -->
+  <!-- ── Aankomstdatum popover ─────────────────────────────────────────────── -->
   <Teleport to="body">
-    <template v-if="datumOpen">
-      <div class="popover-backdrop" @click="datumOpen = false" />
-      <div class="cal-popover" :style="datumStyle">
-        <DatePickerCalendar
-          :model-value="datum"
-          @update:model-value="onDatumSelect"
-        />
+    <template v-if="aankomstdatumOpen">
+      <div class="popover-backdrop" @click="aankomstdatumOpen = false" />
+      <div class="cal-popover" :style="aankomstdatumStyle">
+        <DatePickerCalendar :model-value="aankomstdatum" @update:model-value="onAankomstdatumSelect" />
       </div>
     </template>
   </Teleport>
 
-  <!-- ── Aankomsttijd popover ───────────────────────────────────────────────── -->
+  <!-- ── Aankomsttijd popover ──────────────────────────────────────────────── -->
   <Teleport to="body">
-    <template v-if="aankomstOpen">
-      <div class="popover-backdrop" @click="aankomstOpen = false" />
-      <TimePopover
-        :style="aankomstStyle"
-        :time="aankomsttijd"
-        @apply="onAankomstApply"
-        @cancel="onAankomstCancel"
-      />
+    <template v-if="aankomsttijdOpen">
+      <div class="popover-backdrop" @click="aankomsttijdOpen = false" />
+      <TimePopover :style="aankomsttijdStyle" :time="aankomsttijd" @apply="onAankomsttijdApply" @cancel="onAankomsttijdCancel" />
     </template>
   </Teleport>
 
-  <!-- ── Vertrektijd popover ────────────────────────────────────────────────── -->
+  <!-- ── Vertrekdatum popover ──────────────────────────────────────────────── -->
   <Teleport to="body">
-    <template v-if="vertrekOpen">
-      <div class="popover-backdrop" @click="vertrekOpen = false" />
-      <TimePopover
-        :style="vertrekStyle"
-        :time="vertrektijd"
-        @apply="onVertrekApply"
-        @cancel="onVertrekCancel"
-      />
+    <template v-if="vertrekdatumOpen">
+      <div class="popover-backdrop" @click="vertrekdatumOpen = false" />
+      <div class="cal-popover" :style="vertrekdatumStyle">
+        <DatePickerCalendar :model-value="vertrekdatum" @update:model-value="onVertrekdatumSelect" />
+      </div>
+    </template>
+  </Teleport>
+
+  <!-- ── Vertrektijd popover ───────────────────────────────────────────────── -->
+  <Teleport to="body">
+    <template v-if="vertrektijdOpen">
+      <div class="popover-backdrop" @click="vertrektijdOpen = false" />
+      <TimePopover :style="vertrektijdStyle" :time="vertrektijd" @apply="onVertrektijdApply" @cancel="onVertrektijdCancel" />
     </template>
   </Teleport>
 </template>
 
 <style scoped>
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .intro-text {
   font-size: 14px;
   color: var(--n800);
@@ -283,80 +281,11 @@ function confirm() {
   margin: 0;
 }
 
-/* ── Persoon card ─────────────────────────────────────────────────────────── */
-.person-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-  background: var(--p50);
-  border-radius: var(--r-s);
-}
-
-.person-header {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.person-name {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.name-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--p700);
-  line-height: 24px;
-  letter-spacing: 0.16px;
-}
-
-.vip-star {
-  font-size: 24px;
-  color: var(--vip-border);
-}
-
-.person-company {
-  font-size: 14px;
-  color: var(--n700);
-  line-height: 20px;
-}
-
-.info-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.info-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 8px;
-  background: var(--n0);
-  border-radius: var(--r-s);
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.info-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--p700);
-  line-height: 16px;
-  letter-spacing: 0.12px;
-  width: 120px;
-  flex-shrink: 0;
-}
-
-.info-value {
-  font-size: 12px;
-  color: var(--p700);
-  line-height: 16px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* ── 2×2 velden grid ──────────────────────────────────────────────────────── */
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 /* ── Field groups ─────────────────────────────────────────────────────────── */
@@ -417,7 +346,7 @@ function confirm() {
 }
 
 /* ── Textarea ─────────────────────────────────────────────────────────────── */
-.toelichting {
+.opmerking {
   resize: vertical;
   min-height: 96px;
   padding: 8px 12px;
@@ -433,12 +362,12 @@ function confirm() {
   width: 100%;
 }
 
-.toelichting:focus {
+.opmerking:focus {
   outline: none;
   border-color: var(--p500);
 }
 
-/* ── Popover backdrop (click-outside) ─────────────────────────────────────── */
+/* ── Popover backdrop ─────────────────────────────────────────────────────── */
 .popover-backdrop {
   position: fixed;
   inset: 0;
@@ -453,5 +382,4 @@ function confirm() {
   padding: 12px;
   box-sizing: border-box;
 }
-
 </style>

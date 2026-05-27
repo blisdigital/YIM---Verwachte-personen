@@ -6,8 +6,8 @@ const LOCKED_COLUMNS = ['naam']
 
 const DEFAULT_VISIBLE = [
   'naam',
-  'status', 'datumVanaf', 'aankomsttijd', 'vertrekTijd',
-  'locaties', 'persoontype', 'vip', 'bedrijf',
+  'status', 'datumVanaf', 'aankomsttijd', 'vertrekTijd', 'vertrekDatum',
+  'locaties', 'persoontype', 'contractortype', 'vip', 'bedrijf',
   'credentialType', 'credentialStatus', 'compliance', 'parkeren',
   'contactpersoon', 'bezoekreden',
   // 'personeelsnr', 'telefoonnummer', 'emailadres' — standaard UIT, verschijnen na VIP

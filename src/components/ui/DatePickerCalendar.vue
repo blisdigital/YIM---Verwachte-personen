@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { dateToIso } from '@/utils/dateFormat'
 
 const props = defineProps({
   modelValue: { type: String, default: '' }, // ISO: YYYY-MM-DD
@@ -10,7 +11,7 @@ const WEEKDAYS  = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo']
 const MONTHS_NL = ['Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec']
 
 const today    = new Date()
-const todayISO = toISO(today)
+const todayISO = dateToIso(today)
 
 // ── View state ──────────────────────────────────────────────────────────────
 const view = ref('days') // 'days' | 'month' | 'year'
@@ -97,15 +98,9 @@ const calendarYears = computed(() => {
 })
 
 // ── State helpers ────────────────────────────────────────────────────────────
-function toISO(d) {
-  const m   = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${d.getFullYear()}-${m}-${day}`
-}
-
 function dayState(d) {
   if (!d) return 'empty'
-  const iso = toISO(d)
+  const iso = dateToIso(d)
   if (iso === selected.value) return 'selected'
   if (iso === todayISO)       return 'current'
   return 'enabled'
@@ -129,7 +124,7 @@ function yearState(year) {
 // ── Selection handlers ───────────────────────────────────────────────────────
 function selectDay(d) {
   if (!d) return
-  emit('update:modelValue', toISO(d))
+  emit('update:modelValue', dateToIso(d))
 }
 
 function selectMonth(monthIdx) {

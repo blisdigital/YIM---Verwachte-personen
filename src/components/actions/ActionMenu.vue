@@ -14,60 +14,76 @@ const menuRef = ref(null)
 const btnRef = ref(null)
 const menuStyle = ref({})
 
-// Credential types that are printable (QR-code based). All other non-null types are physical.
-const PRINTABLE_CREDENTIAL_TYPES = new Set(['QR-code'])
+const PRINTABLE_TYPES = ['QR-code']
 
-const credentialAction = computed(() => {
-  const type = props.person.credentialType
-  if (!type) return null
-  if (PRINTABLE_CREDENTIAL_TYPES.has(type)) {
-    return { value: 'credential-printen', label: 'Credential printen' }
+const credentialActions = computed(() => {
+  const { credentialStatus, credentialType } = props.person
+
+  if (credentialStatus === 'actief') {
+    const isPrintable = PRINTABLE_TYPES.includes(credentialType)
+    if (isPrintable) {
+      return [
+        { value: 'credential-printen', label: 'Credential printen' },
+        { value: 'credential-mailen', label: 'Credential mailen' },
+        { value: 'credential-ontkoppelen', label: 'Credential ontkoppelen' },
+      ]
+    }
+    return [
+      { value: 'credential-ontkoppelen', label: 'Credential ontkoppelen' },
+    ]
   }
-  // Physical: ontkoppelen als al gekoppeld, anders koppelen
-  if (props.person.credentialStatus === 'actief') {
-    return { value: 'credential-ontkoppelen', label: 'Credential ontkoppelen' }
+
+  if (credentialStatus === 'niet-actief') {
+    return [
+      { value: 'credential-activeren', label: 'Credential activeren' },
+    ]
   }
-  return { value: 'credential-koppelen', label: 'Credential koppelen' }
+
+  // verlopen, ingetrokken, geblokkeerd — geen credential-acties
+  return []
+})
+
+const elearningItem = computed(() => {
+  if (props.person.elearning === 'niet-behaald') {
+    return [{ value: 'elearning-uitnodiging', label: 'E-learning uitnodiging' }]
+  }
+  return []
 })
 
 const actions = computed(() => {
   const status = props.person.status
-  const credItems = credentialAction.value ? [credentialAction.value] : []
+  const credItems = credentialActions.value
+  const elItems = elearningItem.value
 
   if (status === 'Verwacht' || status === 'Nog niet aangekomen') return [
     { value: 'persoon-aanmelden', label: 'Persoon aanmelden' },
     ...credItems,
-    { value: 'aankomst-wijzigen', label: 'Aankomst wijzigen' },
-    { value: 'persoon-annuleren', label: 'Persoon annuleren', danger: true },
+    ...elItems,
     { divider: true },
     { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
-    { value: 'bel-persoon', label: 'Bel persoon' },
   ]
   if (status === 'Aangemeld') return [
     ...credItems,
+    ...elItems,
     { value: 'persoon-afmelden', label: 'Persoon afmelden' },
     { divider: true },
     { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
-    { value: 'bel-persoon', label: 'Bel persoon' },
   ]
   if (status === 'Niet aangekomen') return [
     { value: 'niet-aangekomen-ongedaan', label: 'Niet aangekomen ongedaan' },
     { value: 'persoon-aanmelden', label: 'Persoon aanmelden' },
     ...credItems,
-    { value: 'aankomst-wijzigen', label: 'Aankomst wijzigen' },
-    { value: 'persoon-annuleren', label: 'Persoon annuleren', danger: true },
+    ...elItems,
     { divider: true },
     { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
-    { value: 'bel-persoon', label: 'Bel persoon' },
   ]
   // Geannuleerd / Afgemeld
   return [
     { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
-    { value: 'bel-persoon', label: 'Bel persoon' },
   ]
 })
 

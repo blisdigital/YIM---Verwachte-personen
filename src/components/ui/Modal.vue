@@ -1,5 +1,6 @@
 <script setup>
 import { watch } from 'vue'
+import IconButton from '@/components/ui/IconButton.vue'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -25,9 +26,7 @@ watch(() => props.open, (val) => {
         <div :class="['modal-box', `modal-${size}`]" role="dialog" aria-modal="true">
           <div class="modal-header">
             <h2 class="modal-title">{{ title }}</h2>
-            <button class="modal-close" @click="close" aria-label="Sluiten">
-              <span class="mi">close</span>
-            </button>
+            <IconButton icon="close" aria-label="Sluiten" size="md" variant="ghost" @click="close" />
           </div>
           <div class="modal-body">
             <slot />
@@ -71,9 +70,11 @@ watch(() => props.open, (val) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px 16px;
+  padding: 20px 20px 20px 24px;
   border-bottom: 1px solid var(--n300);
   flex-shrink: 0;
+  min-height: 64px;
+  box-sizing: border-box;
 }
 
 .modal-title {
@@ -82,32 +83,26 @@ watch(() => props.open, (val) => {
   color: var(--n900);
 }
 
-.modal-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--n700);
-  padding: 4px;
-  border-radius: var(--r-s);
-  display: flex;
-  align-items: center;
-  transition: background 0.15s;
-}
-.modal-close:hover { background: var(--n100); }
 
 .modal-body {
-  padding: 20px 24px;
+  padding: 24px;
   overflow-y: auto;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .modal-footer {
-  padding: 16px 24px 20px;
+  padding: 16px 24px;
   border-top: 1px solid var(--n300);
   display: flex;
   gap: 12px;
   justify-content: flex-end;
+  align-items: center;
   flex-shrink: 0;
+  min-height: 64px;
+  box-sizing: border-box;
 }
 
 /* Transition */

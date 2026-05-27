@@ -1,6 +1,6 @@
 <script setup>
 defineProps({
-  title: { type: String, required: true },
+  title: { type: String, default: null },
   rows:  { type: Array,  default: null },
   // rows: [{ label: string, value: string | null }]
 })
@@ -8,7 +8,7 @@ defineProps({
 
 <template>
   <div class="info-section">
-    <div class="info-section__header">
+    <div v-if="title" class="info-section__header">
       <h3 class="info-section__title">{{ title }}</h3>
     </div>
     <div class="info-section__body">

@@ -15,7 +15,7 @@ const { show } = useToast()
 // Columns excluded from the toggle list: sticky + locked (always-visible)
 const LOCKED_KEYS = new Set(['naam'])
 const configurableColumns = columnsConfig.filter(
-  c => c.key !== 'select' && c.key !== 'actions' && !LOCKED_KEYS.has(c.key)
+  c => c.key !== 'actions' && !LOCKED_KEYS.has(c.key)
 )
 
 // Local state — a copy to stage changes before applying

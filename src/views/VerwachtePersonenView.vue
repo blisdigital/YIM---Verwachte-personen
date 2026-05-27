@@ -1,9 +1,8 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import PageHeader from '@/components/layout/PageHeader.vue'
 import FilterStrip from '@/components/filters/FilterStrip.vue'
-import BulkBar from '@/components/actions/BulkBar.vue'
 import DataTable from '@/components/table/DataTable.vue'
 import Pagination from '@/components/table/Pagination.vue'
 import DetailPanel from '@/components/detail/DetailPanel.vue'
@@ -13,12 +12,14 @@ import AankomstWijzigenModal from '@/components/actions/AankomstWijzigenModal.vu
 import AfmeldenModal from '@/components/actions/AfmeldenModal.vue'
 import InformeerContactpersoonModal from '@/components/actions/InformeerContactpersoonModal.vue'
 import CredentialOntkoppelenModal from '@/components/actions/CredentialOntkoppelenModal.vue'
+import CredentialActiverenModal from '@/components/actions/CredentialActiverenModal.vue'
+import CredentialMailenModal from '@/components/actions/CredentialMailenModal.vue'
+import ElearningUitnodigingModal from '@/components/actions/ElearningUitnodigingModal.vue'
 import ToastContainer from '@/components/ui/ToastContainer.vue'
 import { usePersonenStore } from '@/stores/personenStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { useNavigationStore } from '@/stores/navigationStore'
 import { usePersonen } from '@/composables/usePersonen'
-import { useSelection } from '@/composables/useSelection'
 import { useToast } from '@/composables/useToast'
 
 const personenStore = usePersonenStore()
@@ -38,7 +39,6 @@ watch(() => filtered.value.length, (newLen) => {
     filterStore.page = 1
   }
 })
-const { selectedIds, count: selectionCount, toggle, selectAll, clearAll, isSelected } = useSelection()
 const { show } = useToast()
 
 // Detail panel
@@ -94,12 +94,14 @@ function openAnnuleren(person) {
 }
 
 // Informeer contactpersoon modal
-const informeerOpen   = ref(false)
-const informeerPerson = ref(null)
+const informeerOpen          = ref(false)
+const informeerPerson        = ref(null)
+const informeerInitialScreen = ref('info')
 
-function openInformeer(person) {
-  informeerPerson.value = person
-  informeerOpen.value   = true
+function openInformeer(person, startScreen = 'info') {
+  informeerPerson.value        = person
+  informeerInitialScreen.value = startScreen
+  informeerOpen.value          = true
 }
 
 // Credential ontkoppelen modal
@@ -111,10 +113,32 @@ function openOntkoppelen(person) {
   ontkoppelenOpen.value   = true
 }
 
-// Computed: selected persons data for BulkBar
-const selectedPersons = computed(() =>
-  personenStore.personen.filter(p => selectedIds.value.includes(p.id))
-)
+// Credential activeren modal
+const activerenOpen   = ref(false)
+const activerenPerson = ref(null)
+
+function openActiveren(person) {
+  activerenPerson.value = person
+  activerenOpen.value   = true
+}
+
+// Credential mailen modal
+const mailenOpen   = ref(false)
+const mailenPerson = ref(null)
+
+function openMailen(person) {
+  mailenPerson.value = person
+  mailenOpen.value   = true
+}
+
+// E-learning uitnodiging modal
+const elearningUitnodigingOpen   = ref(false)
+const elearningUitnodigingPerson = ref(null)
+
+function openElearningUitnodiging(person) {
+  elearningUitnodigingPerson.value = person
+  elearningUitnodigingOpen.value   = true
+}
 
 // Handle row actions (from ActionMenu and DetailPanel)
 function handleAction({ person, action }) {
@@ -129,28 +153,33 @@ function handleAction({ person, action }) {
     case 'persoon-annuleren':
       openAnnuleren(person)
       break
-    case 'credential-koppelen':
-      nav.navigate('credential-koppelen', person)
-      break
-    case 'credential-printen':
-      nav.navigate('credential-printen', person)
+    case 'credential-activeren':
+      openActiveren(person)
       break
     case 'credential-ontkoppelen':
       openOntkoppelen(person)
       break
+    case 'credential-mailen':
+      openMailen(person)
+      break
     case 'informeer-contactpersoon':
       openInformeer(person)
+      break
+    case 'informeer-contactpersoon-mail':
+      openInformeer(person, 'mail')
       break
     case 'aankomst-wijzigen':
       openAankomstWijzigen(person)
       break
-    case 'bekijk-dossier':
-      show('Dossier', `Dossier van ${person.naam} wordt geopend.`)
+    case 'elearning-uitnodiging':
+    case 'elearning-code':
+      openElearningUitnodiging(person)
       break
-    case 'bel-persoon':
-      show('Bel persoon', person.telefoonnummer
-        ? `${person.naam}: ${person.telefoonnummer}`
-        : `Geen telefoonnummer bekend voor ${person.naam}.`)
+    case 'credential-printen':
+      show('Credential printen', `Credential voor ${person.naam} wordt geprint.`)
+      break
+    case 'bekijk-dossier':
+      nav.navigate('dossier', person)
       break
     // DetailPanel legacy actions
     case 'inchecken':
@@ -188,10 +217,10 @@ function handleAnnulerenConfirm({ person }) {
   closeDetail()
 }
 
-// Confirm aankomst wijzigen
-function handleAankomstWijzigenConfirm({ person, datum, aankomsttijd, vertrektijd }) {
-  personenStore.updateAankomst(person.id, datum, aankomsttijd, vertrektijd)
-  show('Aankomst gewijzigd', `Aankomst van ${person.naam} is gewijzigd naar ${datum} om ${aankomsttijd}.`)
+// Confirm bezoek wijzigen
+function handleAankomstWijzigenConfirm({ person, aankomstdatum, aankomsttijd, vertrekdatum, vertrektijd }) {
+  personenStore.updateAankomst(person.id, aankomstdatum, aankomsttijd, vertrekdatum, vertrektijd)
+  show('Bezoek gewijzigd', `Bezoek van ${person.naam} is gewijzigd naar ${aankomstdatum} om ${aankomsttijd}.`)
   if (detailPerson.value?.id === person.id) {
     detailPerson.value = personenStore.personen.find(p => p.id === person.id)
   }
@@ -200,6 +229,20 @@ function handleAankomstWijzigenConfirm({ person, datum, aankomsttijd, vertrektij
 // Bevestig informeer contactpersoon
 function handleInformeerConfirm({ person }) {
   show('Contactpersoon geïnformeerd', `Contactpersoon van ${person.naam} is geïnformeerd.`)
+}
+
+// Bevestig credential activeren
+function handleActiverenConfirm({ person, credentialType, pasnummer }) {
+  personenStore.activeerCredential(person.id, credentialType, pasnummer)
+  show('Credential geactiveerd', `Credential is geactiveerd voor ${person.naam}.`)
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
+}
+
+// Bevestig credential mailen
+function handleMailenConfirm({ person }) {
+  show('Credential verstuurd', `Credential is gemaild naar ${person.naam}.`)
 }
 
 // Bevestig credential ontkoppelen
@@ -220,72 +263,6 @@ function handleAfmeldenConfirm({ person }) {
   }
 }
 
-// Bulk actions
-function handleBulkAction(action) {
-  const persons = selectedPersons.value
-
-  switch (action) {
-    case 'inchecken':
-      persons.filter(p => ['Verwacht', 'Nog niet aangekomen', 'Niet aangekomen'].includes(p.status)).forEach(p => {
-        personenStore.updateStatus(p.id, 'Aangemeld')
-      })
-      show('Bulk aanmelden', `${persons.length} personen aangemeld.`)
-      clearAll()
-      break
-    case 'uitchecken':
-      persons.filter(p => p.status === 'Aangemeld').forEach(p => {
-        personenStore.updateStatus(p.id, 'Afgemeld')
-      })
-      show('Bulk afmelden', `Geselecteerde personen afgemeld.`)
-      clearAll()
-      break
-    case 'annuleren':
-      persons.forEach(p => personenStore.updateStatus(p.id, 'Geannuleerd'))
-      show('Geannuleerd', `Geselecteerde personen zijn geannuleerd.`)
-      clearAll()
-      break
-    case 'pas-koppelen':
-      persons.forEach(p => personenStore.updateCredentialStatus(p.id, 'actief'))
-      show('Pas koppelen', `Passen gekoppeld aan ${persons.length} personen.`)
-      clearAll()
-      break
-    case 'pas-printen':
-      persons.filter(p => p.status === 'Aangemeld').forEach(p => {
-        personenStore.updateCredentialStatus(p.id, 'actief')
-      })
-      show('Pas printen', `Passen afgedrukt.`)
-      clearAll()
-      break
-    case 'pas-ontkoppelen':
-      persons.filter(p => p.status === 'Aangemeld').forEach(p => {
-        personenStore.updateCredentialStatus(p.id, 'niet-actief')
-      })
-      show('Pas ontkoppelen', `Passen ontkoppeld.`)
-      clearAll()
-      break
-    case 'niet-aangekomen':
-      persons.filter(p => ['Verwacht', 'Nog niet aangekomen'].includes(p.status)).forEach(p => {
-        personenStore.updateStatus(p.id, 'Niet aangekomen')
-      })
-      show('Niet aangekomen', `Geselecteerde personen geregistreerd als niet aangekomen.`)
-      clearAll()
-      break
-  }
-}
-
-// Table selection
-function handleSelect(id) {
-  toggle(id)
-}
-
-function handleSelectAll(ids) {
-  if (ids.length === 0) {
-    clearAll()
-  } else {
-    selectAll(ids)
-  }
-}
-
 onMounted(() => {
   personenStore.fetch()
 })
@@ -300,22 +277,11 @@ onMounted(() => {
         <PageHeader title="Verwachte personen" />
         <FilterStrip />
 
-        <BulkBar
-          v-if="selectionCount > 0"
-          :count="selectionCount"
-          :selected-persons="selectedPersons"
-          @action="handleBulkAction"
-          @clear="clearAll"
-        />
-
         <div class="table-section">
           <DataTable
             :data="paginated"
             :loading="loading"
-            :selected-ids="selectedIds"
             @row-click="openDetail"
-            @select="handleSelect"
-            @select-all="handleSelectAll"
             @action="handleAction"
           />
 
@@ -373,7 +339,15 @@ onMounted(() => {
     <InformeerContactpersoonModal
       v-model:open="informeerOpen"
       :person="informeerPerson"
+      :initial-screen="informeerInitialScreen"
       @confirm="handleInformeerConfirm"
+    />
+
+    <!-- Credential activeren modal -->
+    <CredentialActiverenModal
+      v-model:open="activerenOpen"
+      :person="activerenPerson"
+      @confirm="handleActiverenConfirm"
     />
 
     <!-- Credential ontkoppelen modal -->
@@ -381,6 +355,19 @@ onMounted(() => {
       v-model:open="ontkoppelenOpen"
       :person="ontkoppelenPerson"
       @confirm="handleOntkoppelenConfirm"
+    />
+
+    <!-- Credential mailen modal -->
+    <CredentialMailenModal
+      v-model:open="mailenOpen"
+      :person="mailenPerson"
+      @confirm="handleMailenConfirm"
+    />
+
+    <!-- E-learning uitnodiging modal -->
+    <ElearningUitnodigingModal
+      v-model:open="elearningUitnodigingOpen"
+      :person="elearningUitnodigingPerson"
     />
 
     <!-- Toast notifications -->
@@ -412,6 +399,6 @@ onMounted(() => {
   background: var(--n0);
   border-radius: var(--r-s);
   border: 1px solid var(--n400);
-  overflow: hidden;
+  overflow: clip; /* clip voor border-radius, geen scroll-context die scrollbar afknipt */
 }
 </style>

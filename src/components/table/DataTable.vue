@@ -9,15 +9,13 @@ import columnsConfig from '@/../columns.json'
 const props = defineProps({
   data: { type: Array, default: () => [] },
   loading: { type: Boolean, default: false },
-  selectedIds: { type: Array, default: () => [] },
 })
-const emit = defineEmits(['row-click', 'sort', 'select', 'select-all', 'action'])
+const emit = defineEmits(['row-click', 'sort', 'action'])
 
 const filterStore = useFilterStore()
 const columnStore = useColumnStore()
-const columnWidths = ref(
-  Object.fromEntries(columnsConfig.filter(c => !c.sticky).map(c => [c.key, c.width]))
-)
+// Start empty — columns scale freely until user manually resizes
+const columnWidths = ref({})
 
 // Sticky shadow on scroll
 const tableWrapRef = ref(null)
@@ -37,7 +35,7 @@ onUnmounted(() => {
 })
 
 const visibleCols = computed(() => {
-  const alwaysVisible = new Set(['select', 'actions'])
+  const alwaysVisible = new Set(['actions'])
   const userVisible = new Set(columnStore.visibleColumns)
   return columnsConfig.filter(c => alwaysVisible.has(c.key) || userVisible.has(c.key))
 })
@@ -72,27 +70,6 @@ function startResize(e, col) {
   document.addEventListener('mouseup', onUp)
 }
 
-// All displayed row IDs (for select all)
-const allIds = computed(() => props.data.map(p => p.id))
-const allSelected = computed(() =>
-  allIds.value.length > 0 && allIds.value.every(id => props.selectedIds.includes(id))
-)
-const someSelected = computed(() =>
-  allIds.value.some(id => props.selectedIds.includes(id)) && !allSelected.value
-)
-
-function toggleAll() {
-  if (allSelected.value) {
-    emit('select-all', [])
-  } else {
-    emit('select-all', allIds.value)
-  }
-}
-
-function isSelected(id) {
-  return props.selectedIds.includes(id)
-}
-
 function setSort(col) {
   if (!col.sortable) return
   if (filterStore.sortKey === col.key) {
@@ -107,7 +84,7 @@ function setSort(col) {
 function colWidth(col) {
   if (col.sticky) return col.width + 'px'
   const w = columnWidths.value[col.key]
-  return w != null ? w + 'px' : undefined
+  return w != null ? w + 'px' : null  // null = not user-resized, column can scale
 }
 </script>
 
@@ -119,7 +96,7 @@ function colWidth(col) {
           <col
             v-for="col in visibleCols"
             :key="col.key"
-            :style="colWidth(col) ? { width: colWidth(col), minWidth: colWidth(col) } : {}"
+            :style="{ width: colWidth(col) || col.width + 'px' }"
           />
         </colgroup>
 
@@ -129,25 +106,16 @@ function colWidth(col) {
             <th
               v-for="col in visibleCols"
               :key="col.key"
-              :class="['th-cell', { sticky: col.sticky, 'sticky-last': col.key === 'actions', sortable: col.sortable, sorted: filterStore.sortKey === col.key, 'th-center': col.key === 'select' || col.key === 'actions' }]"
+              :class="['th-cell', { sticky: col.sticky, 'sticky-first': col.key === 'actions', sortable: col.sortable, sorted: filterStore.sortKey === col.key, 'th-center': col.key === 'actions' }]"
               :style="{
+                minWidth: col.width + 'px',
                 width: colWidth(col) || undefined,
-                minWidth: colWidth(col) || undefined,
-                left: col.sticky ? col.stickyLeft + 'px' : undefined
+                left: col.stickyLeft != null ? col.stickyLeft + 'px' : undefined,
+                right: col.stickyRight != null ? col.stickyRight + 'px' : undefined,
               }"
               @click="setSort(col)"
             >
-              <template v-if="col.key === 'select'">
-                <input
-                  type="checkbox"
-                  class="header-checkbox"
-                  :checked="allSelected"
-                  :indeterminate="someSelected"
-                  @change="toggleAll"
-                  @click.stop
-                />
-              </template>
-              <template v-else-if="col.key === 'actions'">
+              <template v-if="col.key === 'actions'">
                 <!-- empty -->
               </template>
               <template v-else>
@@ -167,7 +135,7 @@ function colWidth(col) {
 
               <!-- Resize handle -->
               <span
-                v-if="col.key !== 'select' && col.key !== 'actions'"
+                v-if="col.key !== 'actions'"
                 class="resize-handle"
                 @mousedown.stop="startResize($event, col)"
               ></span>
@@ -205,10 +173,8 @@ function colWidth(col) {
               v-for="person in data"
               :key="person.id"
               :person="person"
-              :selected="isSelected(person.id)"
               :columns="visibleCols"
               :column-widths="columnWidths"
-              @select="emit('select', $event)"
               @open-detail="emit('row-click', $event)"
               @action="emit('action', $event)"
             />
@@ -222,17 +188,16 @@ function colWidth(col) {
 <style scoped>
 .table-wrap {
   background: var(--n0);
-  overflow: hidden;
 }
 
 .table-scroll {
   overflow-x: auto;
-  overflow-y: visible;
+  overflow-y: hidden;
 }
 
 .data-table {
-  min-width: 100%;
-  width: max-content;
+  min-width: max-content; /* scroll op smalle schermen: tabel nooit smaller dan kolominhoud */
+  width: 100%;            /* breed scherm: tabel vult container, kolommen schalen mee */
   border-collapse: separate;
   border-spacing: 0;
   table-layout: auto;
@@ -304,8 +269,8 @@ function colWidth(col) {
 }
 .sorted .sort-icon { color: var(--n0); }
 
-/* Sticky shadow when scrolled */
-.table-wrap[data-scrolled="true"] :deep(.sticky-last) {
+/* Sticky shadow when scrolled — actions column is left-sticky, shadow on right */
+.table-wrap[data-scrolled="true"] :deep(.sticky-first) {
   box-shadow: 4px 0 4px -2px rgba(17, 19, 19, 0.08);
 }
 
@@ -332,64 +297,9 @@ function colWidth(col) {
 }
 .th-cell:hover .resize-handle::after { opacity: 1; }
 
-.header-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 1px solid var(--n800);
-  border-radius: var(--r-s);
-  background: var(--n0);
-  cursor: pointer;
-  display: block;
-  margin: auto;
-  position: relative;
-  transition: background-color 0.1s, border-color 0.1s;
-  flex-shrink: 0;
-  outline: none;
-}
-.header-checkbox:hover:not(:checked):not(:indeterminate) {
-  border-color: var(--n1000);
-}
-.header-checkbox:checked,
-.header-checkbox:indeterminate {
-  background-color: var(--p500);
-  border-color: var(--p500);
-}
-.header-checkbox:hover:checked,
-.header-checkbox:hover:indeterminate {
-  background-color: var(--p600);
-  border-color: var(--p600);
-}
-.header-checkbox:checked::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  width: 5px;
-  height: 9px;
-  border: 2px solid white;
-  border-top: none;
-  border-left: none;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.header-checkbox:indeterminate::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 10px;
-  height: 2px;
-  background: white;
-  transform: translate(-50%, -50%);
-}
-.header-checkbox:focus-visible {
-  box-shadow: 0 0 0 8px var(--p50);
-}
-
 .th-center {
-  padding: 0;
-  text-align: center;
+  padding: 0 16px;
+  text-align: left;
 }
 
 /* Empty / loading states */

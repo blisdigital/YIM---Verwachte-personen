@@ -57,7 +57,7 @@ function confirm() {
       <div class="contact-row">
         <span class="contact-label">Contactpersoon:</span>
         <span class="contact-value">
-          {{ person.contactpersoon }}<template v-if="person.contactEmail"> ({{ person.contactEmail }})</template>
+          {{ person.contactpersonen?.[0]?.naam }}<template v-if="person.contactpersonen?.[0]?.email"> ({{ person.contactpersonen[0].email }})</template>
         </span>
       </div>
     </div>

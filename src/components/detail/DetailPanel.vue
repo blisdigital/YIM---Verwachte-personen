@@ -36,7 +36,7 @@ const isCompliant = computed(() => {
 const credentialStatusLabel = computed(() => {
   if (!props.person) return ''
   return {
-    'niet-actief': 'Niet gekoppeld',
+    'niet-actief': 'Niet actief',
     'actief': 'Actief',
     'verlopen': 'Verlopen',
     'ingetrokken': 'Ingetrokken',
@@ -47,7 +47,7 @@ const credentialStatusLabel = computed(() => {
 const credentialStatusColor = computed(() => {
   if (!props.person) return 'var(--n500)'
   return {
-    'niet-actief': 'var(--n500)',
+    'niet-actief': 'var(--n400)',
     'actief': 'var(--ok)',
     'verlopen': 'var(--warn)',
     'ingetrokken': 'var(--n500)',
@@ -57,56 +57,49 @@ const credentialStatusColor = computed(() => {
 
 const leftActions = computed(() => {
   if (!props.person) return []
-  const s = props.person.status
-  if (s === 'Verwacht' || s === 'Nog niet aangekomen') return [
-    { value: 'annuleren', label: 'Persoon annuleren', danger: true },
-    { value: 'aankomst-wijzigen', label: 'Aankomst wijzigen' },
-  ]
-  if (s === 'Niet aangekomen') return [
-    { value: 'annuleren', label: 'Persoon annuleren', danger: true },
-    { value: 'aankomst-wijzigen', label: 'Aankomst wijzigen' },
-  ]
-  return []
+  return [{ value: 'bekijk-dossier', label: 'Bekijk dossier' }]
+})
+
+const isPrintbaar = computed(() => {
+  return props.person?.credentialType === 'QR-code'
 })
 
 const rightActions = computed(() => {
   if (!props.person) return []
   const s = props.person.status
-  const hasCredential = !!props.person.credentialType
   const isLinked = props.person.credentialStatus !== 'niet-actief'
-
   const compliant = isCompliant.value
-  const isQr = props.person.credentialType === 'QR-code'
+  const elearningNegatief = props.person.elearning === 'niet-behaald'
 
   if (s === 'Verwacht' || s === 'Nog niet aangekomen') {
     const actions = []
-    if (hasCredential && !isLinked) {
-      const label = isQr ? 'Credential printen' : 'Credential koppelen'
-      actions.push({ value: isQr ? 'credential-printen' : 'credential-koppelen', label, disabled: !compliant })
-    }
+    if (!isLinked)
+      actions.push({ value: 'credential-activeren', label: 'Credential activeren', disabled: !compliant })
+    if (elearningNegatief)
+      actions.push({ value: 'elearning-code', label: 'E-learning code' })
     actions.push({ value: 'inchecken', label: 'Persoon aanmelden', filled: true, disabled: !compliant })
     return actions
   }
   if (s === 'Aangemeld') {
     const actions = []
-    if (hasCredential) {
-      if (!isLinked) {
-        const label = isQr ? 'Credential printen' : 'Credential koppelen'
-        actions.push({ value: isQr ? 'credential-printen' : 'credential-koppelen', label })
-      } else {
-        const label = isQr ? 'QR-code ontkoppelen' : 'Credential ontkoppelen'
-        actions.push({ value: 'credential-ontkoppelen', label })
+    if (!isLinked) {
+      actions.push({ value: 'credential-activeren', label: 'Credential activeren' })
+    } else {
+      if (isPrintbaar.value) {
+        actions.push({ value: 'credential-printen', label: 'Credential printen' })
+        actions.push({ value: 'credential-mailen', label: 'Credential mailen' })
       }
+      actions.push({ value: 'credential-ontkoppelen', label: 'Credential ontkoppelen' })
     }
     actions.push({ value: 'afmelden', label: 'Persoon afmelden', filled: true })
     return actions
   }
   if (s === 'Niet aangekomen') {
     const actions = []
-    if (hasCredential && !isLinked) {
-      const label = isQr ? 'Credential printen' : 'Credential koppelen'
-      actions.push({ value: isQr ? 'credential-printen' : 'credential-koppelen', label, disabled: !compliant })
-    }
+    if (!isLinked)
+      actions.push({ value: 'credential-activeren', label: 'Credential activeren', disabled: !compliant })
+    if (elearningNegatief)
+      actions.push({ value: 'elearning-code', label: 'E-learning code' })
     actions.push({ value: 'inchecken', label: 'Persoon aanmelden', filled: true, disabled: !compliant })
     return actions
   }
@@ -132,9 +125,6 @@ watch(() => props.open, (isOpen) => {
           <p class="person-subtitle">{{ subtitle }}</p>
         </div>
         <div class="header-actions">
-          <BaseButton variant="outlined" size="md" @click="emit('action', { person, action: 'bekijk-dossier' })">
-            Bekijk dossier
-          </BaseButton>
           <button class="close-btn" @click="emit('close')" aria-label="Sluiten">
             <span class="mi">close</span>
           </button>
@@ -221,27 +211,30 @@ watch(() => props.open, (isOpen) => {
         <section class="panel-section">
           <h3 class="section-title">Contactpersoon</h3>
           <div class="info-list">
-            <div class="info-row">
-              <span class="row-label">Naam contactpersoon</span>
-              <span class="row-value">{{ person.contactpersoon }}</span>
-            </div>
-            <div v-if="person.contactTel" class="info-row">
-              <span class="row-label">Telefoonnummer</span>
-              <a :href="`tel:${person.contactTel}`" class="action-link">{{ person.contactTel }}</a>
-            </div>
-            <div v-if="person.contactEmail" class="info-row">
-              <span class="row-label">E-mailadres</span>
-              <div class="row-value-flex">
-                <a :href="`mailto:${person.contactEmail}`" class="action-link">{{ person.contactEmail }}</a>
-                <button
-                  class="icon-btn-sm"
-                  aria-label="Informeer contactpersoon"
-                  @click="emit('action', { person, action: 'informeer-contactpersoon' })"
-                >
-                  <span class="mi icon-sm">mail</span>
-                </button>
+            <template v-for="(cp, i) in (person.contactpersonen ?? [])" :key="i">
+              <div class="info-row">
+                <span class="row-label">{{ i === 0 ? 'Primaire contactpersoon' : 'Contactpersoon' }}</span>
+                <span class="row-value">{{ cp.naam }}</span>
               </div>
-            </div>
+              <div v-if="cp.tel" class="info-row">
+                <span class="row-label">Telefoonnummer</span>
+                <a :href="`tel:${cp.tel}`" class="action-link">{{ cp.tel }}</a>
+              </div>
+              <div v-if="cp.email" class="info-row">
+                <span class="row-label">E-mailadres</span>
+                <div class="row-value-flex">
+                  <a :href="`mailto:${cp.email}`" class="action-link">{{ cp.email }}</a>
+                  <button
+                    v-if="i === 0"
+                    class="icon-btn-sm"
+                    aria-label="Informeer contactpersoon"
+                    @click="emit('action', { person, action: 'informeer-contactpersoon-mail' })"
+                  >
+                    <span class="mi icon-sm">mail</span>
+                  </button>
+                </div>
+              </div>
+            </template>
           </div>
         </section>
 
@@ -254,15 +247,15 @@ watch(() => props.open, (isOpen) => {
               <span class="row-value">{{ person.credentialType || '-' }}</span>
             </div>
             <div class="info-row">
+              <span class="row-label">Credential nummer</span>
+              <span class="row-value">{{ person.pasnummer || '-' }}</span>
+            </div>
+            <div class="info-row">
               <span class="row-label">Status</span>
               <div class="pass-status">
                 <span class="pass-dot" :style="{ background: credentialStatusColor }"></span>
                 <span class="row-value">{{ credentialStatusLabel }}</span>
               </div>
-            </div>
-            <div class="info-row">
-              <span class="row-label">Credential nummer</span>
-              <span class="row-value">{{ person.pasnummer || '-' }}</span>
             </div>
           </div>
         </section>
@@ -277,7 +270,6 @@ watch(() => props.open, (isOpen) => {
             :key="act.value"
             variant="outlined"
             size="md"
-            :class="{ 'btn-danger': act.danger }"
             @click="emit('action', { person, action: act.value })"
           >{{ act.label }}</BaseButton>
         </div>
@@ -572,16 +564,6 @@ watch(() => props.open, (isOpen) => {
   align-items: center;
   gap: var(--sp-s);
   flex-wrap: wrap;
-}
-
-/* Danger variant override for annuleren button */
-.footer-left :deep(.btn-danger) {
-  color: var(--err);
-  border-color: var(--err);
-}
-.footer-left :deep(.btn-danger:hover:not(:disabled)) {
-  background: var(--err-bg);
-  border-color: var(--err);
 }
 
 /* ── Overlay ── */

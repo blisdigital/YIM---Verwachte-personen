@@ -1,20 +1,10 @@
 [
   {
-    "key": "select",
-    "label": "",
-    "width": 48,
-    "sticky": true,
-    "stickyLeft": 0,
-    "sortable": false,
-    "filter": null,
-    "description": "Checkbox voor rij-selectie"
-  },
-  {
     "key": "actions",
     "label": "",
     "width": 48,
     "sticky": true,
-    "stickyLeft": 48,
+    "stickyLeft": 0,
     "sortable": false,
     "filter": null,
     "description": "Actiemenu (••• icoon)"
@@ -50,7 +40,15 @@
     "width": 144,
     "sortable": true,
     "filter": "time",
-    "description": "Geplande vertrektijd in HH:mm (zelfde datum als aankomstdatum). Null als niet ingevuld."
+    "description": "Geplande vertrektijd in HH:mm. Null als niet ingevuld."
+  },
+  {
+    "key": "vertrekDatum",
+    "label": "Vertrekdatum",
+    "width": 144,
+    "sortable": true,
+    "filter": "date",
+    "description": "Geplande vertrekdatum in DD-MM-YYYY formaat. Kan afwijken van aankomstdatum bij meerdaags bezoek."
   },
   {
     "key": "locaties",
@@ -74,8 +72,17 @@
     "width": 144,
     "sortable": true,
     "filter": "dropdown",
-    "filterOptions": ["Alle", "Bezoeker", "Warehouse", "Technisch", "Logistiek", "Maintenance", "IT", "Inspection", "Construction"],
-    "description": "Type persoon. Bezoekers hebben type 'Bezoeker'; contractors hebben een specifiek type (Warehouse, Technisch, etc.). TypeTabs 'Contractors' filtert op alle niet-Bezoeker types."
+    "filterOptions": ["Alle", "Bezoeker", "Contractor"],
+    "description": "Hoofdtype persoon: 'Bezoeker' of 'Contractor'. TypeTabs filtert op dit veld."
+  },
+  {
+    "key": "contractortype",
+    "label": "Contractor type",
+    "width": 160,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Constructie", "Inspectie", "IT", "Logistiek", "Onderhoud", "Technisch", "Warehousing"],
+    "description": "Subtype van de contractor (bijv. Warehousing, Technisch). Alleen ingevuld bij persoontype 'Contractor'. Leeg bij bezoekers."
   },
   {
     "key": "vip",
@@ -92,6 +99,7 @@
     "width": 152,
     "sortable": true,
     "filter": "text",
+    "hidden": true,
     "description": "Personeelsnummer (P-format, bijv. P0000002393). Standaard verborgen; aan te zetten via kolominstellingen. Verschijnt na VIP."
   },
   {
@@ -100,6 +108,7 @@
     "width": 160,
     "sortable": false,
     "filter": "text",
+    "hidden": true,
     "description": "Telefoonnummer van de persoon. Standaard verborgen; aan te zetten via kolominstellingen. Verschijnt na Personeelsnr."
   },
   {
@@ -108,6 +117,7 @@
     "width": 200,
     "sortable": false,
     "filter": "text",
+    "hidden": true,
     "description": "E-mailadres van de persoon. Standaard verborgen; aan te zetten via kolominstellingen. Verschijnt na Telefoonnummer."
   },
   {
@@ -124,8 +134,8 @@
     "width": 160,
     "sortable": true,
     "filter": "dropdown",
-    "filterOptions": ["Alle", "QR-code", "Bezoekerspas", "Vaste pas"],
-    "description": "Type credential gekoppeld aan de persoon. Waarden zijn klantspecifiek configureerbaar; dit prototype gebruikt QR-code, Bezoekerspas en Vaste pas."
+    "filterOptions": ["Alle", "QR-code", "Bezoekerspas", "Vaste pas", "Contractorpas"],
+    "description": "Type credential gekoppeld aan de persoon. Leeg als er nog geen credential gekoppeld is."
   },
   {
     "key": "credentialStatus",

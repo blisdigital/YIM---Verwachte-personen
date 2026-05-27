@@ -1,46 +1,57 @@
 # Component Specificaties — Index
 
-Gedetailleerde specificaties per component staan in `components/`:
+Gedetailleerde specificaties per component staan in `docs/components/`:
 
 | Bestand | Componenten |
 | --- | --- |
-| [`components/AppHeader.md`](components/AppHeader.md) | AppHeader |
-| [`components/PageHeader.md`](components/PageHeader.md) | PageHeader |
-| [`components/ProcessNav.md`](components/ProcessNav.md) | ProcessNav |
-| [`components/BaseButton.md`](components/BaseButton.md) | BaseButton |
-| [`components/IconButton.md`](components/IconButton.md) | IconButton |
-| [`components/InputField.md`](components/InputField.md) | InputField |
-| [`components/Toggle.md`](components/Toggle.md) | Toggle |
-| [`components/StatusDot.md`](components/StatusDot.md) | StatusDot |
-| [`components/PassStatusDot.md`](components/PassStatusDot.md) | PassStatusDot |
-| [`components/CompliancePill.md`](components/CompliancePill.md) | CompliancePill, ComplianceCell |
-| [`components/Modal.md`](components/Modal.md) | Modal |
-| [`components/DatePopover.md`](components/DatePopover.md) | DatePopover |
-| [`components/Toast.md`](components/Toast.md) | Toast, ToastContainer |
-| [`components/Tooltip.md`](components/Tooltip.md) | Tooltip |
-| [`components/DatePickerCalendar.md`](components/DatePickerCalendar.md) | DatePickerCalendar |
-| [`components/TimePopover.md`](components/TimePopover.md) | TimePopover |
-| [`components/TypeTabs.md`](components/TypeTabs.md) | TypeTabs |
-| [`components/DateFilterChip.md`](components/DateFilterChip.md) | DateFilterChip |
-| [`components/FilterChip.md`](components/FilterChip.md) | FilterChip |
-| [`components/FilterStrip.md`](components/FilterStrip.md) | FilterStrip |
-| [`components/SearchBox.md`](components/SearchBox.md) | SearchBox |
-| [`components/DataTable.md`](components/DataTable.md) | DataTable |
-| [`components/TableRow.md`](components/TableRow.md) | TableRow |
-| [`components/ColumnFilters.md`](components/ColumnFilters.md) | ColumnFilters |
-| [`components/Pagination.md`](components/Pagination.md) | Pagination |
-| [`components/ActionMenu.md`](components/ActionMenu.md) | ActionMenu |
-| [`components/BulkBar.md`](components/BulkBar.md) | BulkBar |
-| [`components/ActionPopup.md`](components/ActionPopup.md) | ActionPopup |
-| [`components/AanmeldenModal.md`](components/AanmeldenModal.md) | AanmeldenModal |
-| [`components/AfmeldenModal.md`](components/AfmeldenModal.md) | AfmeldenModal |
-| [`components/AnnulerenModal.md`](components/AnnulerenModal.md) | AnnulerenModal |
-| [`components/AankomstWijzigenModal.md`](components/AankomstWijzigenModal.md) | AankomstWijzigenModal |
-| [`components/InformeerContactpersoonModal.md`](components/InformeerContactpersoonModal.md) | InformeerContactpersoonModal |
-| [`components/ProcessBottomBar.md`](components/ProcessBottomBar.md) | ProcessBottomBar |
-| [`components/DetailPanel.md`](components/DetailPanel.md) | DetailPanel |
-| [`components/KolomInstellingenPanel.md`](components/KolomInstellingenPanel.md) | InstellingenMenu, KolomInstellingenPanel |
-| [`components/InfoSection.md`](components/InfoSection.md) | InfoSection |
+| [`docs/components/AppHeader.md`](docs/components/AppHeader.md) | AppHeader |
+| [`docs/components/PageHeader.md`](docs/components/PageHeader.md) | PageHeader |
+| [`docs/components/ProcessNav.md`](docs/components/ProcessNav.md) | ProcessNav |
+| [`docs/components/BaseButton.md`](docs/components/BaseButton.md) | BaseButton |
+| [`docs/components/IconButton.md`](docs/components/IconButton.md) | IconButton |
+| [`docs/components/InputField.md`](docs/components/InputField.md) | InputField |
+| [`docs/components/Toggle.md`](docs/components/Toggle.md) | Toggle |
+| [`docs/components/StatusDot.md`](docs/components/StatusDot.md) | StatusDot |
+| [`docs/components/PassStatusDot.md`](docs/components/PassStatusDot.md) | PassStatusDot |
+| [`docs/components/CompliancePill.md`](docs/components/CompliancePill.md) | CompliancePill |
+| [`docs/components/ComplianceCell.md`](docs/components/ComplianceCell.md) | ComplianceCell |
+| [`docs/components/CustomSelect.md`](docs/components/CustomSelect.md) | CustomSelect |
+| [`docs/components/FormDateField.md`](docs/components/FormDateField.md) | FormDateField |
+| [`docs/components/Modal.md`](docs/components/Modal.md) | Modal |
+| [`docs/components/DatePopover.md`](docs/components/DatePopover.md) | DatePopover |
+| [`docs/components/Toast.md`](docs/components/Toast.md) | Toast |
+| [`docs/components/ToastContainer.md`](docs/components/ToastContainer.md) | ToastContainer |
+| [`docs/components/Tooltip.md`](docs/components/Tooltip.md) | Tooltip |
+| [`docs/components/DatePickerCalendar.md`](docs/components/DatePickerCalendar.md) | DatePickerCalendar |
+| [`docs/components/TimePopover.md`](docs/components/TimePopover.md) | TimePopover |
+| [`docs/components/TypeTabs.md`](docs/components/TypeTabs.md) | TypeTabs |
+| [`docs/components/DateFilterChip.md`](docs/components/DateFilterChip.md) | DateFilterChip |
+| [`docs/components/FilterChip.md`](docs/components/FilterChip.md) | FilterChip |
+| [`docs/components/FilterStrip.md`](docs/components/FilterStrip.md) | FilterStrip |
+| [`docs/components/SearchBox.md`](docs/components/SearchBox.md) | SearchBox |
+| [`docs/components/DataTable.md`](docs/components/DataTable.md) | DataTable |
+| [`docs/components/TableRow.md`](docs/components/TableRow.md) | TableRow |
+| [`docs/components/ColumnFilters.md`](docs/components/ColumnFilters.md) | ColumnFilters |
+| [`docs/components/Pagination.md`](docs/components/Pagination.md) | Pagination |
+| [`docs/components/ActionMenu.md`](docs/components/ActionMenu.md) | ActionMenu |
+| [`docs/components/ActionPopup.md`](docs/components/ActionPopup.md) | ActionPopup |
+| [`docs/components/AanmeldenModal.md`](docs/components/AanmeldenModal.md) | AanmeldenModal |
+| [`docs/components/AfmeldenModal.md`](docs/components/AfmeldenModal.md) | AfmeldenModal |
+| [`docs/components/AnnulerenModal.md`](docs/components/AnnulerenModal.md) | AnnulerenModal |
+| [`docs/components/AankomstWijzigenModal.md`](docs/components/AankomstWijzigenModal.md) | AankomstWijzigenModal |
+| [`docs/components/InformeerContactpersoonModal.md`](docs/components/InformeerContactpersoonModal.md) | InformeerContactpersoonModal |
+| [`docs/components/ElearningUitnodigingModal.md`](docs/components/ElearningUitnodigingModal.md) | ElearningUitnodigingModal |
+| [`docs/components/ProcessBottomBar.md`](docs/components/ProcessBottomBar.md) | ProcessBottomBar |
+| [`docs/components/DetailPanel.md`](docs/components/DetailPanel.md) | DetailPanel |
+| [`docs/components/KolomInstellingenPanel.md`](docs/components/KolomInstellingenPanel.md) | InstellingenMenu, KolomInstellingenPanel |
+| [`docs/components/CredentialActiverenModal.md`](docs/components/CredentialActiverenModal.md) | CredentialActiverenModal |
+| [`docs/components/CredentialMailenModal.md`](docs/components/CredentialMailenModal.md) | CredentialMailenModal |
+| [`docs/components/CredentialOntkoppelenModal.md`](docs/components/CredentialOntkoppelenModal.md) | CredentialOntkoppelenModal |
+| [`docs/components/AanmeldingenTable.md`](docs/components/AanmeldingenTable.md) | AanmeldingenTable |
+| [`docs/components/DossierHeader.md`](docs/components/DossierHeader.md) | DossierHeader |
+| [`docs/components/DossierTabs.md`](docs/components/DossierTabs.md) | DossierTabs |
+| [`docs/components/MijnActiesPanel.md`](docs/components/MijnActiesPanel.md) | MijnActiesPanel |
+| [`docs/components/InfoSection.md`](docs/components/InfoSection.md) | InfoSection |
 
 ## Snel overzicht
 
@@ -59,7 +70,9 @@ ui/
   StatusDot            — Gekleurde stip + label per status (Verwacht, Aangemeld, etc.)
   PassStatusDot        — Gekleurde stip + label voor credentialStatus
   CompliancePill       — Enkele dossier- of e-learning pill met hover-tooltip (tooltip inline geïmplementeerd)
-  ComplianceCell       — Dunne wrapper (CompliancePill.md) die 0-2 pills rendert in tabelcel
+  ComplianceCell       — Dunne wrapper die 0-2 CompliancePills rendert in tabelcel
+  CustomSelect         — Dropdown-select met custom styling en Teleport-menu
+  FormDateField        — Datumveld met inline DatePickerCalendar popover
   Tooltip              — Generieke hover-tooltip wrapper (content: string | string[])
   ActionPopup          — Basis wrapper voor alle actie-popups (480px, bottom-sheet op tablet)
   Modal                — Modale dialoog (slots: default, footer)
@@ -84,15 +97,24 @@ table/
 
 actions/
   ActionMenu        — Context menu per rij (acties afhankelijk van status)
-  BulkBar           — Toolbar bij selectie (inchecken, uitchecken, etc.)
   AanmeldenModal    — Bevestigingsdialoog voor persoon aanmelden (gebruikt ActionPopup)
   AfmeldenModal     — Bevestigingsdialoog voor persoon afmelden (gebruikt ActionPopup)
   AnnulerenModal          — Destructieve bevestiging voor annuleren (gebruikt ActionPopup)
-  AankomstWijzigenModal   — Datum/tijd wijzigen voor verwachte aankomst (gebruikt ActionPopup)
+  AankomstWijzigenModal   — Datum/tijd wijzigen voor verwacht bezoek (gebruikt Modal)
   InformeerContactpersoonModal — E-mail sturen naar contactpersoon (gebruikt ActionPopup)
+  ElearningUitnodigingModal    — E-learning uitnodiging: activeer op locatie of verstuur per mail (gebruikt ActionPopup)
+  CredentialActiverenModal     — Credential activeren/koppelen met scenario-routing (A=printbaar, B=fysiek, C=keuze)
+  CredentialMailenModal        — Credential per e-mail versturen (bevestigingsdialoog)
+  CredentialOntkoppelenModal   — Credential ontkoppelen van persoon (bevestigingsdialoog)
 
 detail/
   DetailPanel       — Gecentreerde modal (832px) met volledige persoonsgegevens en acties per status
+
+dossier/
+  AanmeldingenTable     — Tabel met aanmeldingen binnen het dossier
+  DossierHeader         — Header voor dossier-weergave met persoonsnaam en status
+  DossierTabs           — Tabnavigatie binnen het dossier (Aanmeldingen, Mijn acties)
+  MijnActiesPanel       — Panel met openstaande acties voor de receptiemedewerker
 
 settings/
   KolomInstellingenPanel — Popover met kolom toggles, zoeken, sets opslaan/laden
@@ -105,6 +127,6 @@ settings/
 
 Er is geen zelfstandige `<Dropdown>` component. Alle dropdowns (ActionMenu, FilterChip, InstellingenMenu) implementeren hun eigen positionering via `<Teleport to="body">` met `position: fixed`.
 
-Er is ook geen `<SplitButton>` component. Knoppen met een dropdown (zoals "Nieuwe registratie" in de PageHeader) gebruiken `<BaseButton>` gecombineerd met `<ActionMenu>` — zie [BaseButton.md](components/BaseButton.md).
+Er is ook geen `<SplitButton>` component. Knoppen met een dropdown (zoals "Nieuwe registratie" in de PageHeader) gebruiken `<BaseButton>` gecombineerd met `<ActionMenu>` — zie [BaseButton.md](docs/components/BaseButton.md).
 
-Voor knoppen zonder label (hamburger, sluiten, ×) wordt `<IconButton>` gebruikt — zie [IconButton.md](components/IconButton.md).
+Voor knoppen zonder label (hamburger, sluiten, ×) wordt `<IconButton>` gebruikt — zie [IconButton.md](docs/components/IconButton.md).

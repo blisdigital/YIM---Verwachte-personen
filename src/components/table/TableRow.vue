@@ -7,45 +7,33 @@ import Tooltip from '@/components/ui/Tooltip.vue'
 
 const props = defineProps({
   person: { type: Object, required: true },
-  selected: { type: Boolean, default: false },
   columns: { type: Array, default: () => [] },
   columnWidths: { type: Object, default: () => ({}) },
 })
-const emit = defineEmits(['select', 'open-detail', 'action'])
+const emit = defineEmits(['open-detail', 'action'])
 </script>
 
 <template>
   <tr
     :class="['trow', {
       'trow-vip': person.vip,
-      'trow-selected': selected,
     }]"
     @click="emit('open-detail', person)"
   >
     <td
       v-for="col in columns"
       :key="col.key"
-      :class="['tcell', { sticky: col.sticky, 'sticky-last': col.key === 'actions', 'tcell-actions': col.key === 'actions', 'tcell-select': col.key === 'select' }]"
+      :class="['tcell', { sticky: col.sticky, 'sticky-first': col.key === 'actions', 'tcell-actions': col.key === 'actions' }]"
       :style="{
+        minWidth: col.width + 'px',
         width: col.sticky ? col.width + 'px' : (columnWidths[col.key] != null ? columnWidths[col.key] + 'px' : undefined),
-        minWidth: col.sticky ? col.width + 'px' : (columnWidths[col.key] != null ? columnWidths[col.key] + 'px' : undefined),
-        left: col.sticky ? col.stickyLeft + 'px' : undefined
+        left: col.stickyLeft != null ? col.stickyLeft + 'px' : undefined,
+        right: col.stickyRight != null ? col.stickyRight + 'px' : undefined,
       }"
-      @click.stop="col.key === 'select' || col.key === 'actions' ? null : emit('open-detail', person)"
+      @click.stop="col.key === 'actions' ? null : emit('open-detail', person)"
     >
-      <!-- Checkbox -->
-      <template v-if="col.key === 'select'">
-        <input
-          type="checkbox"
-          :checked="selected"
-          @click.stop
-          @change.stop="emit('select', person.id)"
-          class="row-checkbox"
-        />
-      </template>
-
       <!-- Actions -->
-      <template v-else-if="col.key === 'actions'">
+      <template v-if="col.key === 'actions'">
         <ActionMenu :person="person" @action="emit('action', $event)" />
       </template>
 
@@ -102,6 +90,21 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
         </div>
       </template>
 
+      <!-- Credential type — leeg als nog niet gekoppeld -->
+      <template v-else-if="col.key === 'credentialType'">
+        <span v-if="person.credentialType" class="cell-truncate">{{ person.credentialType }}</span>
+      </template>
+
+      <!-- Contractor type — leeg bij bezoekers -->
+      <template v-else-if="col.key === 'contractortype'">
+        <span v-if="person.contractortype" class="cell-truncate">{{ person.contractortype }}</span>
+      </template>
+
+      <!-- Contactpersoon -->
+      <template v-else-if="col.key === 'contactpersoon'">
+        <span class="cell-truncate">{{ person.contactpersonen?.map(c => c.naam).join(', ') ?? '—' }}</span>
+      </template>
+
       <!-- Default text -->
       <template v-else>
         <span class="cell-truncate">{{ person[col.key] ?? '—' }}</span>
@@ -140,51 +143,7 @@ const emit = defineEmits(['select', 'open-detail', 'action'])
 }
 .trow:hover .sticky { background: var(--p100); }
 
-.tcell-actions { padding: 0; text-align: center; }
-.tcell-select { padding: 0; text-align: center; }
-
-.row-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 1px solid var(--n800);
-  border-radius: var(--r-s);
-  background: var(--n0);
-  cursor: pointer;
-  display: block;
-  margin: auto;
-  position: relative;
-  transition: background-color 0.1s, border-color 0.1s;
-  flex-shrink: 0;
-  outline: none;
-}
-.row-checkbox:hover:not(:checked) {
-  border-color: var(--n1000);
-}
-.row-checkbox:checked {
-  background-color: var(--p500);
-  border-color: var(--p500);
-}
-.row-checkbox:hover:checked {
-  background-color: var(--p600);
-  border-color: var(--p600);
-}
-.row-checkbox:checked::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  width: 5px;
-  height: 9px;
-  border: 2px solid white;
-  border-top: none;
-  border-left: none;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.row-checkbox:focus-visible {
-  box-shadow: 0 0 0 8px var(--p50);
-}
+.tcell-actions { padding: 0 16px; text-align: left; }
 
 .cell-naam {
   display: flex;

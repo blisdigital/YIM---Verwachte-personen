@@ -3,6 +3,7 @@ import { ref, reactive, computed } from 'vue'
 import DatePopover from '@/components/ui/DatePopover.vue'
 import TimePopover from '@/components/ui/TimePopover.vue'
 import { usePersonenStore } from '@/stores/personenStore'
+import { isoToDisplay, displayToIso } from '@/utils/dateFormat'
 
 const props = defineProps({
   columns: { type: Array, default: () => [] },
@@ -25,9 +26,7 @@ function getDateState(key) {
     const raw = props.modelValue[key] || ''
     let iso = ''
     if (raw && raw.includes('-')) {
-      const parts = raw.split('-')
-      if (parts[0].length === 2) iso = `${parts[2]}-${parts[1]}-${parts[0]}`
-      else iso = raw
+      iso = raw.split('-')[0].length === 2 ? displayToIso(raw) : raw
     }
     dateState[key] = { isoDate: iso, preset: null }
   }
@@ -41,9 +40,7 @@ function openDatePopover(key, event) {
   const raw = props.modelValue[key] || ''
   let iso = ''
   if (raw && raw.includes('-')) {
-    const parts = raw.split('-')
-    if (parts[0].length === 2) iso = `${parts[2]}-${parts[1]}-${parts[0]}`
-    else iso = raw
+    iso = raw.split('-')[0].length === 2 ? displayToIso(raw) : raw
   }
   dateState[key] = { isoDate: iso, preset: null }
   openDateKey.value = key
@@ -51,11 +48,6 @@ function openDatePopover(key, event) {
 
 function closeDatePopover() { openDateKey.value = null }
 
-function isoToDisplay(iso) {
-  if (!iso) return ''
-  const [y, m, d] = iso.split('-')
-  return `${d}-${m}-${y}`
-}
 
 function applyDate(key) {
   const state = getDateState(key)
@@ -169,9 +161,10 @@ function filteredLocsFor(key) {
       :key="col.key"
       :class="['cf-cell', { sticky: col.sticky }]"
       :style="{
+        minWidth: col.width + 'px',
         width: col.sticky ? col.width + 'px' : (columnWidths[col.key] != null ? columnWidths[col.key] + 'px' : undefined),
-        minWidth: col.sticky ? col.width + 'px' : (columnWidths[col.key] != null ? columnWidths[col.key] + 'px' : undefined),
-        left: col.sticky ? col.stickyLeft + 'px' : undefined
+        left: col.stickyLeft != null ? col.stickyLeft + 'px' : undefined,
+        right: col.stickyRight != null ? col.stickyRight + 'px' : undefined,
       }"
     >
       <!-- Checkbox and action columns: no filter -->

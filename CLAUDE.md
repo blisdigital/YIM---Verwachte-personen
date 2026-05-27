@@ -16,12 +16,13 @@ src/
 │   ├── filters/       # FilterStrip, TypeTabs, DateFilterChip, FilterChip, SearchBox
 │   ├── table/         # DataTable, ColumnFilters, TableRow, Pagination
 │   ├── detail/        # DetailPanel
-│   ├── actions/       # BulkBar, ActionMenu, AanmeldenModal, AfmeldenModal, AnnulerenModal, AankomstWijzigenModal, InformeerContactpersoonModal
+│   ├── actions/       # ActionMenu, AanmeldenModal, AfmeldenModal, AnnulerenModal, AankomstWijzigenModal, InformeerContactpersoonModal, ElearningUitnodigingModal, CredentialActiverenModal, CredentialMailenModal, CredentialOntkoppelenModal
+│   ├── dossier/       # AanmeldingenTable, DossierHeader, DossierTabs, MijnActiesPanel
 │   ├── settings/      # KolomInstellingenPanel
-│   └── ui/            # BaseButton, IconButton, InputField, Toggle, StatusDot, PassStatusDot, ComplianceCell, CompliancePill, Modal, DatePopover, DatePickerCalendar, TimePopover, Tooltip, Toast, ToastContainer, ActionPopup, ProcessBottomBar, InfoSection
-├── composables/       # usePersonen, useSelection, useToast
+│   └── ui/            # BaseButton, IconButton, InputField, Toggle, StatusDot, PassStatusDot, ComplianceCell, CompliancePill, CustomSelect, FormDateField, Modal, DatePopover, DatePickerCalendar, TimePopover, Tooltip, Toast, ToastContainer, ActionPopup, ProcessBottomBar, InfoSection
+├── composables/       # usePersonen, useToast
 ├── stores/            # Pinia stores (personenStore, filterStore, columnStore)
-├── views/             # VerwachtePersonenView.vue, CredentialKoppelenView.vue, CredentialPrintenView.vue
+├── views/             # VerwachtePersonenView.vue, DossierView.vue
 ├── data/              # mockPersonen.js
 └── assets/
     ├── styles/        # _tokens.css, main.css
@@ -104,11 +105,13 @@ interface Person {
   credentialStatus: 'niet-actief' | 'actief' | 'verlopen' | 'ingetrokken' | 'geblokkeerd'
   checkinTime: string | null
   checkoutTime: string | null
-  contactpersoon: string            // verborgen kolom (horizontale scroll)
-  contactTel: string
+  contactpersonen: {                // array; [0] = primaire contactpersoon (verborgen kolom — horizontale scroll)
+    naam: string
+    tel: string
+    email: string | null
+  }[]
   telefoonnummer: string | null     // eigen telefoonnummer persoon
   emailadres: string | null         // eigen e-mailadres persoon
-  contactEmail: string | null       // e-mailadres contactpersoon
   vertrekTijd: string | null        // geplande vertrektijd "HH:mm" (zelfde datum als datumVanaf)
   credentialType: string | null     // bijv. "Bezoekerspas", "Contractorpas"
   pasnummer: string | null          // 14-cijferig pasnummer
@@ -138,7 +141,7 @@ Zie `columns.json` voor alle kolommen met breedtes, filtertypes en dropdown-opti
 ## Paginaheader Knoppen
 
 - **"Instellingen ▾"** — outlined split button (links), opent menu met:
-  - **Kolominstellingen** — popover panel met kolom toggles, zoekbalk, set opslaan/laden (zie `components/KolomInstellingenPanel.md`)
+  - **Kolominstellingen** — popover panel met kolom toggles, zoekbalk, set opslaan/laden (zie `docs/components/KolomInstellingenPanel.md`)
   - **Opgeslagen set toepassen** — submenu met opgeslagen kolomconfiguraties
 - **"Nieuwe registratie ▾"** — primary split button (rechts), met dropdown:
   - Bezoeker registreren
@@ -148,55 +151,53 @@ Zie `columns.json` voor alle kolommen met breedtes, filtertypes en dropdown-opti
 
 ## Action Menus per Status
 
-Zie `components/ActionMenu.md` voor de volledige specificatie. Samenvatting:
+Zie `docs/components/ActionMenu.md` voor de volledige specificatie. Samenvatting:
+
+### Credential-acties (geldt voor alle statussen behalve Geannuleerd/Afgemeld)
+
+| credentialStatus | Acties |
+|---|---|
+| `niet-actief` | Credential activeren |
+| `actief` + printbaar (QR-code) | Credential printen · Credential mailen · Credential ontkoppelen |
+| `actief` + fysiek | Credential ontkoppelen |
+| `verlopen` / `ingetrokken` / `geblokkeerd` | Geen credential-acties |
+
+### E-learning uitnodiging (geldt voor alle statussen behalve Geannuleerd/Afgemeld)
+
+Alleen zichtbaar als `person.elearning === 'niet-behaald'`. Opent `ElearningUitnodigingModal` met keuze: activeer op locatie of verstuur per mail.
 
 ### Status: Verwacht / Nog niet aangekomen
 
 - Persoon aanmelden
-- Credential koppelen / Credential printen *(afhankelijk van credential type)*
-- Aankomst wijzigen
-- Persoon annuleren *(rood)*
+- *\<credential-acties\>*
+- E-learning uitnodiging *(alleen bij elearning niet-behaald)*
 - ─────
 - Informeer contactpersoon
 - Bekijk dossier
-- Bel persoon
 
 ### Status: Aangemeld
 
-- Credential koppelen / Credential ontkoppelen / Credential printen *(afhankelijk van type + status)*
+- *\<credential-acties\>*
+- E-learning uitnodiging *(alleen bij elearning niet-behaald)*
 - Persoon afmelden
 - ─────
 - Informeer contactpersoon
 - Bekijk dossier
-- Bel persoon
 
 ### Status: Niet aangekomen
 
 - Niet aangekomen ongedaan
 - Persoon aanmelden
-- Credential koppelen / Credential printen *(afhankelijk van credential type)*
-- Aankomst wijzigen
-- Persoon annuleren *(rood)*
+- *\<credential-acties\>*
+- E-learning uitnodiging *(alleen bij elearning niet-behaald)*
 - ─────
 - Informeer contactpersoon
 - Bekijk dossier
-- Bel persoon
 
 ### Status: Geannuleerd / Afgemeld
 
 - Informeer contactpersoon
 - Bekijk dossier
-- Bel persoon
-
-## Bulk Acties Bar
-
-Verschijnt boven de tabel bij 1+ selecties:
-
-```
-[N geselecteerd]  [↑ Aanmelden]  [↓ Afmelden]  [🪪 Credential koppelen]  [🔓 Credential ontkoppelen]  [🖨️ Credential printen]  [⛔ Niet aangekomen]  [✕ Persoon annuleren]           [×]
-```
-
-Zie `components/BulkBar.md` voor enabled/disabled-regels per actie.
 
 ## Compliance Kolom
 
@@ -214,12 +215,11 @@ Toont twee iconen per rij:
 
 ## Belangrijke Interacties
 
-1. **Bulk selectie** — Checkbox in header selecteert alle zichtbare rijen; toont BulkBar
-2. **Detail panel** — Slide-out panel rechts bij klik op naam (nog te specificeren)
-3. **Inline acties** — Dropdown via ••• per rij; inhoud afhankelijk van status
-4. **Quick filters** — DateFilterChip: datum presets (Vandaag, Morgen, Deze week)
-5. **Kolom filters** — Filterrij direct onder de kolomheaders
-6. **Horizontale scroll** — Verborgen kolommen bereikbaar via scrollbar onderaan tabel
+1. **Detail panel** — Slide-out panel rechts bij klik op naam (nog te specificeren)
+2. **Inline acties** — Dropdown via ••• per rij; inhoud afhankelijk van status
+3. **Quick filters** — DateFilterChip: datum presets (Vandaag, Morgen, Deze week)
+4. **Kolom filters** — Filterrij direct onder de kolomheaders
+5. **Horizontale scroll** — Verborgen kolommen bereikbaar via scrollbar onderaan tabel
 
 ## Do's
 
@@ -241,7 +241,7 @@ Toont twee iconen per rij:
 
 Het prototype bestaat uit twee lagen die altijd in sync moeten blijven:
 
-- **Specificatie** — md-files (`ARCHITECTURE.md`, `COMPONENTS.md`, `components/*.md`, `TOKENS.md`, `brand.md`, `columns.json`, etc.)
+- **Specificatie** — md-files (`ARCHITECTURE.md`, `COMPONENTS.md`, `docs/components/*.md`, `TOKENS.md`, `brand.md`, `columns.json`, etc.)
 - **Implementatie** — Vue/JS bronbestanden (`src/components/**/*.vue`, `src/stores/*.js`, `src/composables/*.js`, `src/data/*.js`, `src/assets/styles/*.css`)
 
 ### Regel: altijd impact checken vóór én ná een wijziging
@@ -258,7 +258,7 @@ Na elke bewerking — of die nu in een md-file of in een Vue/JS-bestand zit — 
 | --- | --- |
 | md-file (spec) | Andere md-files + bijbehorende Vue/JS-bestanden in `src/` |
 | Vue/JS-bestand (impl) | Bijbehorende md-file(s) + andere Vue/JS-bestanden die hetzelfde component/store gebruiken |
-| `columns.json` | `DataTable.vue`, `ColumnFilters.vue`, `KolomInstellingenPanel.vue`, `KolomInstellingenPanel.md`, `DataTable.md` |
+| `columns.json` | `DataTable.vue`, `ColumnFilters.vue`, `KolomInstellingenPanel.vue`, `docs/components/KolomInstellingenPanel.md`, `docs/components/DataTable.md` |
 | `src/assets/styles/_tokens.css` | `TOKENS.md` en alle componenten die de gewijzigde token gebruiken |
 
 Voer stap 1–3 altijd uit, ook als de bewerking klein lijkt. Sla stap 3 nooit over.
@@ -294,7 +294,7 @@ Bij twijfel: begin als onderdeel van de parent, extraheer zodra het tweede gebru
 
 ### Stap 3 — Markdown-first
 
-Elk nieuw los component krijgt **eerst** een `.md` spec-bestand in `components/`, daarna pas het `.vue` bestand.
+Elk nieuw los component krijgt **eerst** een `.md` spec-bestand in `docs/components/`, daarna pas het `.vue` bestand.
 
 Het `.md` bestand bevat minimaal:
 
@@ -314,23 +314,28 @@ Na het aanmaken van een nieuw component: voeg het toe aan `COMPONENTS.md` (index
 
 - `ARCHITECTURE.md` — Componentenboom, dataflow, composables API, store API
 - `COMPONENTS.md` — Index naar alle component specificaties
-  - `components/AppHeader.md`, `components/PageHeader.md`, `components/ProcessNav.md` — Layout
-  - `components/BaseButton.md`, `components/IconButton.md` — Knoppen
-  - `components/InputField.md`, `components/Toggle.md` — Formulier elementen
-  - `components/StatusDot.md`, `components/PassStatusDot.md` — Status indicators
-  - `components/CompliancePill.md` — Compliance (incl. ComplianceCell)
-  - `components/Tooltip.md` — Tooltip
-  - `components/Modal.md`, `components/ActionPopup.md` — Dialogen
-  - `components/DatePopover.md`, `components/DatePickerCalendar.md` — Datum UI
-  - `components/Toast.md` — Toast / ToastContainer
-  - `components/TypeTabs.md`, `components/DateFilterChip.md`, `components/FilterChip.md`, `components/FilterStrip.md`, `components/SearchBox.md` — Filters
-  - `components/DataTable.md`, `components/TableRow.md`, `components/ColumnFilters.md`, `components/Pagination.md` — Tabel
-  - `components/ActionMenu.md`, `components/BulkBar.md` — Acties (rij + bulk)
-  - `components/AanmeldenModal.md`, `components/AnnulerenModal.md`, `components/AankomstWijzigenModal.md` — Actie-modals
-  - `components/InformeerContactpersoonModal.md` — Informeer contactpersoon modal
-  - `components/DetailPanel.md` — DetailPanel
-  - `components/KolomInstellingenPanel.md` — InstellingenMenu, KolomInstellingenPanel
-  - `components/InfoSection.md` — InfoSection (sectie-kaart voor credential-pagina's)
+  - `docs/components/AppHeader.md`, `docs/components/PageHeader.md`, `docs/components/ProcessNav.md` — Layout
+  - `docs/components/BaseButton.md`, `docs/components/IconButton.md` — Knoppen
+  - `docs/components/InputField.md`, `docs/components/Toggle.md`, `docs/components/CustomSelect.md`, `docs/components/FormDateField.md` — Formulier elementen
+  - `docs/components/StatusDot.md`, `docs/components/PassStatusDot.md` — Status indicators
+  - `docs/components/CompliancePill.md`, `docs/components/ComplianceCell.md` — Compliance
+  - `docs/components/Tooltip.md` — Tooltip
+  - `docs/components/Modal.md`, `docs/components/ActionPopup.md` — Dialogen
+  - `docs/components/DatePopover.md`, `docs/components/DatePickerCalendar.md` — Datum UI
+  - `docs/components/Toast.md`, `docs/components/ToastContainer.md` — Toast / ToastContainer
+  - `docs/components/TypeTabs.md`, `docs/components/DateFilterChip.md`, `docs/components/FilterChip.md`, `docs/components/FilterStrip.md`, `docs/components/SearchBox.md` — Filters
+  - `docs/components/DataTable.md`, `docs/components/TableRow.md`, `docs/components/ColumnFilters.md`, `docs/components/Pagination.md` — Tabel
+  - `docs/components/ActionMenu.md` — Actiemenu per rij
+  - `docs/components/AanmeldenModal.md`, `docs/components/AnnulerenModal.md`, `docs/components/AankomstWijzigenModal.md` — Actie-modals
+  - `docs/components/CredentialActiverenModal.md`, `docs/components/CredentialMailenModal.md`, `docs/components/CredentialOntkoppelenModal.md` — Credential-modals
+  - `docs/components/InformeerContactpersoonModal.md` — Informeer contactpersoon modal
+  - `docs/components/ElearningUitnodigingModal.md` — E-learning uitnodiging modal (activeer op locatie of verstuur per mail)
+  - `docs/components/DetailPanel.md` — DetailPanel
+  - `docs/components/AanmeldingenTable.md`, `docs/components/DossierHeader.md`, `docs/components/DossierTabs.md`, `docs/components/MijnActiesPanel.md` — Dossier
+  - `docs/components/KolomInstellingenPanel.md` — InstellingenMenu, KolomInstellingenPanel
+  - `docs/components/InfoSection.md` — InfoSection (sectie-kaart voor credential-pagina's)
+- `docs/user-flows/` — User flows en business rules
+- `docs/transcripten/` — Opgeschoonde BA-sessie transcripten
 - `columns.json` — Kolomconfiguratie (single source of truth voor de tabel)
 - `TOKENS.md` — Design tokens referentie (prototype-implementatie)
 - `brand.md` — YIM UI Kit foundations: kleuren, typografie, elevaties, spacing — Figma bron

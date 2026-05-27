@@ -1,6 +1,4 @@
 <script setup>
-import BaseButton from '@/components/ui/BaseButton.vue'
-
 const props = defineProps({
   title: { type: String, required: true },
   steps: { type: Array, required: true },
@@ -16,16 +14,6 @@ const emit = defineEmits(['back'])
 
     <div class="process-nav__content">
       <div class="process-nav__top">
-        <div class="process-nav__back">
-          <BaseButton
-            variant="ghost"
-            icon="arrow_back"
-            icon-position="left"
-            @click="emit('back')"
-          >
-            Terug
-          </BaseButton>
-        </div>
         <h3 class="process-nav__title">{{ title }}</h3>
       </div>
 
@@ -85,18 +73,6 @@ const emit = defineEmits(['back'])
   padding: var(--sp-s) var(--sp-xxl) var(--sp-s) 56px;
 }
 
-/* Ghost button kleur-override voor donkere achtergrond */
-.process-nav__back :deep(.btn-ghost) {
-  color: var(--n0);
-}
-.process-nav__back :deep(.btn-ghost:hover:not(:disabled)) {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--n0);
-}
-.process-nav__back :deep(.btn-ghost:active:not(:disabled)) {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--n0);
-}
 
 .process-nav__title {
   margin: 0;

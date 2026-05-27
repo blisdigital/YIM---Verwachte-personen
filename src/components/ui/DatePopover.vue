@@ -2,6 +2,7 @@
 <script setup>
 import { ref } from 'vue'
 import DatePickerCalendar from '@/components/ui/DatePickerCalendar.vue'
+import { dateToIso, isoToDisplay } from '@/utils/dateFormat'
 
 const props = defineProps({
   isoDate: { type: String, default: '' },
@@ -29,25 +30,17 @@ function onCalendarSelect(iso) {
 
 function setPreset(key) {
   const now = new Date()
-  if (key === 'vandaag') emit('update:isoDate', toISO(now))
+  if (key === 'vandaag') emit('update:isoDate', dateToIso(now))
   if (key === 'morgen') {
     const t = new Date(now); t.setDate(t.getDate() + 1)
-    emit('update:isoDate', toISO(t))
+    emit('update:isoDate', dateToIso(t))
   }
-  if (key === 'week') emit('update:isoDate', toISO(now))
+  if (key === 'week') emit('update:isoDate', dateToIso(now))
   emit('update:preset', key)
   showCalendar.value = false
 }
 
-function toISO(d) {
-  return d.toISOString().slice(0, 10)
-}
-
-function displayDate(isoStr) {
-  if (!isoStr) return ''
-  const [y, m, d] = isoStr.split('-')
-  return `${d}-${m}-${y}`
-}
+const displayDate = isoToDisplay
 </script>
 
 <template>
