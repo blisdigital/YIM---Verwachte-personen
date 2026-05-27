@@ -1,0 +1,404 @@
+<script setup>
+import { ref, watch, onMounted } from 'vue'
+import AppHeader from '@/components/layout/AppHeader.vue'
+import PageHeader from '@/components/layout/PageHeader.vue'
+import FilterStrip from '@/components/filters/FilterStrip.vue'
+import DataTable from '@/components/table/DataTable.vue'
+import Pagination from '@/components/table/Pagination.vue'
+import DetailPanel from '@/components/detail/DetailPanel.vue'
+import AanmeldenModal from '@/components/actions/AanmeldenModal.vue'
+import AnnulerenModal from '@/components/actions/AnnulerenModal.vue'
+import AankomstWijzigenModal from '@/components/actions/AankomstWijzigenModal.vue'
+import AfmeldenModal from '@/components/actions/AfmeldenModal.vue'
+import InformeerContactpersoonModal from '@/components/actions/InformeerContactpersoonModal.vue'
+import CredentialOntkoppelenModal from '@/components/actions/CredentialOntkoppelenModal.vue'
+import CredentialActiverenModal from '@/components/actions/CredentialActiverenModal.vue'
+import CredentialMailenModal from '@/components/actions/CredentialMailenModal.vue'
+import ElearningUitnodigingModal from '@/components/actions/ElearningUitnodigingModal.vue'
+import ToastContainer from '@/components/ui/ToastContainer.vue'
+import { usePersonenStore } from '@/stores/personenStore'
+import { useFilterStore } from '@/stores/filterStore'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { usePersonen } from '@/composables/usePersonen'
+import { useToast } from '@/composables/useToast'
+
+const personenStore = usePersonenStore()
+const filterStore = useFilterStore()
+const nav = useNavigationStore()
+const { paginated, total, loading, filtered } = usePersonen()
+
+// Scroll to top before DOM updates when filters change, to prevent scroll-clamp jump
+watch(filtered, () => {
+  window.scrollTo({ top: 0, behavior: 'instant' })
+}, { flush: 'pre' })
+
+// Reset page when filters change and results shrink
+watch(() => filtered.value.length, (newLen) => {
+  const maxPage = Math.ceil(newLen / filterStore.pageSize) || 1
+  if (filterStore.page > maxPage) {
+    filterStore.page = 1
+  }
+})
+const { show } = useToast()
+
+// Detail panel
+const detailOpen = ref(false)
+const detailPerson = ref(null)
+
+function openDetail(person) {
+  detailPerson.value = person
+  detailOpen.value = true
+}
+
+function closeDetail() {
+  detailOpen.value = false
+  detailPerson.value = null
+}
+
+// Aanmelden modal
+const aanmeldenOpen = ref(false)
+const aanmeldenPerson = ref(null)
+const aanmeldenAction = ref('inchecken') // 'inchecken' | 'niet-aangekomen-ongedaan'
+
+function openAanmelden(person, action) {
+  aanmeldenPerson.value = person
+  aanmeldenAction.value = action
+  aanmeldenOpen.value = true
+}
+
+// Afmelden modal
+const afmeldenOpen = ref(false)
+const afmeldenPerson = ref(null)
+
+function openAfmelden(person) {
+  afmeldenPerson.value = person
+  afmeldenOpen.value = true
+}
+
+// Annuleren modal
+const annulerenOpen   = ref(false)
+const annulerenPerson = ref(null)
+
+// Aankomst wijzigen modal
+const aankomstWijzigenOpen   = ref(false)
+const aankomstWijzigenPerson = ref(null)
+
+function openAankomstWijzigen(person) {
+  aankomstWijzigenPerson.value = person
+  aankomstWijzigenOpen.value   = true
+}
+
+function openAnnuleren(person) {
+  annulerenPerson.value = person
+  annulerenOpen.value   = true
+}
+
+// Informeer contactpersoon modal
+const informeerOpen          = ref(false)
+const informeerPerson        = ref(null)
+const informeerInitialScreen = ref('info')
+
+function openInformeer(person, startScreen = 'info') {
+  informeerPerson.value        = person
+  informeerInitialScreen.value = startScreen
+  informeerOpen.value          = true
+}
+
+// Credential ontkoppelen modal
+const ontkoppelenOpen   = ref(false)
+const ontkoppelenPerson = ref(null)
+
+function openOntkoppelen(person) {
+  ontkoppelenPerson.value = person
+  ontkoppelenOpen.value   = true
+}
+
+// Credential activeren modal
+const activerenOpen   = ref(false)
+const activerenPerson = ref(null)
+
+function openActiveren(person) {
+  activerenPerson.value = person
+  activerenOpen.value   = true
+}
+
+// Credential mailen modal
+const mailenOpen   = ref(false)
+const mailenPerson = ref(null)
+
+function openMailen(person) {
+  mailenPerson.value = person
+  mailenOpen.value   = true
+}
+
+// E-learning uitnodiging modal
+const elearningUitnodigingOpen   = ref(false)
+const elearningUitnodigingPerson = ref(null)
+
+function openElearningUitnodiging(person) {
+  elearningUitnodigingPerson.value = person
+  elearningUitnodigingOpen.value   = true
+}
+
+// Handle row actions (from ActionMenu and DetailPanel)
+function handleAction({ person, action }) {
+  switch (action) {
+    // ActionMenu actions
+    case 'persoon-aanmelden':
+      openAanmelden(person, 'inchecken')
+      break
+    case 'persoon-afmelden':
+      openAfmelden(person)
+      break
+    case 'persoon-annuleren':
+      openAnnuleren(person)
+      break
+    case 'credential-activeren':
+      openActiveren(person)
+      break
+    case 'credential-ontkoppelen':
+      openOntkoppelen(person)
+      break
+    case 'credential-mailen':
+      openMailen(person)
+      break
+    case 'informeer-contactpersoon':
+      openInformeer(person)
+      break
+    case 'informeer-contactpersoon-mail':
+      openInformeer(person, 'mail')
+      break
+    case 'aankomst-wijzigen':
+      openAankomstWijzigen(person)
+      break
+    case 'elearning-uitnodiging':
+    case 'elearning-code':
+      openElearningUitnodiging(person)
+      break
+    case 'credential-printen':
+      show('Credential printen', `Credential voor ${person.naam} wordt geprint.`)
+      break
+    case 'bekijk-dossier':
+      nav.navigate('dossier', person)
+      break
+    // DetailPanel legacy actions
+    case 'inchecken':
+      openAanmelden(person, 'inchecken')
+      break
+    case 'uitchecken':
+    case 'afmelden':
+      openAfmelden(person)
+      break
+    case 'niet-aangekomen-ongedaan':
+      openAanmelden(person, 'niet-aangekomen-ongedaan')
+      break
+    case 'annuleren':
+      openAnnuleren(person)
+      break
+    default:
+      show('Actie', `${action} voor ${person.naam}`)
+  }
+}
+
+// Bevestig aanmelden
+function handleAanmeldenConfirm({ person }) {
+  personenStore.updateStatus(person.id, 'Aangemeld')
+  show('Aangemeld', `${person.naam} is aangemeld.`)
+  // Sync detail panel person
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
+}
+
+// Confirm annuleren — sluit ook detail panel (flow spec: geen detailweergave na annuleren)
+function handleAnnulerenConfirm({ person }) {
+  personenStore.updateStatus(person.id, 'Geannuleerd')
+  show('Geannuleerd', `De aankomst van ${person.naam} is geannuleerd.`)
+  closeDetail()
+}
+
+// Confirm bezoek wijzigen
+function handleAankomstWijzigenConfirm({ person, aankomstdatum, aankomsttijd, vertrekdatum, vertrektijd }) {
+  personenStore.updateAankomst(person.id, aankomstdatum, aankomsttijd, vertrekdatum, vertrektijd)
+  show('Bezoek gewijzigd', `Bezoek van ${person.naam} is gewijzigd naar ${aankomstdatum} om ${aankomsttijd}.`)
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
+}
+
+// Bevestig informeer contactpersoon
+function handleInformeerConfirm({ person }) {
+  show('Contactpersoon geïnformeerd', `Contactpersoon van ${person.naam} is geïnformeerd.`)
+}
+
+// Bevestig credential activeren
+function handleActiverenConfirm({ person, credentialType, pasnummer }) {
+  personenStore.activeerCredential(person.id, credentialType, pasnummer)
+  show('Credential geactiveerd', `Credential is geactiveerd voor ${person.naam}.`)
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
+}
+
+// Bevestig credential mailen
+function handleMailenConfirm({ person }) {
+  show('Credential verstuurd', `Credential is gemaild naar ${person.naam}.`)
+}
+
+// Bevestig credential ontkoppelen
+function handleOntkoppelenConfirm({ person }) {
+  personenStore.updateCredentialStatus(person.id, 'niet-actief')
+  show('Credential ontkoppeld', `Credential is ontkoppeld van ${person.naam}.`)
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
+}
+
+// Bevestig afmelden
+function handleAfmeldenConfirm({ person }) {
+  personenStore.updateStatus(person.id, 'Afgemeld')
+  show('Afgemeld', `${person.naam} is afgemeld.`)
+  if (detailPerson.value?.id === person.id) {
+    detailPerson.value = personenStore.personen.find(p => p.id === person.id)
+  }
+}
+
+onMounted(() => {
+  personenStore.fetch()
+})
+</script>
+
+<template>
+  <div class="app-layout">
+    <AppHeader />
+
+    <main class="page-main">
+      <div class="page-content">
+        <PageHeader title="Verwachte personen" />
+        <FilterStrip />
+
+        <div class="table-section">
+          <DataTable
+            :data="paginated"
+            :loading="loading"
+            @row-click="openDetail"
+            @action="handleAction"
+          />
+
+          <Pagination
+            :total="total"
+            :page="filterStore.page"
+            :page-size="filterStore.pageSize"
+            @update:page="val => filterStore.page = val"
+            @update:page-size="val => { filterStore.pageSize = val; filterStore.page = 1 }"
+          />
+        </div>
+      </div>
+    </main>
+
+    <!-- Detail panel -->
+    <DetailPanel
+      :person="detailPerson"
+      :open="detailOpen"
+      @close="closeDetail"
+      @action="handleAction"
+    />
+
+    <!-- Aanmelden modal -->
+    <AanmeldenModal
+      v-model:open="aanmeldenOpen"
+      :person="aanmeldenPerson"
+      :requiresIdentiteitscontrole="true"
+      :showContactpersoonToggle="true"
+      @confirm="handleAanmeldenConfirm"
+    />
+
+    <!-- Annuleren modal -->
+    <AnnulerenModal
+      v-model:open="annulerenOpen"
+      :person="annulerenPerson"
+      @confirm="handleAnnulerenConfirm"
+    />
+
+    <!-- Aankomst wijzigen modal -->
+    <AankomstWijzigenModal
+      v-model:open="aankomstWijzigenOpen"
+      :person="aankomstWijzigenPerson"
+      @confirm="handleAankomstWijzigenConfirm"
+    />
+
+    <!-- Afmelden modal -->
+    <AfmeldenModal
+      v-model:open="afmeldenOpen"
+      :person="afmeldenPerson"
+      :showContactpersoonToggle="true"
+      @confirm="handleAfmeldenConfirm"
+    />
+
+    <!-- Informeer contactpersoon modal -->
+    <InformeerContactpersoonModal
+      v-model:open="informeerOpen"
+      :person="informeerPerson"
+      :initial-screen="informeerInitialScreen"
+      @confirm="handleInformeerConfirm"
+    />
+
+    <!-- Credential activeren modal -->
+    <CredentialActiverenModal
+      v-model:open="activerenOpen"
+      :person="activerenPerson"
+      @confirm="handleActiverenConfirm"
+    />
+
+    <!-- Credential ontkoppelen modal -->
+    <CredentialOntkoppelenModal
+      v-model:open="ontkoppelenOpen"
+      :person="ontkoppelenPerson"
+      @confirm="handleOntkoppelenConfirm"
+    />
+
+    <!-- Credential mailen modal -->
+    <CredentialMailenModal
+      v-model:open="mailenOpen"
+      :person="mailenPerson"
+      @confirm="handleMailenConfirm"
+    />
+
+    <!-- E-learning uitnodiging modal -->
+    <ElearningUitnodigingModal
+      v-model:open="elearningUitnodigingOpen"
+      :person="elearningUitnodigingPerson"
+    />
+
+    <!-- Toast notifications -->
+    <ToastContainer />
+  </div>
+</template>
+
+<style scoped>
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-main {
+  flex: 1;
+  padding: 48px 47px;
+}
+
+@media (max-width: 1279px) {
+  .page-main { padding: 48px 20px; }
+}
+
+.page-content {
+  max-width: 100%;
+}
+
+.table-section {
+  background: var(--n0);
+  border-radius: var(--r-s);
+  border: 1px solid var(--n400);
+  overflow: clip; /* clip voor border-radius, geen scroll-context die scrollbar afknipt */
+}
+</style>

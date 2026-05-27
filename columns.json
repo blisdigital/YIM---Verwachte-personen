@@ -1,0 +1,183 @@
+[
+  {
+    "key": "actions",
+    "label": "",
+    "width": 48,
+    "sticky": true,
+    "stickyLeft": 0,
+    "sortable": false,
+    "filter": null,
+    "description": "Actiemenu (••• icoon)"
+  },
+  {
+    "key": "status",
+    "label": "Status",
+    "width": 130,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Verwacht", "Nog niet aangekomen", "Aangemeld", "Afgemeld", "Niet aangekomen", "Geannuleerd"],
+    "description": "StatusDot component met gekleurde stip"
+  },
+  {
+    "key": "datumVanaf",
+    "label": "Aankomstdatum",
+    "width": 144,
+    "sortable": true,
+    "filter": "date",
+    "description": "Datum in DD-MM-YYYY formaat. Kolomfilter is prefilled op vandaag en volgt automatisch de DateFilterChip preset in de filterstrip."
+  },
+  {
+    "key": "aankomsttijd",
+    "label": "Aankomsttijd",
+    "width": 144,
+    "sortable": true,
+    "filter": "time",
+    "description": "Verwachte aankomsttijd in HH:mm"
+  },
+  {
+    "key": "vertrekTijd",
+    "label": "Vertrektijd",
+    "width": 144,
+    "sortable": true,
+    "filter": "time",
+    "description": "Geplande vertrektijd in HH:mm. Null als niet ingevuld."
+  },
+  {
+    "key": "vertrekDatum",
+    "label": "Vertrekdatum",
+    "width": 144,
+    "sortable": true,
+    "filter": "date",
+    "description": "Geplande vertrekdatum in DD-MM-YYYY formaat. Kan afwijken van aankomstdatum bij meerdaags bezoek."
+  },
+  {
+    "key": "locaties",
+    "label": "Locatie(s)",
+    "width": 220,
+    "sortable": true,
+    "filter": "combobox",
+    "description": "Kommagescheiden locaties, afgekapt met ellipsis + tooltip. Combobox: zoekbalk + dropdown met unieke locatiewaarden uit de data."
+  },
+  {
+    "key": "naam",
+    "label": "Naam persoon",
+    "width": 160,
+    "sortable": true,
+    "filter": "text",
+    "description": "Klikbare naam, opent detail panel. VIP-ster als prefix bij vip=true"
+  },
+  {
+    "key": "persoontype",
+    "label": "Persoonstype",
+    "width": 144,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Bezoeker", "Contractor"],
+    "description": "Hoofdtype persoon: 'Bezoeker' of 'Contractor'. TypeTabs filtert op dit veld."
+  },
+  {
+    "key": "contractortype",
+    "label": "Contractor type",
+    "width": 160,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Constructie", "Inspectie", "IT", "Logistiek", "Onderhoud", "Technisch", "Warehousing"],
+    "description": "Subtype van de contractor (bijv. Warehousing, Technisch). Alleen ingevuld bij persoontype 'Contractor'. Leeg bij bezoekers."
+  },
+  {
+    "key": "vip",
+    "label": "VIP",
+    "width": 88,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Ja", "Nee"],
+    "description": "Ster-icoon als true, streepje als false"
+  },
+  {
+    "key": "personeelsnr",
+    "label": "Personeelsnr",
+    "width": 152,
+    "sortable": true,
+    "filter": "text",
+    "hidden": true,
+    "description": "Personeelsnummer (P-format, bijv. P0000002393). Standaard verborgen; aan te zetten via kolominstellingen. Verschijnt na VIP."
+  },
+  {
+    "key": "telefoonnummer",
+    "label": "Telefoonnummer",
+    "width": 160,
+    "sortable": false,
+    "filter": "text",
+    "hidden": true,
+    "description": "Telefoonnummer van de persoon. Standaard verborgen; aan te zetten via kolominstellingen. Verschijnt na Personeelsnr."
+  },
+  {
+    "key": "emailadres",
+    "label": "E-mailadres",
+    "width": 200,
+    "sortable": false,
+    "filter": "text",
+    "hidden": true,
+    "description": "E-mailadres van de persoon. Standaard verborgen; aan te zetten via kolominstellingen. Verschijnt na Telefoonnummer."
+  },
+  {
+    "key": "bedrijf",
+    "label": "Bedrijf",
+    "width": 160,
+    "sortable": true,
+    "filter": "text",
+    "description": "Bedrijfsnaam"
+  },
+  {
+    "key": "credentialType",
+    "label": "Credential",
+    "width": 160,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "QR-code", "Bezoekerspas", "Vaste pas", "Contractorpas"],
+    "description": "Type credential gekoppeld aan de persoon. Leeg als er nog geen credential gekoppeld is."
+  },
+  {
+    "key": "credentialStatus",
+    "label": "Credential status",
+    "width": 176,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Niet actief", "Actief", "Verlopen", "Ingetrokken", "Geblokkeerd"],
+    "description": "PassStatusDot component (gekleurde stip + label). Status van de gekoppelde credential."
+  },
+  {
+    "key": "compliance",
+    "label": "Compliance",
+    "width": 216,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Dossier volledig", "Dossier onvolledig", "E-learning voltooid", "E-learning niet voltooid"],
+    "description": "ComplianceCell: dossier-pill + e-learning-pill, beide met tooltip"
+  },
+  {
+    "key": "parkeren",
+    "label": "Parkeren",
+    "width": 160,
+    "sortable": true,
+    "filter": "dropdown",
+    "filterOptions": ["Alle", "Gereserveerd", "Niet gereserveerd"],
+    "description": "Parkeer-indicator"
+  },
+  {
+    "key": "contactpersoon",
+    "label": "Contactpersoon",
+    "width": 200,
+    "sortable": true,
+    "filter": "text",
+    "description": "Naam contactpersoon"
+  },
+  {
+    "key": "bezoekreden",
+    "label": "Bezoekreden",
+    "width": 200,
+    "sortable": true,
+    "filter": "text",
+    "description": "Reden van het bezoek"
+  }
+]

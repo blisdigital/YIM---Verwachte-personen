@@ -1,0 +1,87 @@
+:root {
+  /* Primary (Teal) */
+  --p50:  #f0f7f8;
+  --p100: #d6e8ec;
+  --p300: #a2cbd3;
+  --p400: #87bdc6;
+  --p500: #6daeba;
+  --p600: #598f99;
+  --p700: #315161;
+  --p800: #243f4c;
+  --p900: #132a35;
+
+  /* Neutral (Grey) */
+  --n0:   #ffffff;
+  --n50:  #f8fafb;
+  --n100: #f3f4f5;
+  --n200: #ebeced;
+  --n300: #eaeced;
+  --n400: #b8babb;
+  --n500: #999a9b;
+  --n700: #5d5e5e;
+  --n800: #3e3f40;
+  --n900: #1d1e1f;
+  --n1000: #111313;
+
+  /* Semantic (Figma) */
+  --ok:      #24bb86;
+  --ok-bg:   #e9f8f3;
+  --warn:    #9f871c;
+  --warn-bg: #fefbea;
+  --err:     #bc243b;
+  --err-bg:  #f8e9eb;
+  --info:    #2464bb;
+  --info-bg: #e9f0f8;
+
+  /* Warning Y500 — fel geel, voor status dots (Nog niet aangemeld) */
+  --warn-y500: #f8d32c;
+
+  /* VIP */
+  --vip:        #92400e;
+  --vip-bg:     #fef3c7;
+  --vip-border: #f59e0b;
+
+  /* Spacing */
+  --sp-xs:  4px;
+  --sp-s:   8px;
+  --sp-m:   12px;
+  --sp-l:   16px;
+  --sp-xl:  20px;
+  --sp-xxl: 24px;
+
+  /* Border Radius */
+  --r-s:  4px;
+  --r-m:  8px;
+  --r-l:  12px;
+  --r-xl: 360px;
+
+  /* Shadows */
+  --shadow-xs:    0 1px 2px rgba(17, 19, 19, 0.08), 0 1px 4px rgba(17, 19, 19, 0.12); /* Elevation/xs — table rows */
+  --shadow-s:     0 2px 8px rgba(17, 19, 19, 0.16);       /* Elevation/s  — button hover, pills */
+  --shadow-m:     0 4px 16px -2px rgba(17, 19, 19, 0.16); /* Elevation/m  — dropdowns, popovers */
+  --shadow-l:     0 8px 16px -2px rgba(17, 19, 19, 0.16);  /* Elevation/l  — floating panels, large popovers */
+  --shadow-xl:    0 12px 16px -4px rgba(17, 19, 19, 0.20); /* Elevation/xl — modals, dialogs */
+  --shadow-panel: -4px 0 24px rgba(0, 0, 0, 0.12);        /* directional  — detail panel */
+
+  /* Typography */
+  --font: 'Nunito', sans-serif;
+
+  /* ── Popup action content ── */
+  /* Invented tokens for check-in/out, no-show and annuleren flows.   */
+  /* Awaiting definitive Figma design; values derived from semantics. */
+  --popup-person-bg:    var(--n50);         /* persoon-card achtergrond             */
+  --popup-field-bg:     var(--n0);          /* formulier veld achtergrond           */
+  --popup-field-border: var(--n400);        /* formulier veld rand (rust)           */
+  --popup-field-radius: var(--r-s);         /* formulier veld hoekafronding         */
+  --popup-warn-bg:      var(--warn-bg);     /* waarschuwingsblok achtergrond        */
+  --popup-warn-icon:    var(--warn);        /* waarschuwingsblok icon kleur         */
+  --popup-cancel-bg:    var(--err-bg);      /* annuleren-blok achtergrond           */
+  --popup-cancel-border: #eac8cc;           /* annuleren-blok rand (err-bg darkened)*/
+  --popup-cancel-icon:  var(--err);         /* annuleren-blok icon kleur            */
+
+  /* ── Destructive button shades ── */
+  /* Darker steps van --err (#bc243b) voor hover en active states.    */
+  /* Awaiting definitive design tokens; prototype approximation only. */
+  --err-hover:  #a01e32;
+  --err-active: #871929;
+}
