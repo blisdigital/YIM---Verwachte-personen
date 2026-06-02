@@ -58,7 +58,7 @@ function closeDetail() {
 // Aanmelden modal
 const aanmeldenOpen = ref(false)
 const aanmeldenPerson = ref(null)
-const aanmeldenAction = ref('inchecken') // 'inchecken' | 'niet-aangekomen-ongedaan'
+const aanmeldenAction = ref('inchecken')
 
 function openAanmelden(person, action) {
   aanmeldenPerson.value = person
@@ -188,9 +188,6 @@ function handleAction({ person, action }) {
     case 'uitchecken':
     case 'afmelden':
       openAfmelden(person)
-      break
-    case 'niet-aangekomen-ongedaan':
-      openAanmelden(person, 'niet-aangekomen-ongedaan')
       break
     case 'annuleren':
       openAnnuleren(person)

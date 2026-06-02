@@ -14,6 +14,7 @@ Overzicht van alle business rules die in het prototype gelden. Per domein gegroe
 | C4 | Compliance-blokkering geldt alleen bij Verwacht, Nog niet aangekomen en Niet aangekomen |
 | C5 | Bij status Aangemeld is compliance al gepasseerd — afmelden altijd mogelijk |
 | C6 | E-learning uitnodiging is alleen beschikbaar als `elearning === 'niet-behaald'` |
+| C9 | E-learning status "Verlopen" is gedefinieerd in de PRD (§3.6) maar **buiten scope** van het huidige prototype. Huidige waarden: `behaald`, `niet-behaald`, `niet-vereist` |
 | C7 | Dossier "niet OK" bij: verlopen identiteitsbewijs, verlopen certificering, of geblokkeerd |
 | C8 | Bij geblokkeerd is accreditatie ingetrokken — persoon kan niet aangemeld worden |
 
@@ -26,8 +27,8 @@ Overzicht van alle business rules die in het prototype gelden. Per domein gegroe
 | S1 | Status "Nog niet aangekomen" wordt **automatisch** gezet als aankomsttijd verstreken is en persoon niet is aangemeld. Drempel is **configureerbaar per klant** (bijv. 5 min, 15 min) |
 | S2 | Annuleren is **onomkeerbaar** — persoon moet opnieuw geregistreerd worden |
 | S3 | Alleen **Aangemeld** → **Afgemeld** is mogelijk; afmelden vanuit andere statussen kan niet |
-| S4 | "Niet aangekomen ongedaan" zet status terug naar **Verwacht** |
-| S5 | Bij Afgemeld en Geannuleerd zijn alleen "Informeer contactpersoon" en "Bekijk dossier" beschikbaar |
+| S4 | "Niet aangekomen" is een terminal status — persoon moet opnieuw geregistreerd worden |
+| S5 | Bij Niet aangekomen, Afgemeld en Geannuleerd zijn alleen "Informeer contactpersoon" en "Bekijk dossier" beschikbaar |
 | S6 | Afmelden kan ook **automatisch** gebeuren wanneer pas wordt ingeleverd (inslikker/inleverbox) — pas inleveren → pas ontkoppelen → status afgemeld in één actie |
 
 ---
@@ -40,7 +41,7 @@ Overzicht van alle business rules die in het prototype gelden. Per domein gegroe
 | CR2 | Credential type bepaalt categorie: `QR-code` = printbaar, alle andere (fysieke pas, sleutel) = fysiek. Digitale QR (op telefoon) valt ook onder printbaar |
 | CR3 | **Printbaar (QR-code):** credential moet eerst gemaild of geprint zijn vóór activering mogelijk is |
 | CR4 | **Fysiek:** credential kan direct gekoppeld worden na invullen formulier |
-| CR5 | Credential acties zijn **niet beschikbaar** bij status Afgemeld of Geannuleerd |
+| CR5 | Credential acties zijn **niet beschikbaar** bij status Niet aangekomen, Afgemeld of Geannuleerd |
 | CR6 | Bij `credentialStatus` verlopen/ingetrokken/geblokkeerd: **geen** credential-acties |
 | CR7 | Na ontkoppelen: `credentialStatus` → `niet-actief`, `credentialType` → `null`, `pasnummer` → `null` |
 | CR8 | Pas koppelen en aanmelden zijn **twee losse acties** — credential kan vooraf gekoppeld worden (bijv. 30 passen voor een event) |
@@ -109,7 +110,7 @@ Overzicht van alle business rules die in het prototype gelden. Per domein gegroe
 
 | # | Regel |
 |---|-------|
-| AM1 | Drie-puntjesmenu is **uitgrijsd** wanneer er geen acties beschikbaar zijn |
+| AM1 | Drie-puntjesmenu is **uitgrijsd** wanneer er geen acties beschikbaar zijn. In de praktijk heeft elke status minstens "Informeer contactpersoon" en "Bekijk dossier", dus het menu is nooit volledig leeg |
 | AM2 | Alle acties worden **gelogd in audit trail** (bestaande YIM-functionaliteit) |
 
 ---

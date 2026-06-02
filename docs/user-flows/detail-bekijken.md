@@ -29,8 +29,7 @@ Footer toont status-afhankelijke knoppen:
 |--------|---------|
 | Verwacht / Nog niet aangekomen | Bekijk dossier, Credential printen/koppelen*, **Persoon aanmelden*** |
 | Aangemeld | Bekijk dossier, Credential printen/koppelen/ontkoppelen*, **Persoon afmelden** |
-| Niet aangekomen | Bekijk dossier, Credential printen/koppelen*, **Persoon aanmelden*** |
-| Afgemeld / Geannuleerd | Bekijk dossier |
+| Niet aangekomen / Afgemeld / Geannuleerd | Bekijk dossier |
 
 *\* Disabled bij niet-compliant persoon*
 

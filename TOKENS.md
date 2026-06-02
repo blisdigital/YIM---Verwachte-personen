@@ -49,6 +49,7 @@ Voor tekst, borders, achtergronden. Alle waardes komen 1:1 uit de Figma Neutrals
 | `--n300` | `#eaeced` | `Color / Neutrals / N300` | Borders, separators |
 | `--n400` | `#b8babb` | `Color / Neutrals / N400` | Input borders, disabled elements |
 | `--n500` | `#999a9b` | `Color / Neutrals / N500` | Placeholder text, subtle icons |
+| `--n600` | `#7b7c7d` | ⚠ *prototype-only* | Tertiary text, subtitle kleuren |
 | `--n700` | `#5d5e5e` | `Color / Neutrals / N700` | Secondary text |
 | `--n800` | `#3e3f40` | `Color / Neutrals / N800` | Body text |
 | `--n900` | `#1d1e1f` | `Color / Neutrals / N900` | Primary text, headings |
@@ -72,7 +73,7 @@ Voor feedback en status communicatie. De semantische tokens gebruiken nu de Figm
 | `--info` | `#2464bb` | `Color / Info / B500` | Info text/icons |
 | `--info-bg` | `#e9f0f8` | `Color / Info / B50` | Info background |
 
-> **Waarom Y700 voor `--warn`?** `Y500 #f8d32c` (het "hoofdgeel") voldoet niet aan WCAG-contrast op lichte achtergronden. `Y700` is een donkerder geel-bruin en is veilig voor tekst. De status-noshow badge gebruikt om dezelfde reden Y700 op Y50.
+> **Waarom Y700 voor `--warn`?** `Y500 #f8d32c` (het "hoofdgeel") voldoet niet aan WCAG-contrast op lichte achtergronden. `Y700` is een donkerder geel-bruin en is veilig voor tekst. De status-niet-aangekomen badge gebruikt om dezelfde reden Y700 op Y50.
 
 ### VIP
 
@@ -109,8 +110,8 @@ Specifieke kleuren voor de 5 statuswaarden. Pill-shaped (`border-radius: 360px`)
   color: #999a9b;       /* N500 */
 }
 
-/* No show — Warning (weergegeven zonder koppelteken) */
-.status-noshow {
+/* Niet aangekomen — Warning */
+.status-niet-aangekomen {
   background: #fefbea;  /* Y50  */
   color: #9f871c;       /* Y700 */
 }
@@ -266,7 +267,7 @@ Gebruik met de `.mi` utility class:
 | --- | --- |
 | Inchecken | `login` |
 | Uitchecken | `logout` |
-| No-show | `person_off` |
+| Niet aangekomen | `person_off` |
 | Annuleren | `cancel` |
 | Pas koppelen | `badge` |
 | Pas printen | `print` |
@@ -340,6 +341,7 @@ Gebruik met de `.mi` utility class:
   --n300:  #eaeced;
   --n400:  #b8babb;
   --n500:  #999a9b;
+  --n600:  #7b7c7d;  /* ⚠ prototype-only */
   --n700:  #5d5e5e;
   --n800:  #3e3f40;
   --n900:  #1d1e1f;

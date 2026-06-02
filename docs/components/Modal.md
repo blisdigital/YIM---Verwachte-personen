@@ -1,14 +1,10 @@
 # Modal
 
-Modale dialoog voor informatieve weergave en bevestigingsschermen. Sluit bij klik op backdrop.
+Modale dialoog voor informatieve weergave en bevestigingsschermen. Sluit bij klik op backdrop. Voor actie-popups (check-in, niet-aangekomen, annuleren) gebruik `<ActionPopup>` — zie [ActionPopup.md](ActionPopup.md).
 
-Voor actie-popups (check-in, no-show, annuleren) gebruik `<ActionPopup>` — zie [ActionPopup.md](ActionPopup.md).
-
-**Figma:** nog te definiëren  
-**Versie:** 0.1  
-**Datum:** mei 2026
-
----
+## Relaties
+- **Gebruikt door:** AankomstWijzigenModal
+- **Gebruikt:** IconButton
 
 ## Gebruik
 
@@ -22,25 +18,19 @@ Voor actie-popups (check-in, no-show, annuleren) gebruik `<ActionPopup>` — zie
 </Modal>
 ```
 
----
-
 ## Props
 
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
+|------|------|---------|-------------|
 | `open` | `boolean` | `false` | Zichtbaarheid (v-model:open) |
 | `title` | `string` | — | Modal titel |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Breedte |
 
----
-
 ## Events
 
 | Event | Payload | Beschrijving |
-|-------|---------|--------------|
+|-------|---------|-------------|
 | `update:open` | `boolean` | Sluitverzoek |
-
----
 
 ## Slots
 
@@ -49,12 +39,37 @@ Voor actie-popups (check-in, no-show, annuleren) gebruik `<ActionPopup>` — zie
 | `default` | Body content |
 | `footer` | Actie knoppen |
 
----
+## Inhoud
+
+```
+┌──────────────────────────────────┐
+│  [Titel]               [× sluit]│
+│──────────────────────────────────│
+│  <slot />                        │
+│──────────────────────────────────│
+│  <slot #footer />                │
+└──────────────────────────────────┘
+```
+
+## Gedrag
+
+- Sluit bij klik op backdrop (onderscheid met `ActionPopup` die dit niet doet)
+- Gebruikt `<Teleport to="body">`
+- Body scroll lock terwijl modal open is
+
+### Modal vs ActionPopup
+
+| | Modal | ActionPopup |
+|---|---|---|
+| Sluit op backdrop | Ja | Nee |
+| Breedte | 3 varianten (sm/md/lg) | Vast 480px |
+| Tablet variant | — | Bottom sheet |
+| Gebruik | Informatief / detail | Snelle acties |
 
 ## Design Tokens
 
 | Element | Token | Waarde |
-| --- | --- | --- |
+|---------|-------|--------|
 | Backdrop achtergrond | — | `rgba(0, 0, 0, 0.4)` |
 | Modal achtergrond | `--n0` | `#ffffff` |
 | Modal radius | `--r-l` | `12px` |
@@ -65,21 +80,3 @@ Voor actie-popups (check-in, no-show, annuleren) gebruik `<ActionPopup>` — zie
 | Close knop hover | `--n100` | `#f3f4f5` |
 | Close knop radius | `--r-s` | `4px` |
 | Footer border | `--n300` | `#eaeced` |
-
----
-
-## Gedrag
-
-- Sluit bij klik op backdrop (onderscheid met `ActionPopup` die dit niet doet)
-- Gebruikt `<Teleport to="body">`
-
----
-
-## Modal vs ActionPopup
-
-| | Modal | ActionPopup |
-|---|---|---|
-| Sluit op backdrop | ✓ | ✗ |
-| Breedte | 3 varianten (sm/md/lg) | Vast 480px |
-| Tablet variant | — | Bottom sheet |
-| Gebruik | Informatief / detail | Snelle acties |

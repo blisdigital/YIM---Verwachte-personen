@@ -18,6 +18,7 @@
   --n300: #eaeced;
   --n400: #b8babb;
   --n500: #999a9b;
+  --n600: #7b7c7d;
   --n700: #5d5e5e;
   --n800: #3e3f40;
   --n900: #1d1e1f;
@@ -67,7 +68,7 @@
   --font: 'Nunito', sans-serif;
 
   /* ── Popup action content ── */
-  /* Invented tokens for check-in/out, no-show and annuleren flows.   */
+  /* Invented tokens for check-in/out, niet-aangekomen and annuleren flows. */
   /* Awaiting definitive Figma design; values derived from semantics. */
   --popup-person-bg:    var(--n50);         /* persoon-card achtergrond             */
   --popup-field-bg:     var(--n0);          /* formulier veld achtergrond           */

@@ -71,16 +71,7 @@ const actions = computed(() => {
     { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },
   ]
-  if (status === 'Niet aangekomen') return [
-    { value: 'niet-aangekomen-ongedaan', label: 'Niet aangekomen ongedaan' },
-    { value: 'persoon-aanmelden', label: 'Persoon aanmelden' },
-    ...credItems,
-    ...elItems,
-    { divider: true },
-    { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
-    { value: 'bekijk-dossier', label: 'Bekijk dossier' },
-  ]
-  // Geannuleerd / Afgemeld
+  // Niet aangekomen / Geannuleerd / Afgemeld — terminal statussen
   return [
     { value: 'informeer-contactpersoon', label: 'Informeer contactpersoon' },
     { value: 'bekijk-dossier', label: 'Bekijk dossier' },

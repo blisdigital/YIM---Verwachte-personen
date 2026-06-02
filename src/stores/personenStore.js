@@ -8,7 +8,7 @@ const VALID_TRANSITIONS = {
   'Nog niet aangekomen':  ['Aangemeld', 'Geannuleerd'],
   'Aangemeld':            ['Afgemeld'],
   'Afgemeld':             [],
-  'Niet aangekomen':      ['Aangemeld', 'Verwacht'],   // 'Verwacht' = "niet aangekomen ongedaan"
+  'Niet aangekomen':      [],
   'Geannuleerd':          [],
 }
 
@@ -78,12 +78,13 @@ export const usePersonenStore = defineStore('personen', () => {
     }
   }
 
-  function updateAankomst(id, datum, aankomsttijd, vertrektijd) {
+  function updateAankomst(id, datum, aankomsttijd, vertrekdatum, vertrektijd) {
     const person = personen.value.find(p => p.id === id)
     if (person) {
-      person.datumVanaf   = datum
-      person.aankomsttijd = aankomsttijd
-      person.vertrekTijd  = vertrektijd ?? null
+      person.datumVanaf    = datum
+      person.aankomsttijd  = aankomsttijd
+      person.vertrekDatum  = vertrekdatum ?? datum
+      person.vertrekTijd   = vertrektijd ?? null
     }
   }
 

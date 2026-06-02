@@ -15,7 +15,7 @@ Functionele beschrijving van alle user flows in het prototype. Bedoeld als refer
 - [Persoon afmelden](persoon-afmelden.md) — Check-out van aangemelde persoon
 - [Aanmelding annuleren](aanmelding-annuleren.md) — Bezoek annuleren (onomkeerbaar)
 - [Aankomst wijzigen](aankomst-wijzigen.md) — Datum/tijd van bezoek aanpassen
-- [Niet aangekomen ongedaan](niet-aangekomen-ongedaan.md) — Status "Niet aangekomen" terugdraaien
+
 
 ### Credential-acties
 - [Credential activeren](credential-activeren.md) — Credential koppelen aan persoon (3 scenario's)

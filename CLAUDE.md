@@ -13,7 +13,7 @@ Een receptie-dashboard voor het beheren van bezoekers en contractors.
 src/
 ├── components/
 │   ├── layout/        # AppHeader (incl. nav drawer), PageHeader, ProcessNav
-│   ├── filters/       # FilterStrip, TypeTabs, DateFilterChip, FilterChip, SearchBox
+│   ├── filters/       # FilterStrip, TypeTabs, DateFilterChip, FilterChip, LocatieFilterChip, SearchBox
 │   ├── table/         # DataTable, ColumnFilters, TableRow, Pagination
 │   ├── detail/        # DetailPanel
 │   ├── actions/       # ActionMenu, AanmeldenModal, AfmeldenModal, AnnulerenModal, AankomstWijzigenModal, InformeerContactpersoonModal, ElearningUitnodigingModal, CredentialActiverenModal, CredentialMailenModal, CredentialOntkoppelenModal
@@ -21,11 +21,13 @@ src/
 │   ├── settings/      # KolomInstellingenPanel
 │   └── ui/            # BaseButton, IconButton, InputField, Toggle, StatusDot, PassStatusDot, ComplianceCell, CompliancePill, CustomSelect, FormDateField, Modal, DatePopover, DatePickerCalendar, TimePopover, Tooltip, Toast, ToastContainer, ActionPopup, ProcessBottomBar, InfoSection
 ├── composables/       # usePersonen, useToast
-├── stores/            # Pinia stores (personenStore, filterStore, columnStore)
+├── stores/            # Pinia stores (personenStore, filterStore, columnStore, navigationStore)
+├── utils/             # dateFormat
 ├── views/             # VerwachtePersonenView.vue, DossierView.vue
 ├── data/              # mockPersonen.js
 └── assets/
     ├── styles/        # _tokens.css, main.css
+    ├── icons/         # more-icon-active.svg, more-icon-default.svg
     ├── logo.svg       # YIM logo
     └── header-vorm.svg # Header decorative shape
 ```
@@ -83,10 +85,11 @@ interface Person {
   naam: string
   personeelsnr: string              // bijv. "P0000002393"
   bedrijf: string
-  persoontype: 'Bezoeker' | 'Warehouse' | 'Technisch' | 'Logistiek' | 'Maintenance' | 'IT' | 'Inspection' | 'Construction'
-  // Bezoekers hebben persoontype 'Bezoeker'. Contractors hebben een specifiek subtype.
-  // TypeTabs 'Contractors' tab filtert op persoontype !== 'Bezoeker'.
+  persoontype: 'Bezoeker' | 'Contractor'
+  // Bezoekers hebben persoontype 'Bezoeker'. Contractors hebben persoontype 'Contractor'.
+  // TypeTabs 'Contractors' tab filtert op persoontype === 'Contractor'.
   // Nieuwe types worden in configuratie toegevoegd — geen code-wijziging nodig.
+  contractortype: string | null     // bijv. "Constructie", "Onderhoud", "Technisch" — null bij Bezoekers
   bezoekreden: string               // verborgen kolom (horizontale scroll)
   locaties: string[]                // bijv. ["Hoofdkantoor Sh...", "Locatie Zuid"]
   datumVanaf: string                // "DD-MM-YYYY"
@@ -112,7 +115,8 @@ interface Person {
   }[]
   telefoonnummer: string | null     // eigen telefoonnummer persoon
   emailadres: string | null         // eigen e-mailadres persoon
-  vertrekTijd: string | null        // geplande vertrektijd "HH:mm" (zelfde datum als datumVanaf)
+  vertrekDatum: string               // geplande vertrekdatum "DD-MM-YYYY" (kan afwijken van datumVanaf)
+  vertrekTijd: string | null        // geplande vertrektijd "HH:mm"
   credentialType: string | null     // bijv. "Bezoekerspas", "Contractorpas"
   pasnummer: string | null          // 14-cijferig pasnummer
 }
@@ -120,9 +124,9 @@ interface Person {
 
 ## Tabelkolommen
 
-De tabel heeft **horizontale scroll**. Kolom configuratie staat in `columns.json` (single source of truth). Checkbox- en actiekolom zijn **sticky** (altijd zichtbaar). Alle kolommen zijn **resizable** door de gebruiker via de rechterrand van de kolomheader. De hele rij is klikbaar en opent het detail panel.
+De tabel heeft **horizontale scroll**. Kolom configuratie staat in `columns.json` (single source of truth). De actiekolom is **sticky** (altijd zichtbaar). Alle kolommen zijn **resizable** door de gebruiker via de rechterrand van de kolomheader. De hele rij is klikbaar en opent het detail panel.
 
-Zie `columns.json` voor alle kolommen met breedtes, filtertypes en dropdown-opties. columns.json bevat 21 entries: 2 sticky systeemkolommen (checkbox, actie) + 19 data kolommen (waarvan 3 standaard verborgen: personeelsnr, telefoonnummer, emailadres).
+Zie `columns.json` voor alle kolommen met breedtes, filtertypes en dropdown-opties. columns.json bevat 21 entries: 1 sticky systeemkolom (actie) + 20 data kolommen (waarvan 3 standaard verborgen: personeelsnr, telefoonnummer, emailadres).
 
 ## Filterstrip Layout
 
@@ -154,16 +158,16 @@ Zie `columns.json` voor alle kolommen met breedtes, filtertypes en dropdown-opti
 
 Zie `docs/components/ActionMenu.md` voor de volledige specificatie. Samenvatting:
 
-### Credential-acties (geldt voor alle statussen behalve Geannuleerd/Afgemeld)
+### Credential-acties (geldt voor alle statussen behalve Niet aangekomen/Geannuleerd/Afgemeld)
 
 | credentialStatus | Acties |
 |---|---|
-| `niet-actief` | Credential activeren |
+| `niet-actief` | Credential koppelen |
 | `actief` + printbaar (QR-code) | Credential printen · Credential mailen · Credential ontkoppelen |
 | `actief` + fysiek | Credential ontkoppelen |
 | `verlopen` / `ingetrokken` / `geblokkeerd` | Geen credential-acties |
 
-### E-learning uitnodiging (geldt voor alle statussen behalve Geannuleerd/Afgemeld)
+### E-learning uitnodiging (geldt voor alle statussen behalve Niet aangekomen/Geannuleerd/Afgemeld)
 
 Alleen zichtbaar als `person.elearning === 'niet-behaald'`. Opent `ElearningUitnodigingModal` met keuze: activeer op locatie of verstuur per mail.
 
@@ -185,17 +189,7 @@ Alleen zichtbaar als `person.elearning === 'niet-behaald'`. Opent `ElearningUitn
 - Informeer contactpersoon
 - Bekijk dossier
 
-### Status: Niet aangekomen
-
-- Niet aangekomen ongedaan
-- Persoon aanmelden
-- *\<credential-acties\>*
-- E-learning uitnodiging *(alleen bij elearning niet-behaald)*
-- ─────
-- Informeer contactpersoon
-- Bekijk dossier
-
-### Status: Geannuleerd / Afgemeld
+### Status: Niet aangekomen / Geannuleerd / Afgemeld
 
 - Informeer contactpersoon
 - Bekijk dossier
@@ -324,7 +318,7 @@ Na het aanmaken van een nieuw component: voeg het toe aan `COMPONENTS.md` (index
   - `docs/components/Modal.md`, `docs/components/ActionPopup.md` — Dialogen
   - `docs/components/DatePopover.md`, `docs/components/DatePickerCalendar.md` — Datum UI
   - `docs/components/Toast.md`, `docs/components/ToastContainer.md` — Toast / ToastContainer
-  - `docs/components/TypeTabs.md`, `docs/components/DateFilterChip.md`, `docs/components/FilterChip.md`, `docs/components/FilterStrip.md`, `docs/components/SearchBox.md` — Filters
+  - `docs/components/TypeTabs.md`, `docs/components/DateFilterChip.md`, `docs/components/FilterChip.md`, `docs/components/LocatieFilterChip.md`, `docs/components/FilterStrip.md`, `docs/components/SearchBox.md` — Filters
   - `docs/components/DataTable.md`, `docs/components/TableRow.md`, `docs/components/ColumnFilters.md`, `docs/components/Pagination.md` — Tabel
   - `docs/components/ActionMenu.md` — Actiemenu per rij
   - `docs/components/AanmeldenModal.md`, `docs/components/AnnulerenModal.md`, `docs/components/AankomstWijzigenModal.md` — Actie-modals
