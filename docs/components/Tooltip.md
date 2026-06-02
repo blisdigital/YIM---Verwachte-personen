@@ -1,8 +1,10 @@
 # Tooltip
 
-Generiek hover-tooltip component. Toont één of meerdere regels tekst bij hover op het wrapped element. Read-only — geen acties in de tooltip zelf.
+Generiek hover-tooltip component. Toont een of meerdere regels tekst bij hover op het wrapped element. Read-only -- geen acties in de tooltip zelf.
 
----
+## Relaties
+- **Gebruikt door:** TableRow
+- **Gebruikt:** geen child components
 
 ## Gebruik
 
@@ -12,70 +14,42 @@ Generiek hover-tooltip component. Toont één of meerdere regels tekst bij hover
 </Tooltip>
 
 <Tooltip content="E-learning is verlopen">
-  <CompliancePill type="elearning" status="niet-behaald" />
+  <span>trigger element</span>
 </Tooltip>
 ```
 
----
-
 ## Props
 
-| Prop | Type | Required | Beschrijving |
-| --- | --- | --- | --- |
-| `content` | `string \| string[]` | ✓ | Tooltip-tekst. Array = meerdere regels, elk op eigen regel |
+| Prop | Type | Default | Beschrijving |
+|------|------|---------|-------------|
+| `content` | `string \| string[]` | -- (required) | Tooltip-tekst. Array = meerdere regels |
 
----
+## Events
+
+Geen events -- puur presentatiecomponent.
 
 ## Slots
 
 | Slot | Beschrijving |
-| --- | --- |
+|------|-------------|
 | `default` | Trigger-element waarop gehoverd wordt |
-
----
 
 ## Gedrag
 
-- Tooltip verschijnt bij **mouseenter** op het trigger-element (slot default).
-- Tooltip verdwijnt bij **mouseleave** van het trigger-element.
-- Meerdere regels (array) worden verticaal gestapeld, elke regel op een eigen regel.
+- Tooltip verschijnt bij **mouseenter**, verdwijnt bij **mouseleave**.
+- Meerdere regels (array) worden verticaal gestapeld.
 - Positionering: **boven** het trigger-element, horizontaal gecentreerd.
-- Geïmplementeerd via `<Teleport to="body">` + `position: fixed` — voorkomt overflow-clipping door tabelcellen.
+- Via `<Teleport to="body">` + `position: fixed` -- voorkomt overflow-clipping door tabelcellen.
 - Geen tooltip renderen als `content` leeg of afwezig is.
-
----
-
-## Events
-
-Geen events. Dit is een puur presentatie-component.
-
----
 
 ## Design Tokens
 
-| Eigenschap | Waarde | Token |
-| --- | --- | --- |
-| Achtergrond | `#3E3F40` | `--n800` |
-| Tekstkleur | `#F8FAFB` | `--n50` |
-| Schaduw | `drop-shadow: 0px 2px 4px rgba(17, 19, 19, 0.16)` | Elevation/S |
-| Border-radius | `4px` | `--r-s` |
-| Padding | `4px 8px` | `var(--sp-xs) var(--sp-s)` |
-| Lettertype | Nunito Regular | — |
-| Tekstgrootte | `12px` | Body-S |
-| Regelhoogte | `16px` | Line-height/Body-S |
-| Letter-spacing | `0px` | — |
-
----
-
-## Voorbeeld rendering
-
-**Één reden:**
-```
-Dossier niet compleet
-```
-
-**Meerdere redenen gestapeld:**
-```
-Dossier niet compleet
-Dossier afgekeurd
-```
+| Element | Token | Waarde |
+|---------|-------|--------|
+| Achtergrond | `--n800` | `#3E3F40` |
+| Tekstkleur | `--n50` | `#F8FAFB` |
+| Schaduw | Elevation/S | `drop-shadow: 0px 2px 4px rgba(17,19,19,0.16)` |
+| Border-radius | `--r-s` | `4px` |
+| Padding | `var(--sp-xs) var(--sp-s)` | `4px 8px` |
+| Tekstgrootte | Body-S | `12px` |
+| Regelhoogte | Line-height/Body-S | `16px` |

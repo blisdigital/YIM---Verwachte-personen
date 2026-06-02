@@ -1,6 +1,12 @@
 # SearchBox
 
-Zoek input veld.
+Zoek input veld met debounce, cancel-knop en decoratief zoekicoon. Gebruikt in de FilterStrip voor het doorzoeken van de personentabel.
+
+## Relaties
+- **Gebruikt door:** FilterStrip
+- **Gebruikt:** —
+
+## Gebruik
 
 ```vue
 <SearchBox
@@ -9,59 +15,53 @@ Zoek input veld.
 />
 ```
 
+## Props
+
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
-| `modelValue` | `string` | `''` | Zoekterm |
-| `placeholder` | `string` | `'Zoeken'` | Placeholder tekst |
+|------|------|---------|-------------|
+| `modelValue` | `string` | `''` | Zoekterm (v-model) |
+| `placeholder` | `string` | `'Zoek op naam, bedrijf, referentie...'` | Placeholder tekst |
 | `debounce` | `number` | `300` | Debounce in ms |
 
----
+## Events
 
-## Structuur
-
-```text
-┌──────────────────────────────────────┬───────┐   border, Corner-s
-│ Zoek op naam, bedrijf, referentie... │  🔍  │   input (flex:1) + icon-action (40×40, N50 bg)
-└──────────────────────────────────────┴───────┘
-  ↑ padding Spacing-s (8px)              ↑ search-icoon 24px
-```
-
-Filled / Focused tonen een **cancel-icoon** (✕, 24px, `N800`) rechts binnen het input-deel, vóór de icon-action.
-
-Hoogte: **40px**. Breedte: content-driven (default 320px). `box-sizing: border-box` zodat de 2px focus-border de hoogte niet vergroot.
-
----
-
-## Design Tokens
-
-| Categorie | Token | Waarde |
-| --- | --- | --- |
-| Colors | `N0` / `N50` | `#ffffff` / `#f8fafb` |
-| | `N400` / `N500` / `N800` / `N900` | `#b8babb` / `#999a9b` / `#3e3f40` / `#1d1e1f` |
-| | `P500` | `#6daeba` |
-| Spacing | `Spacing-s` | `8px` |
-| Corners | `Corner-s` | `4px` |
-| Typography | Body L — Nunito Regular | 16/24, 0 |
-
----
-
-## States
-
-| State | Border | Placeholder / waarde | Cancel-icoon | Icon-action |
-| --- | --- | --- | --- | --- |
-| Enabled | `1px N400` | placeholder `N500` | verborgen | search `N800` |
-| Hover | `1px N800` | placeholder `N500` | verborgen | search `N800` |
-| Focused | **`2px P500`** | waarde `N900` + caret | zichtbaar `N800` 24px | search `N800` |
-| Filled | `1px N400` | waarde `N900` | zichtbaar `N800` 24px | search `N800` |
-| Disabled | `1px N400` | placeholder `N500` | verborgen | search `N400` |
-
----
+| Event | Payload | Beschrijving |
+|-------|---------|-------------|
+| `update:modelValue` | `string` | Zoekterm na debounce |
 
 ## Gedrag
 
-- **Hover** op container → border `N800`
-- **Focus** (klik/Tab) → border `2px P500`, cancel-icoon verschijnt, caret zichtbaar
-- **Typen** → state "Filled" (persisteert na blur zolang er tekst is)
-- **Cancel** (✕) → wis input, terug naar Enabled/Hover
-- **Search-icoon** (rechts) → decoratief bij live-search; kan ook zoekactie triggeren
-- **Disabled** → `pointer-events: none`; border blijft `N400`, search-icoon naar `N400`
+- **Hover** op container: border naar `--n800`.
+- **Focus** (klik/Tab): border `2px --p500`, cancel-icoon verschijnt, caret zichtbaar.
+- **Typen**: state "Filled" (persisteert na blur zolang er tekst is).
+- **Cancel** (x-icoon): wist input, terug naar Enabled/Hover.
+- **Search-icoon** (rechts): decoratief bij live-search.
+- **Disabled**: `pointer-events: none`, border blijft `--n400`, search-icoon naar `--n400`.
+- Hoogte: 40px. Breedte: 260px default.
+
+### Visuele states
+
+| State | Border | Placeholder / waarde | Cancel-icoon | Icon-action |
+|-------|--------|----------------------|--------------|-------------|
+| Enabled | `1px --n400` | placeholder `--n500` | verborgen | search `--n800` |
+| Hover | `1px --n800` | placeholder `--n500` | verborgen | search `--n800` |
+| Focused | `2px --p500` | waarde `--n900` + caret | zichtbaar `--n800` | search `--n800` |
+| Filled | `1px --n400` | waarde `--n900` | zichtbaar `--n800` | search `--n800` |
+| Disabled | `1px --n400` | placeholder `--n500` | verborgen | search `--n400` |
+
+## Design Tokens
+
+| Element | Token | Waarde |
+|---------|-------|--------|
+| Achtergrond | `--n0` | Wit |
+| Icon-area achtergrond | `--n50` | Lichtgrijs |
+| Border default | `--n400` | Grijs |
+| Border hover | `--n800` | Donkergrijs |
+| Border focus | `--p500` | Teal (2px) |
+| Tekst | `--n900` | Bijna zwart |
+| Placeholder | `--n500` | Middengrijs |
+| Cancel-icoon | `--n800` | Donkergrijs |
+| Search-icoon | `--n800` | Donkergrijs |
+| Afronding | `--r-s` | 4px |
+| Padding | `--sp-s` | 8px |
+| Typografie | Body L — Nunito Regular | 16/24 |

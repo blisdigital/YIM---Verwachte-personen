@@ -1,12 +1,10 @@
 # DatePopover
 
-Gedeeld popover-paneel voor datumfilters. Gebruikt in `DateFilterChip` (filterstrip) en `ColumnFilters` (kolomfilter). Bevat geen positioneringslogica — de parent is verantwoordelijk voor plaatsing.
+Gedeeld popover-paneel voor datumfilters. Gebruikt in DateFilterChip (filterstrip) en ColumnFilters (kolomfilter). Bevat geen positioneringslogica — de parent is verantwoordelijk voor plaatsing.
 
-**Figma:** nog te definiëren  
-**Versie:** 0.1  
-**Datum:** mei 2026
-
----
+## Relaties
+- **Gebruikt door:** DateFilterChip, ColumnFilters
+- **Gebruikt:** DatePickerCalendar
 
 ## Gebruik
 
@@ -21,16 +19,12 @@ Gedeeld popover-paneel voor datumfilters. Gebruikt in `DateFilterChip` (filterst
 />
 ```
 
----
-
 ## Props
 
-| Prop | Type | Beschrijving |
-|------|------|-------------|
-| `isoDate` | `string` | Geselecteerde datum in ISO-formaat (`YYYY-MM-DD`) |
-| `preset` | `string \| null` | Actieve preset: `'vandaag'`, `'morgen'`, `'week'` |
-
----
+| Prop | Type | Default | Beschrijving |
+|------|------|---------|-------------|
+| `isoDate` | `string` | `''` | Geselecteerde datum in ISO-formaat (`YYYY-MM-DD`) |
+| `preset` | `string \| null` | `null` | Actieve preset: `'vandaag'`, `'morgen'`, `'week'` |
 
 ## Events
 
@@ -41,45 +35,35 @@ Gedeeld popover-paneel voor datumfilters. Gebruikt in `DateFilterChip` (filterst
 | `apply` | — | Gebruiker klikt "Toepassen" |
 | `reset` | — | Gebruiker klikt "Reset" |
 
----
-
-## Structuur
+## Inhoud
 
 - Titel "Filter"
 - Label "Kies datum" + datumveld (tekst + kalender-icoon trigger)
-- `DatePickerCalendar` — conditioneel, inline; zie [DatePickerCalendar.md](DatePickerCalendar.md)
+- `DatePickerCalendar` — conditioneel, inline
 - Label "Selecteer" + preset-chips: Vandaag / Morgen / Deze week
 - Divider
 - Footer: Reset (outlined) + Toepassen (filled), beide `flex: 1`
 
-**Breedte:** `272px` (vaste breedte, `box-sizing: border-box`)
+**Breedte:** `272px` (vast)
 
----
+## Gedrag
+
+- Kalender opent inline bij klik op kalender-icoon
+- Preset-chips zijn toggle-knoppen (actief/inactief)
+- Reset wist datum en preset; Toepassen bevestigt keuze
 
 ## Design Tokens
 
-**Container:** `padding: var(--sp-l)` (16px), `gap: var(--sp-s)` (8px), `border-radius: var(--r-s)` (4px), `box-shadow: var(--shadow-m)`
-
-| Element | Eigenschap | Waarde |
-|---------|-----------|--------|
-| Titel "Filter" | Typografie | H5 — Nunito Bold 18px/24px |
-| Titel "Filter" | Kleur | `--p700` |
-| Labels | Typografie | Label M — 600, 14px/20px, ls 0.14px |
-| Labels | Kleur | `--p700` |
-| Datumveld border | | `1px solid --n400`, `border-radius: var(--r-s)` |
-| Kalender-icoon | Achtergrond | `--n50` |
-| Preset-chips | Padding | `var(--sp-xs) var(--sp-s)` |
-
-**Preset-chip states:**
-
-| State | Achtergrond | Border | Tekst |
-|-------|------------|--------|-------|
-| Actief | `--p50` | `1px solid --p700` | `--p700` |
-| Inactief | `--n0` | `1px solid --n500` | `--n800` |
-
-**Toolbar-knoppen:**
-
-| Knop | Achtergrond | Tekst |
-|------|------------|-------|
-| Reset | `--n0` | `--n900` (border: `1px solid --n400`) |
-| Toepassen | `--p500` | `--n0` |
+| Element | Token | Waarde |
+|---------|-------|--------|
+| Container padding | `--sp-l` | 16px |
+| Container gap | `--sp-s` | 8px |
+| Container radius | `--r-s` | 4px |
+| Container shadow | `--shadow-m` | medium elevatie |
+| Titel kleur | `--p700` | teal |
+| Preset actief bg | `--p50` | licht teal |
+| Preset actief border/tekst | `--p700` | teal |
+| Preset inactief bg | `--n0` | wit |
+| Preset inactief border | `--n500` | grijs |
+| Reset bg | `--n0` | wit, border `--n400` |
+| Toepassen bg | `--p500` | teal, tekst `--n0` |

@@ -8,7 +8,7 @@ Receptionist wil een gepland bezoek annuleren (persoon komt niet meer).
 
 ## Flow
 
-1. Receptionist klikt "Aanmelding annuleren" via actiemenu
+1. Receptionist klikt "Aanmelding annuleren" via het persoonsdossier (niet beschikbaar in het actiemenu van het Verwachte Personen scherm)
 2. **AnnulerenModal** opent met waarschuwing: *"Dit kan niet ongedaan worden gemaakt. Persoon moet dan opnieuw geregistreerd en aangemeld worden."*
 3. *Optioneel:* Reden selecteren uit dropdown
 4. *Optioneel:* Toelichting invullen (vrij tekstveld)

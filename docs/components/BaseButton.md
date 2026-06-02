@@ -1,160 +1,119 @@
 # BaseButton
 
-Tekstbutton voor primaire, secundaire en tertiaire acties.
+Tekstbutton voor primaire, secundaire en tertiaire acties. Ondersteunt zes visuele varianten, drie groottes en een optioneel icon links of rechts.
 
-**Figma:** [`2092:3952`](https://www.figma.com/design/RQhCroVydjMVySUhH4AoIw/YIM-UI-Kit?node-id=2092-3952)
+**Figma:** [YIM UI Kit — Buttons, node 2092:3952](https://www.figma.com/design/RQhCroVydjMVySUhH4AoIw/YIM-UI-Kit?node-id=2092-3952)
+
+## Relaties
+- **Gebruikt door:** PageHeader, DetailPanel, ProcessBottomBar, AanmeldenModal, AfmeldenModal, AnnulerenModal, AankomstWijzigenModal, InformeerContactpersoonModal, CredentialActiverenModal, CredentialMailenModal, CredentialOntkoppelenModal, ElearningUitnodigingModal
+- **Gebruikt:** —
+
+## Gebruik
 
 ```vue
-<BaseButton variant="filled" size="lg" icon="expand_more" icon-position="right">Nieuwe registratie</BaseButton>
-<BaseButton variant="outlined" size="lg" icon="expand_more" icon-position="right">Instellingen</BaseButton>
+<BaseButton variant="filled" size="lg" icon="expand_more" icon-position="right">
+  Nieuwe registratie
+</BaseButton>
 <BaseButton variant="outlined" size="md">Annuleren</BaseButton>
-<BaseButton variant="filled" size="md" :disabled="true">Opslaan</BaseButton>
+<BaseButton variant="destructive" size="md">Verwijderen</BaseButton>
 ```
 
+## Props
+
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
+|------|------|---------|-------------|
 | `variant` | `'filled' \| 'outlined' \| 'outlined-brand' \| 'ghost' \| 'gray' \| 'destructive'` | `'filled'` | Visuele stijl |
 | `size` | `'lg' \| 'md' \| 'sm'` | `'md'` | Grootte |
 | `icon` | `string` | — | Material icon naam (optioneel) |
 | `iconPosition` | `'left' \| 'right'` | `'left'` | Icon positie |
 | `disabled` | `boolean` | `false` | Uitgeschakeld |
 
-**Events:** `@click`
+## Events
 
-**Gebruik in dit prototype:**
+| Event | Payload | Beschrijving |
+|-------|---------|-------------|
+| `click` | `MouseEvent` | Klik op de button |
 
-- `lg` + `icon right` → PageHeader (Nieuwe registratie)
-- `lg` + `icon right` → PageHeader (Instellingen)
-- `md` → BezoekDetail, AanmeldenModal, AnnulerenModal (actiebuttons en annuleren)
-- `md` + `destructive` → AnnulerenModal (onomkeerbare actie)
-- `lg` + `outlined-brand` → ProcessBottomBar (Printen-knop in credential printen flow)
+## Slots
 
----
+| Slot | Beschrijving |
+|------|-------------|
+| `default` | Button label tekst |
 
-## Maatvoering
+## Gedrag
 
-| Size | Hoogte | Padding icon left | Padding icon right | Padding no icon | Font |
-|------|--------|-------------------|--------------------|-----------------|------|
-| `lg` | `48px` | `12px 16px 12px 8px` | `12px 8px 12px 16px` | `12px 24px` | Label L |
-| `md` | `40px` | `8px 16px 8px 8px` | `8px 8px 8px 16px` | `8px 16px` | Label M |
-| `sm` | `32px` | `8px 12px 8px 8px` | `8px 8px 8px 12px` | `8px 12px` | Label S |
+- Knoppen met een dropdown gebruiken een `<ActionMenu>` als dropdown-paneel — er is geen aparte split-button component.
+- De Instellingen-knop in PageHeader heeft een eigen dropdown-implementatie met subpanelen (zie PageHeader.md).
 
-Hoogte is niet gefixeerd — volgt line-height + verticale padding. Icon `24px × 24px` voor `lg` en `md`, `16px × 16px` voor `sm`. Gap icon–tekst: `--sp-s` (`8px`).
+### Maatvoering
 
-### Typografie
+| Size | Hoogte | Padding (no icon) | Font | Icon |
+|------|--------|--------------------|------|------|
+| `lg` | `48px` | `12px 24px` | 16px/24px | 24px |
+| `md` | `40px` | `8px 16px` | 14px/20px | 24px |
+| `sm` | `32px` | `8px 12px` | 12px/16px | 16px |
 
-| Token | Label L (`lg`) | Label M (`md`) | Label S (`sm`) |
-|-------|---------------|---------------|---------------|
-| `font-family` | `Nunito` | `Nunito` | `Nunito` |
-| `font-weight` | `600` (semibold) | `600` (semibold) | `600` (semibold) |
-| `font-size` | `16px` | `14px` | `12px` |
-| `line-height` | `24px` | `20px` | `16px` |
-| `letter-spacing` | `0.16px` | `0.14px` | `0.12px` |
-| `white-space` | `nowrap` | `nowrap` | `nowrap` |
+Gap icon-tekst: `--sp-s` (8px). Font: Nunito SemiBold (600). `white-space: nowrap`.
 
----
+### Visuele states per variant
 
-## Variant tokens
+**Filled** — primaire actie, gevulde achtergrond:
 
-### Filled
+| State | Achtergrond | Tekst | Extra |
+|-------|-------------|-------|-------|
+| Enabled | `--p500` | `--n0` | — |
+| Hover | `--p600` | `--n0` | `box-shadow: --shadow-s` |
+| Pressed | `--p700` | `--n0` | `box-shadow: --shadow-s` |
+| Disabled | `--p100` | `--n0` | `cursor: not-allowed` |
 
-Primaire actie. Achtergrond gevuld met brandkleur.
-
-| State | Achtergrond | Tekst | Border | Extra |
-|-------|-------------|-------|--------|-------|
-| Enabled | `--p500` `#6daeba` | `--n0` `#ffffff` | — | — |
-| Hover | `--p600` `#598f99` | `--n0` | — | `box-shadow: 0 2px 8px rgba(17,19,19,0.16)` |
-| Focus | `--p600` `#598f99` | `--n0` | `2px solid --p400` `#87bdc6` | — |
-| Pressed | `--p700` `#315161` | `--n0` | — | `box-shadow: 0 2px 8px rgba(17,19,19,0.16)` |
-| Disabled | `--p100` `#d6e8ec` | `--n0` | — | `cursor: not-allowed`, geen interactie |
-
-### Outlined
-
-Secundaire actie. Transparante achtergrond met rand.
+**Outlined** — secundaire actie, transparant met rand:
 
 | State | Achtergrond | Tekst | Border |
 |-------|-------------|-------|--------|
-| Enabled | `--n0` `#ffffff` | `--n900` `#1d1e1f` | `1px solid --n400` `#b8babb` |
-| Hover | `--n50` `#f8fafb` | `--n900` | `1px solid --n500` `#999a9b` |
-| Focus | `--n0` `#ffffff` | `--n900` | `2px solid --n600` `#707172` |
-| Pressed | `--n100` `#f3f4f5` | `--n900` | `1px solid --n500` `#999a9b` |
-| Disabled | `--n0` `#ffffff` | `--n400` `#b8babb` | `1px solid --n300` `#eaeced` |
+| Enabled | `--n0` | `--n900` | `--n400` |
+| Hover | `--n50` | `--n900` | `--n500` |
+| Pressed | `--n100` | `--n900` | `--n500` |
+| Disabled | `--n0` | `--n400` | `--n300` |
 
-### Ghost
+**Ghost** — tertiaire actie, geen achtergrond in rust:
 
-Tertiaire actie. Geen achtergrond of rand in rust. Hover toont lichte achtergrond.
+| State | Achtergrond | Tekst |
+|-------|-------------|-------|
+| Enabled | transparent | `--n800` |
+| Hover | `--n50` | `--n900` |
+| Pressed | `--n100` | `--n900` |
+| Disabled | transparent | `--n400` |
 
-| State | Achtergrond | Tekst | Border |
-|-------|-------------|-------|--------|
-| Enabled | transparent | `--n800` `#3e3f40` | — |
-| Hover | `--n50` `#f8fafb` | `--n900` `#1d1e1f` | — |
-| Focus | `--n0` `#ffffff` | `--n900` `#1d1e1f` | `2px solid --n50` `#f8fafb` |
-| Pressed | `--n100` `#f3f4f5` | `--n900` `#1d1e1f` | — |
-| Disabled | transparent | `--n400` `#b8babb` | — |
-
-### Outlined Brand
-
-⚠ **Prototype-specifiek** — niet in de Figma UI Kit. Gebruikt voor secundaire brand-acties naast een primaire knop (bijv. "Printen" in ProcessBottomBar). Transparante achtergrond met `--p500` rand en tekst.
+**Outlined Brand** -- secundaire brand-actie (prototype-specifiek):
 
 | State | Achtergrond | Tekst | Border |
 |-------|-------------|-------|--------|
-| Enabled | transparent | `--p500` `#6daeba` | `1px solid --p500` |
-| Hover | `--p50` `#f0f7f8` | `--p600` `#598f99` | `1px solid --p600` |
-| Pressed | `--p100` `#d6e8ec` | `--p700` `#315161` | `1px solid --p700` |
-| Disabled | transparent | `--p300` `#a2cbd3` | `1px solid --p300` |
+| Enabled | transparent | `--p500` | `--p500` |
+| Hover | `--p50` | `--p600` | `--p600` |
+| Pressed | `--p100` | `--p700` | `--p700` |
+| Disabled | transparent | `--p300` | `--p300` |
 
-### Gray
+**Gray** — neutrale actie:
 
-Neutrale actie. Grijze achtergrond in rust; geschikt op witte én gekleurde achtergronden.
+| State | Achtergrond | Tekst |
+|-------|-------------|-------|
+| Enabled | `--n50` | `--n800` |
+| Hover | `--n100` | `--n900` |
+| Pressed | `--n200` | `--n900` |
+| Disabled | `--n50` | `--n400` |
 
-| State | Achtergrond | Tekst | Border |
-|-------|-------------|-------|--------|
-| Enabled | `--n50` `#f8fafb` | `--n800` `#3e3f40` | — |
-| Hover | `--n100` `#f3f4f5` | `--n900` `#1d1e1f` | — |
-| Focus | `--n100` `#f3f4f5` | `--n900` `#1d1e1f` | `2px solid --n50` `#f8fafb` |
-| Pressed | `--n200` `#ebeced` | `--n900` `#1d1e1f` | — |
-| Disabled | `--n50` `#f8fafb` | `--n400` `#b8babb` | — |
+**Destructive** — onomkeerbare actie (prototype-specifiek):
 
-### Destructive
+| State | Achtergrond | Tekst | Extra |
+|-------|-------------|-------|-------|
+| Enabled | `--err` | `--n0` | — |
+| Hover | `--err-hover` | `--n0` | `box-shadow: --shadow-s` |
+| Pressed | `--err-active` | `--n0` | — |
+| Disabled | `--err-bg` | `--n400` | `cursor: not-allowed` |
 
-⚠ **Prototype-specifiek** — niet in de Figma UI Kit. Gebruikt voor onomkeerbare acties (bijv. aanmelding annuleren). Hover/active shades zijn prototype-approximaties; tokens `--err-hover` / `--err-active` in `_tokens.css`.
-
-| State | Achtergrond | Tekst | Border | Extra |
-| --- | --- | --- | --- | --- |
-| Enabled | `--err` `#bc243b` | `--n0` | — | — |
-| Hover | `--err-hover` `#a01e32` | `--n0` | — | `box-shadow: --shadow-s` |
-| Pressed | `--err-active` `#871929` | `--n0` | — | — |
-| Disabled | `--err-bg` `#f8e9eb` | `--n400` | — | `cursor: not-allowed` |
-
----
-
-## Gedeelde container tokens
+## Design Tokens
 
 | Element | Token | Waarde |
 |---------|-------|--------|
-| `border-radius` | `--r-s` | `4px` |
-| Gap icon + tekst | `--sp-s` | `8px` |
-
----
-
-## Button met ActionMenu (dropdown-patroon)
-
-Knoppen met een dropdown gebruiken een `<ActionMenu>` als dropdown-paneel. Er is geen aparte split-button component — de button triggert zelf het menu.
-
-```vue
-<div class="relative">
-  <BaseButton variant="filled" size="lg" icon="add" @click="menuOpen = !menuOpen">
-    Nieuwe registratie
-  </BaseButton>
-  <ActionMenu
-    v-if="menuOpen"
-    :options="registratieOpties"
-    @select="handleSelect"
-    @close="menuOpen = false"
-  />
-</div>
-```
-
-Zie [ActionMenu.md](ActionMenu.md) voor de dropdown-opties en tokens van het menu-paneel.
-
-**Uitzondering:** de Instellingen-knop in de PageHeader heeft een eigen dropdown-implementatie met subpanelen — zie [PageHeader.md](PageHeader.md).
+| Border-radius | `--r-s` | 4px |
+| Gap icon + tekst | `--sp-s` | 8px |

@@ -2,48 +2,29 @@
 
 Tekstveld voor enkelvoudige tekstinvoer. Gebouwd op native `<input type="text">` met label, optionele leading/trailing icons en volledige states.
 
-**Figma:** [YIM UI Kit — Input fields, node 2546:8319](https://www.figma.com/design/RQhCroVydjMVySUhH4AoIw/YIM-UI-Kit?node-id=2546-8319)  
-**Versie:** 1.0  
-**Datum:** mei 2026
+**Figma:** [YIM UI Kit — Input fields, node 2546:8319](https://www.figma.com/design/RQhCroVydjMVySUhH4AoIw/YIM-UI-Kit?node-id=2546-8319)
 
----
+## Relaties
+- **Gebruikt door:** DetailPanel, AanmeldenModal, InformeerContactpersoonModal, CredentialActiverenModal, ElearningUitnodigingModal
+- **Gebruikt:** —
 
 ## Gebruik
 
 ```vue
-<!-- Basis met label en required -->
 <InputField
   v-model="documentnummer"
-  label="Vul documentnummer in ter bevestiging van controle"
+  label="Vul documentnummer in"
   :required="true"
   placeholder="Documentnummer"
 />
 
-<!-- Met leading icon -->
-<InputField
-  v-model="zoekterm"
-  placeholder="Zoek..."
-  leading-icon="search"
-/>
-
-<!-- Disabled -->
-<InputField v-model="waarde" label="Status" :disabled="true" />
-
-<!-- Error state met melding -->
-<InputField
-  v-model="waarde"
-  label="E-mailadres"
-  :error="true"
-  error-message="Voer een geldig e-mailadres in."
-/>
+<InputField v-model="zoekterm" placeholder="Zoek..." leading-icon="search" />
 ```
-
----
 
 ## Props
 
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
+|------|------|---------|-------------|
 | `modelValue` | `string` | `''` | Veldwaarde (v-model) |
 | `placeholder` | `string` | `''` | Placeholder tekst |
 | `label` | `string` | `null` | Label boven het veld |
@@ -55,18 +36,21 @@ Tekstveld voor enkelvoudige tekstinvoer. Gebouwd op native `<input type="text">`
 | `id` | `string` | auto | HTML id voor label-koppeling — auto-gegenereerd als niet opgegeven |
 | `leadingIcon` | `string` | `null` | Material Icons naam voor het leading icon (links in het veld) |
 | `trailingIcon` | `string` | `null` | Material Icons naam voor het trailing icon (rechts in het veld) |
-
----
+| `size` | `string` | `'md'` | `'sm'` (32px) of `'md'` (40px) |
 
 ## Events
 
 | Event | Payload | Beschrijving |
-|-------|---------|--------------|
+|-------|---------|-------------|
 | `update:modelValue` | `string` | Nieuwe waarde bij elke invoerwijziging |
 
----
+## Gedrag
 
-## States
+- Border-wissel van 1px naar 2px wordt via `box-shadow` geimplementeerd (geen layout-shift).
+- Label toont rode asterisk bij `required`.
+- Foutmelding verschijnt alleen als zowel `error` als `errorMessage` zijn ingesteld.
+
+### Visuele states
 
 | State | Trigger | Border | Achtergrond | Tekstkleur |
 |-------|---------|--------|-------------|------------|
@@ -78,14 +62,10 @@ Tekstveld voor enkelvoudige tekstinvoer. Gebouwd op native `<input type="text">`
 | Read-Only | `readonly=true` | geen | `--n50` | `--n800` |
 | Error | `error=true` | `--err` 2px | `--n0` | `--n900` |
 
-Border-wissel van 1px → 2px wordt via `box-shadow` geïmplementeerd (geen layout-shift).
-
----
-
 ## Design Tokens
 
-| Element | Token | Beschrijving |
-|---------|-------|--------------|
+| Element | Token | Waarde |
+|---------|-------|--------|
 | Veld achtergrond (active) | `--n0` | Wit |
 | Veld achtergrond (disabled/read-only) | `--n50` | Licht grijs |
 | Border default | `--n400` | Grijs |

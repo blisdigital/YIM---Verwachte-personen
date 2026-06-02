@@ -168,7 +168,7 @@ function filteredLocsFor(key) {
       }"
     >
       <!-- Checkbox and action columns: no filter -->
-      <template v-if="col.key === 'select' || col.key === 'actions'">
+      <template v-if="col.key === 'actions'">
         <!-- empty -->
       </template>
 

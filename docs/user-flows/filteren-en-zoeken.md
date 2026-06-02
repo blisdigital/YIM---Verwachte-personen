@@ -34,6 +34,19 @@ Bovenaan de tabel, van links naar rechts:
 - Tekstveld: zoekt op naam, bedrijf, referentie
 - 300ms debounce
 
+## Quick filter presets (niet geïmplementeerd)
+
+De PRD (F14) beschrijft de volgende quick filter presets. Deze zijn nog niet geïmplementeerd in het prototype.
+
+| Preset | Beschrijving |
+|--------|-------------|
+| Verwacht vandaag | Datum = vandaag |
+| Contractors vandaag | Persoonstype = Contractor + datum = vandaag |
+| Bezoekers vandaag | Persoonstype = Bezoeker + datum = vandaag |
+| Parkeer nodig – niet gereserveerd | Parkeren benodigd = ja + gereserveerd = nee |
+| E-learning vereist – niet behaald | E-learning = niet-behaald |
+| Dossier niet compleet | Dossier = onvolledig |
+
 ## Kolom filters
 - Filterrij direct onder kolomheaders
 - Per kolom: tekst, dropdown of datum filter (afhankelijk van kolomtype)

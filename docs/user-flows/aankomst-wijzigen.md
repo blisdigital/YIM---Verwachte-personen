@@ -8,7 +8,7 @@ Receptionist wil datum of tijd van een verwacht bezoek aanpassen.
 
 ## Flow
 
-1. Receptionist klikt "Aankomst wijzigen" (beschikbaar via actiemenu, niet via detail panel footer)
+1. Receptionist klikt "Aankomst wijzigen" via het bezoekersdossier (niet beschikbaar in het actiemenu of detail panel van het Verwachte Personen scherm; nice-to-have voor latere iteratie)
 2. **AankomstWijzigenModal** opent met huidige waarden vooraf ingevuld
 3. Receptionist past aan: aankomstdatum, aankomsttijd, vertrekdatum, vertrektijd
 4. *Optioneel:* Opmerking toevoegen
@@ -16,7 +16,7 @@ Receptionist wil datum of tijd van een verwacht bezoek aanpassen.
 6. Receptionist klikt **Bevestigen**
 
 ## Resultaat
-- `datumVanaf`, `aankomsttijd`, `vertrekTijd` worden bijgewerkt
+- `datumVanaf`, `aankomsttijd`, `vertrekDatum`, `vertrekTijd` worden bijgewerkt
 - Toast: "Bezoek van [naam] is gewijzigd naar [datum] om [tijd]."
 - Status blijft ongewijzigd
 - Lijst herberekent automatisch:

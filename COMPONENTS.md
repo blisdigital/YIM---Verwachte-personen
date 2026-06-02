@@ -28,6 +28,7 @@ Gedetailleerde specificaties per component staan in `docs/components/`:
 | [`docs/components/DateFilterChip.md`](docs/components/DateFilterChip.md) | DateFilterChip |
 | [`docs/components/FilterChip.md`](docs/components/FilterChip.md) | FilterChip |
 | [`docs/components/FilterStrip.md`](docs/components/FilterStrip.md) | FilterStrip |
+| [`docs/components/LocatieFilterChip.md`](docs/components/LocatieFilterChip.md) | LocatieFilterChip |
 | [`docs/components/SearchBox.md`](docs/components/SearchBox.md) | SearchBox |
 | [`docs/components/DataTable.md`](docs/components/DataTable.md) | DataTable |
 | [`docs/components/TableRow.md`](docs/components/TableRow.md) | TableRow |
@@ -86,6 +87,7 @@ filters/
   TypeTabs          — Segmented tabs (Alle / Bezoekers / Contractors) met counts
   DateFilterChip    — Datum-chip met popup (presets + datuminput)
   FilterChip        — Generieke filter-chip met checkbox dropdown
+  LocatieFilterChip — Locatie-chip met dropdown (filtert op locaties)
   FilterStrip       — Container voor alle filtercomponenten
   SearchBox         — Zoek input met debounce (300ms)
 

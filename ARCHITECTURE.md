@@ -14,6 +14,7 @@ App.vue
     │
     ├── FilterStrip.vue
     │   ├── TypeTabs.vue (Alle / Bezoekers / Contractors — met counts)
+    │   ├── LocatieFilterChip.vue (Hoofdkantoor Sh. ▾)
     │   ├── DateFilterChip.vue (Vandaag ▾)
     │   ├── FilterChip.vue (Status ▾)
     │   ├── FilterChip.vue (Compliance ▾)
@@ -46,8 +47,8 @@ App.vue
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                         Pinia Store                              │
-│  ┌─────────────┐  ┌─────────────────────────┐  ┌──────────────┐  │
-│  │ personenStore│  │       filterStore        │  │ columnStore  │  │
+│  ┌─────────────┐  ┌─────────────────────────┐  ┌──────────────┐  ┌───────────────┐ │
+│  │ personenStore│  │       filterStore        │  │ columnStore  │  │navigationStore│ │
 │  │             │  │                         │  │              │  │
 │  │ - personen  │  │ - datum / datumPreset    │  │-visibleColumns│  │
 │  │ - loading   │  │ - status[]              │  │- savedSets   │  │
@@ -70,7 +71,6 @@ App.vue
 │  │ - filtered      │  │ - show(type,...) │ │
 │  │ - sorted        │  │ - dismiss(id)    │ │
 │  │ - paginated     │  │ - toasts[]       │ │
-│  │ - counts        │  │                  │ │
 │  │ - total         │  │                  │ │
 │  └────────┬────────┘  └──────────────────┘ │
 └───────────┼────────────────────────────────┘
@@ -106,7 +106,6 @@ Berekent gefilterde, gesorteerde en gepagineerde data op basis van de actieve fi
 | `filtered` | `ComputedRef<Person[]>` | Gefilterd op datum, persoontype, status, compliance, parkeren, zoekterm en kolomfilters |
 | `sorted` | `ComputedRef<Person[]>` | Gesorteerd op `filterStore.sortKey` / `sortDir`; tiebreaker `aankomsttijd` bij sortering op `datumVanaf` |
 | `paginated` | `ComputedRef<Person[]>` | Gefilterd + gesorteerd, gepagineerd op `page` × `pageSize` |
-| `counts` | `ComputedRef<{alle, bezoekers, contractors}>` | Totalen per persoontype (voor TypeTabs) |
 | `total` | `ComputedRef<number>` | Aantal gefilterde rijen |
 | `loading` | `ComputedRef<boolean>` | Doorsturen van `personenStore.loading` |
 
@@ -134,8 +133,11 @@ Zie [Toast.md](docs/components/Toast.md) voor de volledige Toast / ToastContaine
 | `loading` | `Ref<boolean>` | Laadstatus |
 | `error` | `Ref<string\|null>` | Foutmelding |
 | `fetch()` | `async function` | Laad `MOCK_PERSONEN`; klont `parkeren` object per persoon |
-| `updateStatus(id, status)` | `function` | Update status; zet `checkinTime` bij `Aangekomen`, `checkoutTime` bij `Vertrokken` |
+| `updateStatus(id, status)` | `function` | Update status met validatie (VALID_TRANSITIONS); zet `checkinTime` bij `Aangemeld`, `checkoutTime` bij `Afgemeld` |
 | `updateCredentialStatus(id, credentialStatus)` | `function` | Update `credentialStatus` van één persoon |
+| `activeerCredential(id, opts)` | `function` | Zet credential actief met type, pasnummer, geldigheid en duur |
+| `ontkoppelCredential(id)` | `function` | Reset credential naar niet-actief, wist type/pasnummer/geldigheid |
+| `updateAankomst(id, datum, aankomsttijd, vertrekdatum, vertrektijd)` | `function` | Update aankomst- en vertrekgegevens |
 
 ### filterStore
 
@@ -143,13 +145,14 @@ Zie [Toast.md](docs/components/Toast.md) voor de volledige Toast / ToastContaine
 |---|---|---|
 | `datum` | `Ref<Date>` | Geselecteerde filterdatum (default: vandaag) |
 | `datumPreset` | `Ref<string>` | `'vandaag'` \| `'morgen'` \| `'week'` |
+| `locatie` | `Ref<string\|null>` | Actief locatiefilter (default: `'Hoofdkantoor Sh.'`); synct naar `columnFilters.locaties` via watcher |
 | `status` | `Ref<string[]>` | Actieve statusfilters |
 | `compliance` | `Ref<string[]>` | Actieve compliance-filters |
 | `parkeren` | `Ref<string\|null>` | Parkerenfilter |
 | `persoontype` | `Ref<string\|null>` | Actief tab-type |
 | `search` | `Ref<string>` | Zoekterm |
 | `page` | `Ref<number>` | Huidige pagina |
-| `pageSize` | `Ref<number>` | Rijen per pagina (default: 10) |
+| `pageSize` | `Ref<number>` | Rijen per pagina (default: 20) |
 | `columnFilters` | `Ref<object>` | `{ [key]: value }` — `datumVanaf` gesynchroniseerd met `datum` via watcher; preset `week` verwijdert `datumVanaf` kolomfilter |
 | `sortKey` | `Ref<string>` | Sorteerkolom (default: `'datumVanaf'`) |
 | `sortDir` | `Ref<string>` | `'asc'` \| `'desc'` |
@@ -169,6 +172,18 @@ Zie [Toast.md](docs/components/Toast.md) voor de volledige Toast / ToastContaine
 | `resetToDefault()` | `function` | Herstel `visibleColumns` naar `DEFAULT_VISIBLE` |
 
 `visibleColumns` is de enige source of truth voor kolomzichtbaarheid in `DataTable`.
+
+### navigationStore
+
+| State / Actie | Type | Beschrijving |
+|---|---|---|
+| `currentPage` | `Ref<string>` | Actieve pagina (`'verwachte-personen'` \| `'dossier'`) |
+| `currentPerson` | `Ref<Person\|null>` | Persoon voor dossier-weergave |
+| `returnPage` | `Ref<string\|null>` | Vorige pagina (voor terug-navigatie) |
+| `navigate(page, person?)` | `function` | Navigeer naar pagina; slaat returnPage op; scrollt naar top |
+| `goBack()` | `function` | Terug naar vorige pagina; wist currentPerson |
+
+State wordt gepersisteerd in `sessionStorage` (`yim-nav`).
 
 ## Performance Overwegingen
 

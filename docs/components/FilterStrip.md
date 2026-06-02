@@ -1,57 +1,42 @@
 # FilterStrip
 
-Horizontale balk die alle filtercomponenten combineert: type-tabs, datum, filter-chips en zoekbalk.
+Horizontale balk die alle filtercomponenten combineert: type-tabs, locatie, datum, filter-chips en zoekbalk. Centrale orchestrator van alle filterinteracties.
 
+## Relaties
+- **Gebruikt door:** VerwachtePersonenView
+- **Gebruikt:** TypeTabs, LocatieFilterChip, DateFilterChip, FilterChip, SearchBox
+
+## Gebruik
 ```vue
-<FilterStrip
-  v-model:persoontype="activePersoontype"
-  v-model:date="selectedDate"
-  v-model:preset="activePreset"
-  v-model:statuses="selectedStatuses"
-  v-model:compliance="selectedCompliance"
-  v-model:parkeren="selectedParkeren"
-  v-model:search="searchQuery"
-  :counts="counts"
-/>
+<FilterStrip />
 ```
 
-**Opbouw (links → rechts):**
+FilterStrip leest en schrijft alle filterwaarden rechtstreeks via `filterStore` (geen props/events nodig).
 
-1. [`TypeTabs`](TypeTabs.md) — persoontype segmented control
-2. `LocatieFilterChip` — locatie preset filter (default: receptie-locatie)
-3. [`DateFilterChip`](DateFilterChip.md) — datumfilter chip
-4. [`FilterChip`](FilterChip.md) label="Status" — statusfilter
-5. [`FilterChip`](FilterChip.md) label="Compliance" — compliancefilter
-6. [`FilterChip`](FilterChip.md) label="Parkeren" — parkerenfilter
-7. [`SearchBox`](SearchBox.md) — zoekbalk
+## Props
+Geen props -- alle state komt uit `filterStore`.
 
-**Layout:** twee groepen in een `display: flex` container met `justify-content: space-between` en `gap: --sp-m` (12px) tussen de groepen.
+## Events
+Geen events -- alle mutaties gaan via `filterStore`.
 
-- **`filter-left`** — TypeTabs, `flex-shrink: 0`, `align-items: center`
-- **`filter-right`** — LocatieFilterChip + DateFilterChip + 3× FilterChip + SearchBox; `gap: --sp-s` (8px) tussen items; alle items `height: 40px` (chips stretchen mee met de SearchBox-hoogte)
-
-SearchBox is `320px` fixed breed (niet `flex: 1`).
-
-**Responsive — breakpoint `max-width: 1279px` (tablet):**
-
-| Aspect | Desktop (≥1280px) | Tablet (<1280px) |
-| --- | --- | --- |
-| Strip-richting | `row`, `space-between` | `column`, `stretch` |
-| Gap strip | `--sp-m` (12px) | `--sp-s` (8px) |
-| Rechts-groep breedte | content-driven | `100%` |
-| Rechts-groep overflow | `wrap` | `nowrap` + `overflow-x: auto` |
-| SearchBox breedte | 320px | 320px (scrollt mee) |
-
-TypeTabs blijft full-width bovenaan op tablet; de rechter groep scrollt horizontaal in een eigen rij.
-
-**Overflow/Teleport:** popovers en dropdowns zijn via `<Teleport to="body">` losgemaakt van de scrollende container — anders clipt `overflow-x: auto` op tablet ze weg.
-
----
+## Gedrag
+- **Opbouw (links naar rechts):**
+  1. TypeTabs -- persoontype segmented control
+  2. LocatieFilterChip -- locatie preset filter (default: receptie-locatie)
+  3. DateFilterChip -- datumfilter chip
+  4. FilterChip label="Status" -- statusfilter
+  5. FilterChip label="Compliance" -- compliancefilter
+  6. FilterChip label="Parkeren" -- parkerenfilter
+  7. SearchBox -- zoekbalk (320px fixed breed)
+- **Layout:** twee groepen in `display: flex` met `justify-content: space-between`.
+  - **`filter-left`** -- TypeTabs, `flex-shrink: 0`, `align-items: center`.
+  - **`filter-right`** -- overige filters + SearchBox; `gap: --sp-s` (8px); alle items `height: 40px`.
+- **Responsive (max-width: 1279px):** strip wordt `column`; rechter groep `100%` breed met `nowrap` + `overflow-x: auto`. TypeTabs full-width bovenaan; filters scrollen horizontaal.
+- Popovers en dropdowns via `<Teleport to="body">` om clipping door `overflow-x: auto` te voorkomen.
 
 ## Design Tokens
-
 | Element | Token | Waarde |
-| --- | --- | --- |
+|---------|-------|--------|
 | Strip gap | `--sp-m` | `12px` |
 | Strip margin-bottom | `--sp-xxl` | `32px` |
 | Rechter groep gap | `--sp-s` | `8px` |

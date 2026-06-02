@@ -208,7 +208,7 @@ onUnmounted(() => document.removeEventListener('click', onClickAway))
   box-sizing: border-box;
 }
 .page-btn .mi { font-family: 'Material Icons Round'; font-weight: 400; font-size: 24px; color: var(--n800); }
-.page-btn:hover:not(:disabled) { background: var(--p100, #d9edf0); }
+.page-btn:hover:not(:disabled) { background: var(--p100); }
 .page-btn.active { background: var(--p500); color: var(--n0); }
 .page-btn.active .mi { color: var(--n0); }
 

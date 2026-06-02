@@ -1,9 +1,14 @@
 # Pagination
 
-Paginering controls onderaan de tabel.
+Pagineringscontrols onderaan de tabel. Bevat paginaknoppen, een per-page dropdown en een tellertekst.
 
-Figma-bronnen: [Epic – Verwachte personen `6:32511`](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=6-32511&m=dev) (sub-frame Pagination `6:14384`) · YIM UI Kit [Pagination `2410:5555`](https://www.figma.com/design/RQhCroVydjMVySUhH4AoIw/YIM-UI-Kit?node-id=2410-5555) · [Dropdown (Date field) `2410:5327`](https://www.figma.com/design/RQhCroVydjMVySUhH4AoIw/YIM-UI-Kit?node-id=2410-5327)
+**Figma:** [Epic -- Verwachte personen](https://www.figma.com/design/LuyFTR1cgQe3mT6TAGvzVV/Epic--Verwachte-personen?node-id=6-32511&m=dev) node-id: 6:14384 -- [YIM UI Kit Pagination](https://www.figma.com/design/RQhCroVydjMVySUhH4AoIw/YIM-UI-Kit?node-id=2410-5555) -- [Dropdown](https://www.figma.com/design/RQhCroVydjMVySUhH4AoIw/YIM-UI-Kit?node-id=2410-5327)
 
+## Relaties
+- **Gebruikt door:** VerwachtePersonenView
+- **Gebruikt:** Geen child-componenten
+
+## Gebruik
 ```vue
 <Pagination
   :total="totalItems"
@@ -13,112 +18,57 @@ Figma-bronnen: [Epic – Verwachte personen `6:32511`](https://www.figma.com/des
 />
 ```
 
+## Props
 | Prop | Type | Default | Beschrijving |
-|------|------|---------|--------------|
-| `total` | `number` | — | Totaal aantal items |
+|------|------|---------|-------------|
+| `total` | `number` | `0` | Totaal aantal items |
 | `page` | `number` | `1` | Huidige pagina |
 | `pageSize` | `number` | `10` | Items per pagina |
-| `pageSizeOptions` | `number[]` | `[10, 25, 50, 100]` | Beschikbare page sizes |
-
----
+| `pageSizeOptions` | `number[]` | `[10, 20, 30, 50]` | Beschikbare page sizes |
 
 ## Events
-
 | Event | Payload | Beschrijving |
-| --- | --- | --- |
+|-------|---------|-------------|
 | `update:page` | `number` | Gebruiker navigeert naar een andere pagina |
 | `update:page-size` | `number` | Gebruiker wijzigt het aantal items per pagina; reset pagina naar 1 |
 
----
+## Gedrag
+- **Layout:** `flex`, `justify-between`, `align-items: center`. Padding `pt-xl pb-l px-l` (20/16/16). Geen eigen achtergrond of border.
+- **Links:** paginaknoppen (gap 8px) + per-page dropdown (gap 16px ertussen).
+- **Rechts:** tellertekst `{start}-{end} van {total} items` (Label M / `--n800`).
+- **Paginaknoppen:** volgorde `first-page` - `chevron-left` - [nummers + ellipsis] - `chevron-right` - `last-page`. Knop 40x40, pill-radius (`360px`), icoon 24px.
+- **Paginanummer-algoritme:** max 7 knoppen -- `eerste | ellipsis | huidig-2 | huidig-1 | huidig | huidig+1 | huidig+2 | ellipsis | laatste`.
+- Ellipsis-knoppen `...` zijn niet klikbaar (puur visueel).
+- Nav-knoppen `first`/`prev` disabled op pagina 1; `next`/`last` disabled op laatste pagina.
+- Per-page dropdown opent een menu met `pageSizeOptions`. Na wijziging: reset naar pagina 1.
 
-## Structuur
+### Knop-states
+| State | Bg | Tekst/Icoon | Wanneer |
+|-------|----|-------------|---------|
+| Page actief | `--p500` | `--n0`, Label M | huidige pagina |
+| Page inactief | `--p50` | `--p700`, Label M | klikbare pagina |
+| Ellipsis | `--p50` | `--p700`, Label M | afgekorte reeks |
+| Nav enabled | `--p50` | icoon `--n800` 24px | kan navigeren |
+| Nav disabled | `--n50` | icoon `--n400` 24px | einde reeks |
 
-```
-┌─ Pagination bar ────────────────────────────────────────────────────────────┐
-│  |◀  ◀  [1]  2  ▶  ▶|  ┌──────┐                      1-20 van 40 items     │
-│                         │ 20 ▾ │                                             │
-│                         └──────┘                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-  └ paginaknoppen       └ dropdown                      └ tellertekst
-  └──────────── linker groep (gap 16px) ────────┘       └── rechts ──┘
-  └────────────────────── justify-between ──────────────────────────────────────┘
-```
+### Dropdown-states
+| State | Border | Tekst | Icoon |
+|-------|--------|-------|-------|
+| Enabled | 1px `--n400` | `--n900` | `arrow_drop_down` |
+| Hover | 1px `--n800` | `--n900` | `arrow_drop_down` |
+| Focus/Open | 2px `--p500` | `--n900` | `arrow_drop_down` |
+| Disabled | 1px `--n200` | `--n500` | `arrow_drop_down` |
 
----
+Dropdown: bg `--n0`, `border-radius: --r-s` (4px), hoogte 40px. Labeldeel: padding `--sp-s`, breedte 48px, Body M. Icon-action: 40x40, border-left 1px `--n400`.
 
 ## Design Tokens
-
-| Categorie | Token | Waarde |
-| --- | --- | --- |
-| Colors | `N0` / `N50` | `#ffffff` / `#f8fafb` |
-| | `N200` / `N300` / `N400` | `#ebeced` / `#eaeced` / `#b8babb` |
-| | `N500` / `N800` / `N900` | `#999a9b` / `#3e3f40` / `#1d1e1f` |
-| | `P500` | `#6daeba` |
-| Spacing | `xs` / `s` / `m` / `l` / `xl` | `4px` / `8px` / `12px` / `16px` / `20px` |
-| Corners | `s` / `m` | `4px` / `8px` |
-| Typography | Label M — Nunito SemiBold | 14/20, tracking 0.14 |
-| | Body M — Nunito Regular | 14/20, tracking 0 |
-
----
-
-## Container
-
-Padding `pt-xl pb-l px-l` (top 20 / bottom 16 / horizontaal 16), `flex`, `justify-between`, `align-items: center`, `width: 100%`. Geen vaste hoogte. Geen eigen achtergrond of border.
-
----
-
-## Links — paginaknoppen + per-page dropdown
-
-| Prop | Waarde |
-| --- | --- |
-| Group gap | `Spacing-l` (16px) |
-| Display | `flex`, `align-items: center` |
-
-### Paginaknoppen
-
-| Prop | Waarde |
-| --- | --- |
-| Knop-groep gap | `Spacing-s` (8px) |
-| Knop-afmeting | 40×40 (`px-m` 12, `py-s` 8) |
-| Knop-radius | `Corner-360` (360px) — pill |
-| Icoon-afmeting | 24px |
-| Geen border | — |
-
-Volgorde: `first-page` · `chevron-left` · [paginanummers + ellipsis] · `chevron-right` · `last-page`
-
-| Knop-state | Bg | Tekst / Icoon | Wanneer |
-| --- | --- | --- | --- |
-| Page — active | `P500` | `N0`, Label M | huidige pagina |
-| Page — inactive | `P50` | `P700`, Label M | klikbare pagina |
-| Ellipsis (…) | `P50` | `P700`, Label M | afgekorte reeks (niet klikbaar) |
-| Nav — enabled | `P50` | icoon `N800` 24px | kan navigeren |
-| Nav — disabled | `N50` | icoon `N400` 24px | einde reeks |
-
-Icons (Material): `first-page` ⏮ · `chevron-left` ‹ · `chevron-right` › · `last-page` ⏭
-
-### Dropdown (YIM UI Kit `2410:5327`)
-
-Bg `N0`, `Corner-s` (4px), overflow clip, hoogte 40px. Labeldeel: padding `Spacing-s`, breedte 48px, Body M. Icon-action: 40×40, border-left 1px `N400`, padding `Spacing-s`, 24px icoon `arrow_drop_down`.
-
-| State | Border | Tekst | Icoon |
-| --- | --- | --- | --- |
-| Enabled | 1px `N400` | `N900` | `arrow_drop_down` |
-| Hover | 1px `N800` | `N900` | `arrow_drop_down` |
-| Focus/Open | **2px** `P500` | `N900` | `arrow_drop_down` |
-| Disabled | 1px `N200` | `N500` | `arrow_drop_down` |
-
----
-
-## Rechts — tellertekst
-
-Label M / `N800`. Formaat: `{start}-{end} van {total} items` waarbij `{end} = min(start + pageSize − 1, total)`.
-Voorbeeld: `1-20 van 40 items`.
-
----
-
-## Gedrag
-
-- Ellipsis-knoppen `…` zijn **niet klikbaar** (geen hover/focus), puur visueel.
-- Paginanummer-algoritme: max 7 knoppen — `eerste | ellipsis | huidig−2 | huidig−1 | huidig | huidig+1 | huidig+2 | ellipsis | laatste`. Op pagina 1 ellipsis rechts vóór laatste; op laatste pagina ellipsis links na eerste.
-- Nav-knoppen `first`/`prev` zijn disabled op pagina 1; `next`/`last` zijn disabled op de laatste pagina.
-- Per-page dropdown opent een menu met de `pageSizeOptions`. Na wijziging: pas paginering aan en ga terug naar pagina 1.
+| Element | Token | Waarde |
+|---------|-------|--------|
+| Kleuren | `--n0` / `--n50` | `#ffffff` / `#f8fafb` |
+| | `--n200` / `--n400` / `--n500` | `#ebeced` / `#b8babb` / `#999a9b` |
+| | `--n800` / `--n900` | `#3e3f40` / `#1d1e1f` |
+| | `--p50` / `--p500` / `--p700` | `#f0f7f8` / `#6daeba` / `#1a7a8a` |
+| Spacing | `--sp-xs` / `--sp-s` / `--sp-m` / `--sp-l` / `--sp-xl` | `4px` / `8px` / `12px` / `16px` / `20px` |
+| Corners | `--r-s` / `--r-m` | `4px` / `8px` |
+| Typografie | Label M | Nunito SemiBold 14/20, ls 0.14px |
+| | Body M | Nunito Regular 14/20 |

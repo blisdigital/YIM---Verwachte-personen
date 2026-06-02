@@ -178,7 +178,7 @@ const rightActions = computed(() => {
     }
 
     const activeerDisabled = !credentialVeldenCompleet.value
-      || !compliant
+      || (isPrintbaar.value && !compliant)
       || (isPrintbaar.value && !credentialGeprint.value)
     actions.push({ value: 'credential-activeren', label: 'Credential koppelen', disabled: activeerDisabled })
   }
@@ -215,6 +215,14 @@ function onAction(actionValue) {
 
   if (actionValue === 'credential-ontkoppelen') {
     store.updateCredentialStatus(props.person.id, 'niet-actief')
+    credentialOoitGeactiveerd.value = false
+    credentialNummer.value = ''
+    credentialGeldigVan.value = ''
+    credentialGeldigTot.value = ''
+    credentialDatumVanaf.value = ''
+    credentialDuur.value = 'permanent'
+    selectedCredentialType.value = null
+    credentialGeprint.value = false
     toast.show(null, `Credential is ontkoppeld van ${props.person.naam}.`)
     return
   }

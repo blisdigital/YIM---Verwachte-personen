@@ -2,7 +2,9 @@
 
 Headercomponent bovenaan de dossierpagina. Toont een terugknop, de naam van de persoon en metadata zoals persoontype, e-mailadres, telefoonnummer, bedrijf en laatste wijzigingsdatum.
 
-**Figma:** nog te definiëren
+## Relaties
+- **Gebruikt door:** DossierView
+- **Gebruikt:** — (geen child-componenten)
 
 ## Gebruik
 
@@ -13,28 +15,24 @@ Headercomponent bovenaan de dossierpagina. Toont een terugknop, de naam van de p
 ## Props
 
 | Prop | Type | Default | Beschrijving |
-| --- | --- | --- | --- |
-| `person` | `Object` | *required* | Het persoonobject. Verwacht minimaal: `naam`, `persoontype`, `emailadres`, `telefoonnummer`, `bedrijf`. |
+|------|------|---------|-------------|
+| `person` | `Object` | *required* | Verwacht minimaal: `naam`, `persoontype`, `emailadres`, `telefoonnummer`, `bedrijf`. |
 
 ## Events
 
 Geen events.
 
+## Gedrag
+
+- **Terugknop** toont `arrow_back` Material Icon met label "Terug" (`cursor: default` — nog geen navigatielogica)
+- **Personalia:** Naam als `<h1>` (32px, bold), primaire metaregel (persoontype, email, telefoon, bedrijf gescheiden door ` • `), secundaire metaregel ("Laatst bijgewerkt op ...")
+- 40px padding onder personalia richting de tabs
+
 ## Design Tokens
 
 | Element | Token | Waarde |
-| --- | --- | --- |
-| Font | `--font` | basis lettertypefamilie |
-| Terugknop kleur | `--n800` | donkergrijs tekst |
+|---------|-------|--------|
+| Terugknop kleur | `--n800` | donkergrijs |
 | Naam kleur | `--n900` | zwart/donkerst grijs |
-| Meta primair kleur | `--p500` | teal — persoontype, e-mail, telefoon, bedrijf |
-| Meta secundair kleur | `--n500` | grijs — "Laatst bijgewerkt op..." |
-
-## Gedrag
-
-- De **terugknop** toont een `arrow_back` Material Icon met het label "Terug". De knop heeft momenteel `cursor: default` (nog geen navigatielogica).
-- De **personalia** sectie toont:
-  - De naam als `<h1>` (32px, bold).
-  - Een primaire metaregel met `persoontype`, optioneel gevolgd door `emailadres`, `telefoonnummer` en `bedrijf`, gescheiden door ` • `.
-  - Een secundaire metaregel met een statische tekst "Laatst bijgewerkt op ..." (momenteel hardcoded).
-- Er is 40px padding onder de personalia voor visuele ruimte richting de tabs.
+| Meta primair kleur | `--p500` | teal |
+| Meta secundair kleur | `--n500` | grijs |

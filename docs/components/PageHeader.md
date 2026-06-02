@@ -1,15 +1,18 @@
 # PageHeader
 
-Paginatitel + actieknoppen voor de huidige view. Heeft twee modi:
+Paginatitel + actieknoppen voor de huidige view. Heeft twee modi: standaard (actieknoppen) en back-modus (terug-knop + optionele subtitle).
 
-- **Standaard** (`showBack: false`) — toont "Instellingen" en "Nieuwe registratie" knoppen
-- **Back-modus** (`showBack: true`) — toont een terug-knop + optionele subtitle; geen actieknoppen
+## Relaties
+- **Gebruikt door:** VerwachtePersonenView
+- **Gebruikt:** BaseButton, KolomInstellingenPanel
+
+## Gebruik
 
 ```vue
 <!-- Standaard -->
 <PageHeader title="Verwachte personen" />
 
-<!-- Back-modus (bijv. detail-/actie-pagina's) -->
+<!-- Back-modus -->
 <PageHeader
   title="Credential koppelen"
   subtitle="Jan de Vries · Bedrijf BV"
@@ -18,22 +21,32 @@ Paginatitel + actieknoppen voor de huidige view. Heeft twee modi:
 />
 ```
 
-| Prop       | Type      | Default                 | Beschrijving                                                              |
-| ---------- | --------- | ----------------------- | ------------------------------------------------------------------------- |
-| `title`    | `string`  | `'Verwachte personen'`  | Paginatitel                                                               |
-| `subtitle` | `string`  | `''`                    | Optionele subtitel (bijv. persoonsnaam). Alleen zichtbaar in back-modus.  |
-| `showBack` | `boolean` | `false`                 | Schakel terug-knop in; verbergt actieknoppen                              |
+## Props
 
-| Event  | Payload | Beschrijving                              |
-| ------ | ------- | ----------------------------------------- |
-| `back` | —       | Terug-knop geklikt (alleen in back-modus) |
+| Prop | Type | Default | Beschrijving |
+|------|------|---------|-------------|
+| `title` | `String` | `'Verwachte personen'` | Paginatitel |
+| `subtitle` | `String` | `''` | Optionele subtitel (bijv. persoonsnaam). Alleen zichtbaar in back-modus. |
+| `showBack` | `Boolean` | `false` | Schakel terug-knop in; verbergt actieknoppen |
 
-Acties ("Instellingen", "Nieuwe registratie") worden intern afgehandeld via `useToast` en `useColumnStore` — alleen beschikbaar in standaardmodus.
+## Events
+
+| Event | Payload | Beschrijving |
+|-------|---------|-------------|
+| `back` | — | Terug-knop geklikt (alleen in back-modus) |
+
+## Gedrag
+
+- **Standaard** (`showBack: false`) — toont "Instellingen" en "Nieuwe registratie" knoppen.
+- **Back-modus** (`showBack: true`) — toont terug-knop + optionele subtitle; geen actieknoppen.
+- **Instellingen** — outlined button, opent dropdown met "Kolominstellingen" (opent KolomInstellingenPanel) en "Opgeslagen set toepassen" (submenu). Intern via `useColumnStore`.
+- **Nieuwe registratie** — filled button, opent dropdown: Bezoeker registreren, Contractor registreren en autoriseren, divider, Bezoeker(s) uploaden, Contractor(s) uploaden.
+- Titel: `40px / 700`, `var(--p700)`, `letter-spacing: -0.4px`, `line-height: 48px`.
 
 ## Design Tokens
 
 | Element | Token | Waarde |
-| --- | --- | --- |
+|---------|-------|--------|
 | Titel kleur | `--p700` | `#1a7a8a` |
 | Titel font-size | — | `40px` |
 | Titel letter-spacing | — | `-0.4px` |
@@ -47,34 +60,3 @@ Acties ("Instellingen", "Nieuwe registratie") worden intern afgehandeld via `use
 | Menu shadow | `--shadow-m` | `0px 4px 16px -2px rgba(17,19,19,0.16)` |
 | Menu item hover | `--n50` | `#f8fafb` |
 | Actie-groep gap | `--sp-s` | `8px` |
-
-## Titel
-
-`40px / 700`, `var(--p700)`, `letter-spacing: -0.4px`, `line-height: 48px`
-
-## Instellingen-knop
-
-```vue
-<BaseButton variant="outlined" size="lg" icon="expand_more" icon-position="right">Instellingen</BaseButton>
-```
-
-Zie [BaseButton.md](BaseButton.md). Opent een custom dropdown met KolomInstellingenPanel en submenu voor opgeslagen sets. Volledige spec: [Settings.md](Settings.md).
-
-## Nieuwe registratie
-
-```vue
-<BaseButton variant="filled" size="lg" icon="expand_more" icon-position="right">Nieuwe registratie</BaseButton>
-```
-
-Zie [BaseButton.md](BaseButton.md). Bij klik opent een `<ActionMenu>` als dropdown — zie [ActionMenu.md](ActionMenu.md).
-
-Dropdown-opties:
-```js
-[
-  { value: 'bezoeker',           label: 'Bezoeker registreren' },
-  { value: 'contractor',         label: 'Contractor registreren en autoriseren' },
-  { type: 'divider' },
-  { value: 'upload-bezoekers',   label: 'Bezoeker(s) uploaden' },
-  { value: 'upload-contractors', label: 'Contractor(s) uploaden' },
-]
-```
