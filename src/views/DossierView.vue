@@ -68,7 +68,7 @@ function handleTableAction({ row, action }) {
 }
 
 function handleAnnulerenConfirm({ person: p }) {
-  show('Geannuleerd', `De aankomst van ${person.value?.naam} is geannuleerd.`)
+  show(null, `De aankomst van ${person.value?.naam} is geannuleerd.`)
 }
 
 function handleAankomstWijzigenConfirm({ person: p, datum, aankomsttijd }) {
@@ -76,7 +76,7 @@ function handleAankomstWijzigenConfirm({ person: p, datum, aankomsttijd }) {
     aankomstWijzigenRow.value.aankomstdatum = datum
     aankomstWijzigenRow.value.aankomsttijd  = aankomsttijd
   }
-  show('Bezoek gewijzigd', `Aankomst gewijzigd naar ${datum} om ${aankomsttijd}.`)
+  show(null, `Aankomst gewijzigd naar ${datum} om ${aankomsttijd}.`)
 }
 
 // Mijn acties — same for both tabs
@@ -86,7 +86,7 @@ const mijnActies = [
 ]
 
 function handleMijnActie(value) {
-  show('Actie', `${value} wordt uitgevoerd.`)
+  show(null, `${value} wordt uitgevoerd.`)
 }
 </script>
 

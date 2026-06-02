@@ -8,7 +8,7 @@ const emit = defineEmits(['dismiss'])
 <template>
   <div class="toast">
     <div class="toast-content">
-      <div class="toast-title">{{ toast.title }}</div>
+      <div v-if="toast.title" class="toast-title">{{ toast.title }}</div>
       <div v-if="toast.message" class="toast-message">{{ toast.message }}</div>
     </div>
     <button class="toast-close" @click="emit('dismiss', toast.id)">

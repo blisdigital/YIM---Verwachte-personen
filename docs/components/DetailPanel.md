@@ -58,18 +58,25 @@ Modal die gecentreerd in het scherm verschijnt bij klik op een tabelrij. Toont a
 ```
 ┌──────────────────────────────────────────────┐  ← 860px breed, gecentreerd
 │ Sophie van der Berg ★                   [✕]  │  ← panel-header
-│ Bezoeker • CleanPro Services BV              │
+│ Bezoeker • CleanPro Services BV              │  ← contractor: "Contractor • Warehouse • BedrijfX BV"
 ├──────────────────────────────────────────────┤
 │ Bezoekgegevens                               │  ↑
 │ ┌────────────────────────────────────────┐   │
 │ │ Status          ● Verwacht             │   │  panel-body
-│ │ Datum           08/06/2026 (vandaag)   │   │  overflow-y: auto
-│ │ Aankomsttijd    13:00                  │   │
-│ │ Vertrektijd     14:00                  │   │
+│ │ Datum           08/06 – 09/06/2026     │   │  overflow-y: auto
+│ │ Tijd            13:00 – 14:00          │   │
 │ │ Locatie(s)      [Hoofdkantoor Shell]   │   │
-│ │ VIP             ★                      │   │
 │ │ Telefoonnummer  (+31) 6 239021203      │   │
 │ │ E-mailadres     s.vanderberg@x.nl      │   │
+│ └────────────────────────────────────────┘   │
+│ Credential                                   │
+│ ┌────────────────────────────────────────┐   │
+│ │ Credential type   QR-code        (ro)  │   │  ← scenario 1: printbaar
+│ │ Credential nr     [______________]     │   │  ← invoerveld
+│ │ Geldig van        [__/__/____]         │   │  ← datumveld
+│ │ Geldig tot        [__/__/____]         │   │  ← datumveld
+│ │ Status            ● Niet actief        │   │
+│ │ Accessoire        Lanyard blauw  (ro)  │   │
 │ └────────────────────────────────────────┘   │
 │ Compliance                                   │
 │ ┌────────────────────────────────────────┐   │
@@ -82,12 +89,6 @@ Modal die gecentreerd in het scherm verschijnt bij klik op een tabelrij. Toont a
 │ │ Naam contactpersoon  Mark Dekker       │   │
 │ │ Telefoonnummer       (+31) 6 12235678  │   │
 │ │ E-mailadres          m.dekker@x.nl [✉] │   │
-│ └────────────────────────────────────────┘   │
-│ Credential                                   │
-│ ┌────────────────────────────────────────┐   │
-│ │ Credential type   QR-code              │   │
-│ │ Credential nummer -                    │   │
-│ │ Status            ● Niet actief        │   │
 │ └────────────────────────────────────────┘   │  ↓
 ├──────────────────────────────────────────────┤
 │ [Bekijk dossier]     [Credential activeren] [Persoon aanmelden ↑] │
@@ -113,7 +114,7 @@ Modal die gecentreerd in het scherm verschijnt bij klik op een tabelrij. Toont a
 ### Header
 
 - Naam: `24px / 700 var(--p700)`, line-height: 32px, letter-spacing: -0.12px — met `star`-icoon (24px, `var(--vip-border)`) rechts van naam als VIP
-- Subtitel: `14px / 600 var(--p500)`, line-height: 20px, letter-spacing: 0.14px — formaat: `persoontype • bedrijf`
+- Subtitel: `14px / 600 var(--p500)`, line-height: 20px, letter-spacing: 0.14px — formaat: `persoontype • bedrijf`. Bij contractors (persoontype ≠ Bezoeker): `Contractor • contractortype • bedrijf` (bijv. `"Contractor • Warehouse • BedrijfX BV"`)
 - Header-rechts: `<IconButton icon="close" size="lg">` (48×48px, `border-radius: 360px`, ghost)
 - Header-border-bottom: `1px solid var(--n400)`
 - Header-padding: `16px`
@@ -135,18 +136,19 @@ Elke sectie bevat een sectietitel + een info-list kaart. Secties gescheiden door
 
 | Sectie | Rijen | Conditioneel |
 |--------|-------|--------------|
-| Bezoekgegevens | Status, Datum, Aankomsttijd, Vertrektijd, Locatie(s), VIP, Telefoonnummer, E-mailadres | Vertrektijd alleen als `vertrekTijd` gevuld; VIP-rij alleen als `vip === true`; Telefoon/email alleen als veld bestaat |
+| Bezoekgegevens | Status, Datum, Tijd, Locatie(s), Telefoonnummer, E-mailadres | Datum toont bereik als `vertrekDatum` afwijkt van `datumVanaf`; Tijd toont bereik als `vertrekTijd` gevuld; Telefoon/email alleen als veld bestaat |
+| Credential | *Zie sectie "Credential blok — scenario's"* | Velden afhankelijk van credential-scenario |
 | Compliance | Dossier, E-learning | — |
 | Contactpersoon | Naam contactpersoon, Telefoonnummer, E-mailadres | Telefoon/email alleen als veld bestaat |
-| Credential | Credential type, Credential nummer, Status | Credential type + nummer alleen als gevuld |
+
+> **Verwijderd uit Bezoekgegevens:** VIP-rij wordt niet meer getoond. VIP-ster in de header (naast naam) blijft behouden.
 
 **Speciale rij-elementen:**
 
 - **Status-rij (Bezoekgegevens):** StatusDot 12px + label — kleuren en labels conform `status`-schema in `StatusDot`
-- **Datum-rij:** tekst `DD/MM/YYYY` + suffix `(vandaag)` wanneer datum = vandaag. Bron: `datumVanaf`
-- **Aankomsttijd / Vertrektijd:** tekst `HH:mm`. Bron: `aankomsttijd` / `vertrekTijd`
+- **Datum-rij:** Gecombineerd veld. Één datum: `DD/MM/YYYY` + suffix `(vandaag)`. Bereik (vertrekdatum ≠ aankomstdatum): `DD/MM – DD/MM/YYYY` (bijv. `08/06 – 09/06/2026`). Bron: `datumVanaf` + `vertrekDatum`
+- **Tijd-rij:** Gecombineerd veld. Alleen aankomsttijd: `HH:mm`. Met vertrektijd: `HH:mm – HH:mm` (bijv. `13:00 – 14:00`). Bron: `aankomsttijd` + `vertrekTijd`
 - **Locatie chips:** witte pills per locatie — `bg: var(--n0)`, `border: 1px solid var(--n300)`, `border-radius: var(--r-s)`, `padding: 4px 8px`, `14px / 600 var(--n800)`
-- **VIP-rij:** `star` Material Icon 20px in `var(--vip-border)`
 - **Telefoonnummer (Bezoekgegevens):** klikbare `tel:`-link, blauw (`var(--info)`), SemiBold — **geen** icon button
 - **E-mailadres (Bezoekgegevens):** klikbare `mailto:`-link, blauw (`var(--info)`), SemiBold, underlined — **geen** icon button
 - **Compliance rijen:** icon 20px + tekst; `check_circle` groen (`var(--ok)`) bij ok, `warning` oranje (`var(--warn)`) bij niet ok, `remove_circle_outline` grijs bij niet-vereist
@@ -154,6 +156,72 @@ Elke sectie bevat een sectietitel + een info-list kaart. Secties gescheiden door
 - **Telefoonnummer (Contactpersoon):** klikbare `tel:`-link, blauw (`var(--info)`), SemiBold, underlined — **geen** icon button
 - **E-mailadres (Contactpersoon):** klikbare `mailto:`-link, blauw (`var(--info)`), SemiBold, underlined + `<IconButton icon="email" size="sm">` rechts in de rij (bg: `var(--n0)`, border: `var(--n400)`, `border-radius: var(--r-s)`, padding: 8px, icon 16px). Klik op dit icon button opent `InformeerContactpersoonModal` **direct op scherm 2** (e-mail opstellen), scherm 1 wordt overgeslagen. Emits action `'informeer-contactpersoon-mail'`.
 - **Credential status-dot:** 12px cirkel + label — gebruikt `credentialStatus`-veld; conform `PassStatusDot` kleurmapping en labels
+
+### Credential blok — scenario's
+
+Het credential blok bevat **invoervelden** waarmee direct een credential gekoppeld kan worden. Geen aparte pop-up. De getoonde velden zijn afhankelijk van het type credential.
+
+#### Scenario 1 — Printbare credential (QR-code)
+
+| Veld | Label | Component | Beschrijving |
+|------|-------|-----------|-------------|
+| Credential type | Credential type | `CustomSelect` `:disabled="true"` | Toont het type (bijv. `"QR-code"`). Disabled dropdown met chevron |
+| Credential nummer | Credential nummer | `InputField` | Placeholder: `"Voer credential nummer in"` |
+| Periode geldigheid | Periode geldigheid | 2× `FormDateField` met `/` separator | Twee datumvelden naast elkaar (van / tot) |
+| Status | Status | PassStatusDot + label | Read-only |
+| Credential accessoires | Credential accessoires | read-only info-rij | Bijv. `"Pashouder"` — label + tekst, geen image |
+
+Alle rijen in het credential blok behouden de standaard achtergrondkleur `var(--p50)`, inclusief rijen met invoervelden.
+
+#### Scenario 2 — Fysieke, vaste credential
+
+| Veld | Label | Component | Beschrijving |
+|------|-------|-----------|-------------|
+| Credential type | Credential type | `CustomSelect` `:disabled="true"` | Disabled dropdown met chevron (bijv. `"Vaste pas"`) |
+| Credential nummer | Credential nummer | `InputField` | Placeholder: `"Voer credential nummer in"` |
+| Periode geldigheid | Periode geldigheid | `seg-group` / `seg-btn` | Keuze: `Permanent` of `Tijdelijk` |
+| Datum vanaf | Datum vanaf | `FormDateField` | Altijd zichtbaar bij fysiek scenario |
+| Datum tot en met | Datum tot en met | `FormDateField` | Alleen zichtbaar bij keuze `Tijdelijk` |
+| Status | Status | PassStatusDot + label | Read-only |
+| Credential accessoires | Credential accessoires | read-only info-rij | Label + tekst, geen image |
+
+Bij keuze `Permanent`: alleen "Datum vanaf". Bij keuze `Tijdelijk`: "Datum vanaf" + "Datum tot en met".
+
+Alle rijen behouden standaard achtergrondkleur `var(--p50)`.
+
+**Button group styling:** segmented button group conform `CredentialActiverenModal`-stijl (`seg-group`/`seg-btn`). Twee opties: `Permanent` | `Tijdelijk`.
+
+#### Scenario 3 — Meerdere credentials beschikbaar
+
+| Veld | Type | Beschrijving |
+|------|------|-------------|
+| Credential type | `CustomSelect` (actief) | Gebruiker kiest credential type |
+| *(overige velden)* | *(afhankelijk van keuze)* | Na selectie: toon velden conform scenario 1 of 2 |
+| Credential accessoires | read-only | Label + tekst, geen image — altijd als laatste |
+
+Credential type is hier een actief `CustomSelect` dropdown. Na keuze worden de bijbehorende velden getoond (printbaar → scenario 1 velden, fysiek → scenario 2 velden).
+
+#### Credential accessoires-veld
+
+In alle scenario's als **laatste veld** in het credential blok. Read-only, vormgegeven als standaard info-rij: label links (`"Credential accessoires"`), waarde rechts. Geen image placeholder.
+
+### Credential activeren — knoplogica
+
+De "Credential activeren" knop in de footer volgt deze regels:
+
+| Conditie | Knopstatus |
+|----------|-----------|
+| Credential velden niet (volledig) ingevuld | `disabled` |
+| **Printbaar** — velden ingevuld, nog niet geprint/gemaild | `disabled` — gebruiker moet eerst printen of mailen |
+| **Printbaar** — velden ingevuld én geprint/gemaild | `enabled` |
+| **Fysiek** — velden ingevuld | `enabled` |
+| Credential geactiveerd (`credentialStatus === 'actief'`) | Knop wordt **"Credential ontkoppelen"** (outlined, variant `outlined`) |
+
+Bij printbare credentials verschijnt naast "Credential activeren" een extra knop **"Printen"** en/of **"Mailen"**. Pas na uitvoer van printen of mailen wordt "Credential activeren" enabled.
+
+Bij fysieke credentials wordt "Credential activeren" direct enabled zodra alle invoervelden gevuld zijn.
+
+Na succesvolle activatie: "Credential activeren" verdwijnt, wordt vervangen door **"Credential ontkoppelen"** (outlined).
 
 ### Footer
 
@@ -177,9 +245,9 @@ Footer-knoppen: `<BaseButton>` zonder iconen, `size="md"`. Twee groepen:
 
 **Credential-knoppen condities:**
 
-- **Credential activeren** — `credentialStatus === 'niet-actief'`; disabled bij non-compliant (Verwacht/Nog niet aangekomen/Niet aangekomen)
-- **Credential printen / mailen** — `credentialType === 'QR-code'` én `credentialStatus !== 'niet-actief'`
-- **Credential ontkoppelen** — `credentialStatus !== 'niet-actief'`
+- **Credential activeren** — `credentialStatus === 'niet-actief'`; disabled zolang invoervelden niet volledig ingevuld. Bij printbare credentials: ook disabled totdat credential geprint of gemaild is. Zie sectie *"Credential activeren — knoplogica"*
+- **Credential printen / mailen** — `credentialCategorie === 'printbaar'` én invoervelden ingevuld; verschijnt naast "Credential activeren"
+- **Credential ontkoppelen** — `credentialStatus === 'actief'`; vervangt "Credential activeren" na succesvolle activatie
 - **E-learning code** — `elearning === 'niet-behaald'`; opent ElearningUitnodigingModal
 - **Persoon aanmelden** — disabled bij non-compliant
 - **Persoon afmelden** — Aangemeld status; altijd enabled
@@ -196,9 +264,19 @@ Naast het bestaande model zijn de volgende velden toegevoegd:
 
 | Veld | Type | Beschrijving |
 |------|------|--------------|
-| `vertrekTijd` | `string \| null` | Geplande vertrektijd `HH:mm` (zelfde datum als `datumVanaf`) |
+| `vertrekTijd` | `string \| null` | Geplande vertrektijd `HH:mm` |
+| `vertrekDatum` | `string \| null` | Geplande vertrekdatum `DD-MM-YYYY`. Alleen tonen als afwijkt van `datumVanaf` |
 | `contactEmail` | `string \| null` | E-mailadres contactpersoon |
 | `credentialType` | `string \| null` | Type credential (bijv. `"QR-code"`, `"Bezoekerspas"`, `"Contractorpas"`) |
+| `credentialCategorie` | `'printbaar' \| 'fysiek'` | Bepaalt welk invoer-scenario getoond wordt |
+| `beschikbareCredentials` | `string[] \| null` | Bij meerdere opties: lijst van credential types voor dropdown (scenario 3) |
 | `pasnummer` | `string \| null` | Credential nummer — UI-label: `"Credential nummer"` |
+| `credentialGeldigVan` | `string \| null` | Startdatum geldigheid `DD-MM-YYYY` (printbaar scenario) |
+| `credentialGeldigTot` | `string \| null` | Einddatum geldigheid `DD-MM-YYYY` (printbaar + fysiek tijdelijk) |
+| `credentialDatumVanaf` | `string \| null` | Datum vanaf `DD-MM-YYYY` (fysiek scenario — altijd zichtbaar) |
+| `credentialDuur` | `'permanent' \| 'tijdelijk' \| null` | Keuze duur bij fysieke credential |
+| `credentialGeprint` | `boolean` | Of credential al geprint/gemaild is (voor activatie-conditie) |
+| `accessoire` | `string \| null` | Bijv. `"Lanyard blauw"` — read-only in credential blok |
 
 > **Verwijderd uit UI:** de Parkeerplaats-rij en Parkeren-sectie verschijnen niet meer in het detail panel. Parkeervelden blijven in het datamodel maar worden niet getoond.
+> **Verwijderd uit UI:** VIP-rij in Bezoekgegevens. VIP-ster blijft zichtbaar in de header naast de naam.

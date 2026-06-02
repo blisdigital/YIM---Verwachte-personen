@@ -54,12 +54,27 @@ export const usePersonenStore = defineStore('personen', () => {
     }
   }
 
-  function activeerCredential(id, credentialType, pasnummer) {
+  function activeerCredential(id, { credentialType, pasnummer, geldigVan, geldigTot, duur }) {
     const person = personen.value.find(p => p.id === id)
     if (person) {
-      person.credentialStatus = 'actief'
-      person.credentialType   = credentialType
-      person.pasnummer        = pasnummer || String(Math.floor(10000000000000 + Math.random() * 89999999999999))
+      person.credentialStatus    = 'actief'
+      person.credentialType      = credentialType
+      person.pasnummer           = pasnummer || String(Math.floor(10000000000000 + Math.random() * 89999999999999))
+      person.credentialGeldigVan = geldigVan ?? null
+      person.credentialGeldigTot = geldigTot ?? null
+      person.credentialDuur      = duur ?? null
+    }
+  }
+
+  function ontkoppelCredential(id) {
+    const person = personen.value.find(p => p.id === id)
+    if (person) {
+      person.credentialStatus    = 'niet-actief'
+      person.credentialType      = null
+      person.pasnummer           = null
+      person.credentialGeldigVan = null
+      person.credentialGeldigTot = null
+      person.credentialDuur      = null
     }
   }
 
@@ -72,5 +87,5 @@ export const usePersonenStore = defineStore('personen', () => {
     }
   }
 
-  return { personen, loading, error, fetch, updateStatus, updateCredentialStatus, activeerCredential, updateAankomst }
+  return { personen, loading, error, fetch, updateStatus, updateCredentialStatus, activeerCredential, ontkoppelCredential, updateAankomst }
 })

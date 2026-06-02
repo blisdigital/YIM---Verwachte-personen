@@ -6,6 +6,7 @@ const props = defineProps({
   options:    { type: Array,   default: () => [] }, // [{ value, label }]
   placeholder:{ type: String,  default: 'Kies een optie' },
   disabled:   { type: Boolean, default: false },
+  size:       { type: String,  default: 'md' }, // 'sm' (32px) | 'md' (40px)
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -60,7 +61,7 @@ onBeforeUnmount(()  => document.removeEventListener('click', onClickAway))
 </script>
 
 <template>
-  <div class="custom-select" :class="{ 'is-open': open, 'is-disabled': disabled }">
+  <div class="custom-select" :class="{ 'is-open': open, 'is-disabled': disabled, 'is-sm': size === 'sm' }">
     <button
       ref="triggerRef"
       type="button"
@@ -128,6 +129,11 @@ onBeforeUnmount(()  => document.removeEventListener('click', onClickAway))
   background: var(--n50);
   box-shadow: none;
   cursor: default;
+}
+
+.is-sm .select-trigger {
+  height: 32px;
+  padding: 4px 8px 4px 8px;
 }
 
 .trigger-label {

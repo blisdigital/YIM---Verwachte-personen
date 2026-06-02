@@ -8,39 +8,16 @@ const props = defineProps({
   label:      { type: String, default: null },
   required:   { type: Boolean, default: false },
   id:         { type: String, default: null },
+  size:       { type: String, default: 'md' }, // 'sm' (32px) | 'md' (40px)
 })
 const emit = defineEmits(['update:modelValue'])
 
 const open        = ref(false)
 const triggerRef  = ref(null)
 const popoverRef  = ref(null)
-const popoverStyle = ref({})
-
-// ── Positie berekenen ────────────────────────────────────────
-const CAL_HEIGHT = 320 // conservatieve schatting kalender hoogte
-const CAL_WIDTH  = 280
-
-function reposition() {
-  if (!triggerRef.value) return
-  const rect  = triggerRef.value.getBoundingClientRect()
-  const popW  = Math.max(rect.width, CAL_WIDTH)
-  const spaceBelow = window.innerHeight - rect.bottom - 8
-  const goAbove    = spaceBelow < CAL_HEIGHT && rect.top > CAL_HEIGHT
-
-  let left = rect.left
-  if (left + popW > window.innerWidth - 8) left = window.innerWidth - popW - 8
-
-  popoverStyle.value = {
-    top:   goAbove ? `${rect.top - CAL_HEIGHT - 4}px` : `${rect.bottom + 4}px`,
-    left:  `${left}px`,
-    width: `${popW}px`,
-  }
-}
 
 function toggle() {
-  if (open.value) { open.value = false; return }
-  reposition()
-  open.value = true
+  open.value = !open.value
 }
 
 function onSelect(iso) {
@@ -76,7 +53,7 @@ const displayDate = isoToDisplay
       type="button"
       :id="id"
       class="fdf-trigger"
-      :class="{ 'fdf-trigger--open': open }"
+      :class="{ 'fdf-trigger--open': open, 'fdf-trigger--sm': size === 'sm' }"
       @click="toggle"
     >
       <span class="fdf-value" :class="{ 'fdf-placeholder': !modelValue }">
@@ -87,20 +64,17 @@ const displayDate = isoToDisplay
       </div>
     </button>
 
-    <!-- Floating kalender via Teleport — valt buiten modal DOM -->
-    <Teleport to="body">
-      <div
-        v-if="open"
-        ref="popoverRef"
-        class="fdf-popover"
-        :style="popoverStyle"
-      >
-        <DatePickerCalendar
-          :model-value="modelValue"
-          @update:model-value="onSelect"
-        />
-      </div>
-    </Teleport>
+    <!-- Kalender popover — inline, scrollt mee -->
+    <div
+      v-if="open"
+      ref="popoverRef"
+      class="fdf-popover"
+    >
+      <DatePickerCalendar
+        :model-value="modelValue"
+        @update:model-value="onSelect"
+      />
+    </div>
   </div>
 </template>
 
@@ -110,6 +84,7 @@ const displayDate = isoToDisplay
   flex-direction: column;
   gap: 8px;
   width: 100%;
+  position: relative;
 }
 
 .fdf-label {
@@ -141,6 +116,21 @@ const displayDate = isoToDisplay
 .fdf-trigger--open { border-color: var(--p500); }
 .fdf-trigger:focus-visible { outline: 2px solid var(--p500); outline-offset: 2px; }
 
+.fdf-trigger--sm {
+  height: 32px;
+}
+.fdf-trigger--sm .fdf-value {
+  padding: 4px 8px;
+}
+.fdf-trigger--sm .fdf-icon {
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+}
+.fdf-trigger--sm .fdf-icon .mi {
+  font-size: 20px;
+}
+
 .fdf-value {
   flex: 1;
   padding: 8px 12px;
@@ -162,12 +152,12 @@ const displayDate = isoToDisplay
   flex-shrink: 0;
 }
 .fdf-icon .mi { font-size: 24px; color: var(--n700); }
-</style>
 
-<!-- Popover styles: niet scoped want via Teleport buiten component DOM -->
-<style>
 .fdf-popover {
-  position: fixed;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
   background: var(--n0);
   border: 1px solid var(--n300);
   border-radius: var(--r-s);
@@ -175,5 +165,6 @@ const displayDate = isoToDisplay
   padding: 12px;
   z-index: 1100;
   box-sizing: border-box;
+  width: 280px;
 }
 </style>

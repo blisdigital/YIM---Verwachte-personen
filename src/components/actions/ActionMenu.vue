@@ -35,7 +35,7 @@ const credentialActions = computed(() => {
 
   if (credentialStatus === 'niet-actief') {
     return [
-      { value: 'credential-activeren', label: 'Credential activeren' },
+      { value: 'credential-activeren', label: 'Credential koppelen' },
     ]
   }
 

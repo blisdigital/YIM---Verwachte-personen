@@ -1,38 +1,89 @@
 <script setup>
-import { computed, watch } from 'vue'
+import { computed, watch, ref } from 'vue'
 import StatusDot from '@/components/ui/StatusDot.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
+import FormDateField from '@/components/ui/FormDateField.vue'
+import InputField from '@/components/ui/InputField.vue'
+import CustomSelect from '@/components/ui/CustomSelect.vue'
+import { usePersonenStore } from '@/stores/personenStore'
+import { useToast } from '@/composables/useToast'
 
 const props = defineProps({
   person: { type: Object, default: null },
   open: { type: Boolean, default: false },
 })
 const emit = defineEmits(['close', 'action'])
+const store = usePersonenStore()
+const toast = useToast()
 
-const subtitle = computed(() => {
-  if (!props.person) return ''
-  const { persoontype, bedrijf } = props.person
-  return [persoontype, bedrijf].filter(Boolean).join(' • ')
+// ── Local credential form state ──
+const credentialNummer = ref('')
+const credentialGeldigVan = ref('')       // printbaar: van
+const credentialGeldigTot = ref('')       // printbaar: tot / fysiek tijdelijk: tot
+const credentialDatumVanaf = ref('')      // fysiek: datum vanaf
+const credentialDuur = ref('permanent')   // 'permanent' | 'tijdelijk'
+const selectedCredentialType = ref(null)  // scenario 3 keuze
+const credentialGeprint = ref(false)
+const credentialOoitGeactiveerd = ref(false)
+
+// Reset form bij nieuw persoon
+watch(() => props.person?.id, () => {
+  credentialNummer.value = ''
+  credentialGeldigVan.value = ''
+  credentialGeldigTot.value = ''
+  credentialDatumVanaf.value = ''
+  credentialDuur.value = 'permanent'
+  selectedCredentialType.value = null
+  credentialGeprint.value = false
+  credentialOoitGeactiveerd.value = props.person?.credentialStatus === 'actief'
 })
 
-function formatDatum(dateStr) {
+// ── Subtitle ──
+const subtitle = computed(() => {
+  if (!props.person) return ''
+  const { persoontype, contractortype, bedrijf } = props.person
+  if (persoontype === 'Bezoeker') {
+    return [persoontype, bedrijf].filter(Boolean).join(' • ')
+  }
+  return ['Contractor', contractortype, bedrijf].filter(Boolean).join(' • ')
+})
+
+// ── Datum formatting ──
+function parseDateParts(dateStr) {
   if (!dateStr) return null
   const [d, m, y] = dateStr.split('-')
-  const date = new Date(y, m - 1, d)
-  const today = new Date()
-  const isToday = date.toDateString() === today.toDateString()
-  return `${d}/${m}/${y}${isToday ? ' (vandaag)' : ''}`
+  return { d, m, y, date: new Date(y, m - 1, d) }
 }
 
-const datumFormatted = computed(() =>
-  props.person ? formatDatum(props.person.datumVanaf) : null
-)
+const datumFormatted = computed(() => {
+  if (!props.person) return null
+  const van = parseDateParts(props.person.datumVanaf)
+  if (!van) return null
+  const tot = parseDateParts(props.person.vertrekDatum)
+  const today = new Date()
+  const isToday = van.date.toDateString() === today.toDateString()
 
+  if (tot && tot.date.toDateString() !== van.date.toDateString()) {
+    return `${van.d}/${van.m} – ${tot.d}/${tot.m}/${tot.y}`
+  }
+  return `${van.d}/${van.m}/${van.y}${isToday ? ' (vandaag)' : ''}`
+})
+
+const tijdFormatted = computed(() => {
+  if (!props.person) return null
+  const { aankomsttijd, vertrekTijd } = props.person
+  if (!aankomsttijd) return null
+  if (vertrekTijd) return `${aankomsttijd} – ${vertrekTijd}`
+  return aankomsttijd
+})
+
+// ── Compliance ──
 const isCompliant = computed(() => {
   if (!props.person) return true
   return props.person.dossier === 'compleet' && props.person.elearning !== 'niet-behaald'
 })
 
+// ── Credential status ──
 const credentialStatusLabel = computed(() => {
   if (!props.person) return ''
   return {
@@ -55,56 +106,121 @@ const credentialStatusColor = computed(() => {
   }[props.person.credentialStatus] || 'var(--n500)'
 })
 
+// ── Credential scenario detection ──
+const credentialOpties = computed(() => props.person?.credentialOpties ?? [])
+const isMultiCredential = computed(() => credentialOpties.value.length > 1)
+
+const activeOptie = computed(() => {
+  if (!props.person) return null
+  if (isMultiCredential.value) {
+    return credentialOpties.value.find(o => o.label === selectedCredentialType.value) || null
+  }
+  return credentialOpties.value[0] || null
+})
+
+const credentialTypeOptions = computed(() =>
+  credentialOpties.value.map(o => ({ value: o.label, label: o.label }))
+)
+
+const activeCategorie = computed(() => activeOptie.value?.categorie || null)
+const isPrintbaar = computed(() => activeCategorie.value === 'printbaar')
+const isFysiek = computed(() => activeCategorie.value === 'fysiek')
+
+const activeAccessoire = computed(() => {
+  const acc = activeOptie.value?.accessoires
+  return acc?.length ? acc[0] : null
+})
+
+// ── Credential form completeness ──
+const credentialVeldenCompleet = computed(() => {
+  if (!activeOptie.value) return false
+  if (!credentialNummer.value) return false
+
+  if (isPrintbaar.value) {
+    return !!(credentialGeldigVan.value && credentialGeldigTot.value)
+  }
+  if (isFysiek.value) {
+    if (!credentialDatumVanaf.value) return false
+    if (credentialDuur.value === 'tijdelijk' && !credentialGeldigTot.value) return false
+    return true
+  }
+  return false
+})
+
+// ── Footer actions ──
 const leftActions = computed(() => {
   if (!props.person) return []
   return [{ value: 'bekijk-dossier', label: 'Bekijk dossier' }]
 })
 
-const isPrintbaar = computed(() => {
-  return props.person?.credentialType === 'QR-code'
-})
-
 const rightActions = computed(() => {
   if (!props.person) return []
   const s = props.person.status
-  const isLinked = props.person.credentialStatus !== 'niet-actief'
+  const isActief = props.person.credentialStatus === 'actief'
   const compliant = isCompliant.value
   const elearningNegatief = props.person.elearning === 'niet-behaald'
 
-  if (s === 'Verwacht' || s === 'Nog niet aangekomen') {
-    const actions = []
-    if (!isLinked)
-      actions.push({ value: 'credential-activeren', label: 'Credential activeren', disabled: !compliant })
-    if (elearningNegatief)
-      actions.push({ value: 'elearning-code', label: 'E-learning code' })
+  if (s === 'Afgemeld' || s === 'Geannuleerd') return []
+
+  const actions = []
+
+  // Credential acties
+  if (isActief) {
+    actions.push({ value: 'credential-ontkoppelen', label: 'Credential ontkoppelen' })
+  } else if (!credentialOoitGeactiveerd.value) {
+    if (isPrintbaar.value) {
+      actions.push({ value: 'credential-mailen', label: 'Mailen', disabled: !credentialVeldenCompleet.value })
+      actions.push({ value: 'credential-printen', label: 'Printen', disabled: !credentialVeldenCompleet.value })
+    }
+    // E-learning code vóór credential koppelen
+    if (elearningNegatief) {
+      actions.push({ value: 'elearning-uitnodiging', label: 'E-learning code' })
+    }
+
+    const activeerDisabled = !credentialVeldenCompleet.value
+      || !compliant
+      || (isPrintbaar.value && !credentialGeprint.value)
+    actions.push({ value: 'credential-activeren', label: 'Credential koppelen', disabled: activeerDisabled })
+  }
+
+  // Primaire actie
+  if (s === 'Verwacht' || s === 'Nog niet aangekomen' || s === 'Niet aangekomen') {
     actions.push({ value: 'inchecken', label: 'Persoon aanmelden', filled: true, disabled: !compliant })
-    return actions
   }
   if (s === 'Aangemeld') {
-    const actions = []
-    if (!isLinked) {
-      actions.push({ value: 'credential-activeren', label: 'Credential activeren' })
-    } else {
-      if (isPrintbaar.value) {
-        actions.push({ value: 'credential-printen', label: 'Credential printen' })
-        actions.push({ value: 'credential-mailen', label: 'Credential mailen' })
-      }
-      actions.push({ value: 'credential-ontkoppelen', label: 'Credential ontkoppelen' })
-    }
     actions.push({ value: 'afmelden', label: 'Persoon afmelden', filled: true })
-    return actions
   }
-  if (s === 'Niet aangekomen') {
-    const actions = []
-    if (!isLinked)
-      actions.push({ value: 'credential-activeren', label: 'Credential activeren', disabled: !compliant })
-    if (elearningNegatief)
-      actions.push({ value: 'elearning-code', label: 'E-learning code' })
-    actions.push({ value: 'inchecken', label: 'Persoon aanmelden', filled: true, disabled: !compliant })
-    return actions
-  }
-  return []
+
+  return actions
 })
+
+function onAction(actionValue) {
+  if (actionValue === 'credential-printen' || actionValue === 'credential-mailen') {
+    credentialGeprint.value = true
+  }
+
+  if (actionValue === 'credential-activeren') {
+    const type = isMultiCredential.value ? selectedCredentialType.value : activeOptie.value?.label
+    store.activeerCredential(props.person.id, {
+      credentialType: type,
+      pasnummer: credentialNummer.value,
+      geldigVan: isPrintbaar.value ? credentialGeldigVan.value : credentialDatumVanaf.value,
+      geldigTot: credentialGeldigTot.value || null,
+      duur: isFysiek.value ? credentialDuur.value : null,
+    })
+    credentialOoitGeactiveerd.value = true
+    toast.show(null, `${type} is gekoppeld aan ${props.person.naam}.`)
+    return
+  }
+
+  if (actionValue === 'credential-ontkoppelen') {
+    store.updateCredentialStatus(props.person.id, 'niet-actief')
+    toast.show(null, `Credential is ontkoppeld van ${props.person.naam}.`)
+    return
+  }
+
+  emit('action', { person: props.person, action: actionValue })
+}
 
 watch(() => props.open, (isOpen) => {
   document.body.style.overflow = isOpen ? 'hidden' : ''
@@ -147,22 +263,14 @@ watch(() => props.open, (isOpen) => {
               <span class="row-value">{{ datumFormatted }}</span>
             </div>
             <div class="info-row">
-              <span class="row-label">Aankomsttijd</span>
-              <span class="row-value">{{ person.aankomsttijd }}</span>
-            </div>
-            <div v-if="person.vertrekTijd" class="info-row">
-              <span class="row-label">Vertrektijd</span>
-              <span class="row-value">{{ person.vertrekTijd }}</span>
+              <span class="row-label">Tijd</span>
+              <span class="row-value">{{ tijdFormatted }}</span>
             </div>
             <div class="info-row">
               <span class="row-label">Locatie(s)</span>
               <div class="location-chips">
                 <span v-for="loc in person.locaties" :key="loc" class="location-chip">{{ loc }}</span>
               </div>
-            </div>
-            <div v-if="person.vip" class="info-row">
-              <span class="row-label">VIP</span>
-              <span class="mi vip-star-row">star</span>
             </div>
             <div v-if="person.telefoonnummer" class="info-row">
               <span class="row-label">Telefoonnummer</span>
@@ -172,6 +280,162 @@ watch(() => props.open, (isOpen) => {
               <span class="row-label">E-mailadres</span>
               <a :href="`mailto:${person.emailadres}`" class="action-link">{{ person.emailadres }}</a>
             </div>
+          </div>
+        </section>
+
+        <!-- Credential -->
+        <section class="panel-section">
+          <h3 class="section-title">Credential</h3>
+          <div class="info-list">
+
+            <!-- ═══ ACTIEF: read-only weergave ═══ -->
+            <template v-if="person.credentialStatus === 'actief' || credentialOoitGeactiveerd">
+              <div class="info-row">
+                <span class="row-label">Credential type</span>
+                <span class="row-value">{{ person.credentialType || '-' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="row-label">Credential nummer</span>
+                <span class="row-value">{{ person.pasnummer || '-' }}</span>
+              </div>
+              <div v-if="person.credentialGeldigVan || person.credentialGeldigTot" class="info-row">
+                <span class="row-label">Periode geldigheid</span>
+                <span class="row-value">{{ person.credentialGeldigVan || '' }}{{ person.credentialGeldigTot ? ' / ' + person.credentialGeldigTot : '' }}</span>
+              </div>
+              <div v-if="person.credentialDuur" class="info-row">
+                <span class="row-label">Periode geldigheid</span>
+                <span class="row-value">{{ person.credentialDuur === 'permanent' ? 'Permanent' : 'Tijdelijk' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="row-label">Credential status</span>
+                <div class="pass-status">
+                  <span class="pass-dot" :style="{ background: credentialStatusColor }"></span>
+                  <span class="row-value">{{ credentialStatusLabel }}</span>
+                </div>
+              </div>
+              <div v-if="activeAccessoire" class="info-row">
+                <span class="row-label">Credential accessoires</span>
+                <span class="row-value">{{ activeAccessoire }}</span>
+              </div>
+            </template>
+
+            <!-- ═══ NIET-ACTIEF: invoervelden ═══ -->
+            <template v-else>
+              <!-- Credential type: CustomSelect -->
+              <div class="info-row">
+                <span class="row-label">Credential type</span>
+                <CustomSelect
+                  :model-value="isMultiCredential ? selectedCredentialType : (activeOptie?.label ?? null)"
+                  :options="credentialTypeOptions"
+                  :disabled="!isMultiCredential"
+                  size="sm"
+                  placeholder="Kies credential type…"
+                  @update:model-value="selectedCredentialType = $event"
+                />
+              </div>
+
+              <template v-if="activeOptie">
+                <!-- Credential nummer -->
+                <div class="info-row">
+                  <span class="row-label">Credential nummer</span>
+                  <InputField
+                    v-model="credentialNummer"
+                    placeholder="Voer credential nummer in"
+                    size="sm"
+                  />
+                </div>
+
+                <!-- Printbaar: periode geldigheid van/tot -->
+                <template v-if="isPrintbaar">
+                  <div class="info-row">
+                    <span class="row-label">Periode geldigheid</span>
+                    <div class="date-range">
+                      <FormDateField
+                        class="flex-1"
+                        size="sm"
+                        v-model="credentialGeldigVan"
+                      />
+                      <span class="date-sep">/</span>
+                      <FormDateField
+                        class="flex-1"
+                        size="sm"
+                        v-model="credentialGeldigTot"
+                      />
+                    </div>
+                  </div>
+                </template>
+
+                <!-- Fysiek: periode segmented + datumvelden -->
+                <template v-if="isFysiek">
+                  <div class="info-row">
+                    <span class="row-label">Periode geldigheid</span>
+                    <div class="seg-group seg-group--sm">
+                      <button
+                        type="button"
+                        :class="['seg-btn', { active: credentialDuur === 'permanent' }]"
+                        @click="credentialDuur = 'permanent'"
+                      >Permanent</button>
+                      <button
+                        type="button"
+                        :class="['seg-btn', { active: credentialDuur === 'tijdelijk' }]"
+                        @click="credentialDuur = 'tijdelijk'"
+                      >Tijdelijk</button>
+                    </div>
+                  </div>
+                  <div v-if="credentialDuur === 'permanent'" class="info-row">
+                    <span class="row-label">Datum vanaf</span>
+                    <FormDateField
+                      class="flex-1"
+                      size="sm"
+                      v-model="credentialDatumVanaf"
+                    />
+                  </div>
+                  <div v-if="credentialDuur === 'tijdelijk'" class="info-row">
+                    <span class="row-label">Datum vanaf / tot</span>
+                    <div class="date-range">
+                      <FormDateField
+                        class="flex-1"
+                        size="sm"
+                        v-model="credentialDatumVanaf"
+                      />
+                      <span class="date-sep">/</span>
+                      <FormDateField
+                        class="flex-1"
+                        size="sm"
+                        v-model="credentialGeldigTot"
+                      />
+                    </div>
+                  </div>
+                </template>
+
+                <!-- Credential status -->
+                <div class="info-row">
+                  <span class="row-label">Credential status</span>
+                  <div class="pass-status">
+                    <span class="pass-dot" :style="{ background: credentialStatusColor }"></span>
+                    <span class="row-value">{{ credentialStatusLabel }}</span>
+                  </div>
+                </div>
+
+                <!-- Credential accessoires -->
+                <div v-if="activeAccessoire" class="info-row">
+                  <span class="row-label">Credential accessoires</span>
+                  <span class="row-value">{{ activeAccessoire }}</span>
+                </div>
+              </template>
+
+              <!-- Scenario 3 zonder keuze -->
+              <template v-if="!activeOptie">
+                <div class="info-row">
+                  <span class="row-label">Credential status</span>
+                  <div class="pass-status">
+                    <span class="pass-dot" :style="{ background: credentialStatusColor }"></span>
+                    <span class="row-value">{{ credentialStatusLabel }}</span>
+                  </div>
+                </div>
+              </template>
+            </template>
+
           </div>
         </section>
 
@@ -238,28 +502,6 @@ watch(() => props.open, (isOpen) => {
           </div>
         </section>
 
-        <!-- Credential -->
-        <section class="panel-section">
-          <h3 class="section-title">Credential</h3>
-          <div class="info-list">
-            <div class="info-row">
-              <span class="row-label">Credential type</span>
-              <span class="row-value">{{ person.credentialType || '-' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="row-label">Credential nummer</span>
-              <span class="row-value">{{ person.pasnummer || '-' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="row-label">Status</span>
-              <div class="pass-status">
-                <span class="pass-dot" :style="{ background: credentialStatusColor }"></span>
-                <span class="row-value">{{ credentialStatusLabel }}</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
       </div>
 
       <!-- Footer -->
@@ -270,7 +512,7 @@ watch(() => props.open, (isOpen) => {
             :key="act.value"
             variant="outlined"
             size="md"
-            @click="emit('action', { person, action: act.value })"
+            @click="onAction(act.value)"
           >{{ act.label }}</BaseButton>
         </div>
         <div class="footer-right">
@@ -280,7 +522,7 @@ watch(() => props.open, (isOpen) => {
             :variant="act.filled ? 'filled' : 'outlined'"
             size="md"
             :disabled="act.disabled ?? false"
-            @click="emit('action', { person, action: act.value })"
+            @click="onAction(act.value)"
           >{{ act.label }}</BaseButton>
         </div>
       </div>
@@ -416,7 +658,6 @@ watch(() => props.open, (isOpen) => {
 .info-list {
   border: 1px solid var(--p100);
   border-radius: var(--r-s);
-  overflow: hidden;
 }
 
 .info-row {
@@ -472,11 +713,49 @@ watch(() => props.open, (isOpen) => {
   white-space: nowrap;
 }
 
-/* ── VIP star in row ── */
-.vip-star-row {
-  font-size: 20px;
-  color: var(--vip-border);
+/* ── Credential form ── */
+.date-range {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-s);
 }
+.date-sep {
+  font-size: 14px;
+  color: var(--n700);
+  flex-shrink: 0;
+}
+.flex-1 { flex: 1; min-width: 0; }
+
+/* ── Segmented buttons (Periode) — zelfde stijl als CredentialActiverenModal ── */
+.seg-group {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  border: 1px solid var(--n500);
+  border-radius: var(--r-s);
+  background: var(--n0);
+}
+.seg-btn {
+  flex: 1;
+  padding: 8px 16px;
+  background: var(--n0);
+  border: none;
+  border-radius: var(--r-s);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--n800);
+  cursor: pointer;
+  line-height: 20px;
+  letter-spacing: 0.14px;
+  transition: background 0.15s, color 0.15s;
+}
+.seg-btn.active { background: var(--p500); color: var(--n0); }
+
+/* ── Small variant for detail panel ── */
+.seg-group--sm { padding: 2px; }
+.seg-group--sm .seg-btn { padding: 4px 12px; }
 
 /* ── Action link (telefoon / email zonder icon button) ── */
 .action-link {

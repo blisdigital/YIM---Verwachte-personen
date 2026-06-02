@@ -13,6 +13,7 @@ const props = defineProps({
   id:           { type: String,  default: null },
   leadingIcon:  { type: String,  default: null },
   trailingIcon: { type: String,  default: null },
+  size:         { type: String,  default: 'md' }, // 'sm' (32px) | 'md' (40px)
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -29,6 +30,7 @@ const inputId = computed(() => props.id ?? _uid)
     <div
       class="input-field"
       :class="{
+        'input-field--sm':       size === 'sm',
         'input-field--error':    error && !disabled && !readonly,
         'input-field--disabled': disabled,
         'input-field--readonly': readonly,
@@ -105,6 +107,16 @@ const inputId = computed(() => props.id ?? _uid)
 .input-field--readonly {
   background: var(--n50);
   box-shadow: none;
+}
+
+.input-field--sm {
+  height: 32px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+}
+.input-field--sm .input-element {
+  height: 20px;
+  padding: 0;
 }
 
 .input-element {

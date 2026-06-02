@@ -30,7 +30,7 @@ App.vue
     │   │   └── CompliancePill.vue
     │   └── Pagination.vue
     │
-    ├── DetailPanel.vue (gecentreerde modal 832px; sections: Bezoekgegevens, Compliance, Contactpersoon, Toegangspas + footer-acties per status)
+    ├── DetailPanel.vue (gecentreerde modal 860px; sections: Bezoekgegevens, Credential, Compliance, Contactpersoon + footer-acties per status)
     │
     ├── AanmeldenModal.vue (check-in / check-out bevestiging)
     ├── AnnulerenModal.vue (destructieve bevestiging)

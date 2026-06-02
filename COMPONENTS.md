@@ -108,7 +108,7 @@ actions/
   CredentialOntkoppelenModal   — Credential ontkoppelen van persoon (bevestigingsdialoog)
 
 detail/
-  DetailPanel       — Gecentreerde modal (832px) met volledige persoonsgegevens en acties per status
+  DetailPanel       — Gecentreerde modal (860px; sections: Bezoekgegevens, Credential, Compliance, Contactpersoon + inline credential-invoer + footer-acties per status)
 
 dossier/
   AanmeldingenTable     — Tabel met aanmeldingen binnen het dossier

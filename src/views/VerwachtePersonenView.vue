@@ -113,7 +113,7 @@ function openOntkoppelen(person) {
   ontkoppelenOpen.value   = true
 }
 
-// Credential activeren modal
+// Credential koppelen modal
 const activerenOpen   = ref(false)
 const activerenPerson = ref(null)
 
@@ -176,7 +176,7 @@ function handleAction({ person, action }) {
       openElearningUitnodiging(person)
       break
     case 'credential-printen':
-      show('Credential printen', `Credential voor ${person.naam} wordt geprint.`)
+      show(null, `Credential voor ${person.naam} wordt geprint.`)
       break
     case 'bekijk-dossier':
       nav.navigate('dossier', person)
@@ -196,14 +196,14 @@ function handleAction({ person, action }) {
       openAnnuleren(person)
       break
     default:
-      show('Actie', `${action} voor ${person.naam}`)
+      show(null, `${action} voor ${person.naam}`)
   }
 }
 
 // Bevestig aanmelden
 function handleAanmeldenConfirm({ person }) {
   personenStore.updateStatus(person.id, 'Aangemeld')
-  show('Aangemeld', `${person.naam} is aangemeld.`)
+  show(null, `${person.naam} is aangemeld.`)
   // Sync detail panel person
   if (detailPerson.value?.id === person.id) {
     detailPerson.value = personenStore.personen.find(p => p.id === person.id)
@@ -213,14 +213,14 @@ function handleAanmeldenConfirm({ person }) {
 // Confirm annuleren — sluit ook detail panel (flow spec: geen detailweergave na annuleren)
 function handleAnnulerenConfirm({ person }) {
   personenStore.updateStatus(person.id, 'Geannuleerd')
-  show('Geannuleerd', `De aankomst van ${person.naam} is geannuleerd.`)
+  show(null, `De aankomst van ${person.naam} is geannuleerd.`)
   closeDetail()
 }
 
 // Confirm bezoek wijzigen
 function handleAankomstWijzigenConfirm({ person, aankomstdatum, aankomsttijd, vertrekdatum, vertrektijd }) {
   personenStore.updateAankomst(person.id, aankomstdatum, aankomsttijd, vertrekdatum, vertrektijd)
-  show('Bezoek gewijzigd', `Bezoek van ${person.naam} is gewijzigd naar ${aankomstdatum} om ${aankomsttijd}.`)
+  show(null, `Bezoek van ${person.naam} is gewijzigd naar ${aankomstdatum} om ${aankomsttijd}.`)
   if (detailPerson.value?.id === person.id) {
     detailPerson.value = personenStore.personen.find(p => p.id === person.id)
   }
@@ -228,13 +228,13 @@ function handleAankomstWijzigenConfirm({ person, aankomstdatum, aankomsttijd, ve
 
 // Bevestig informeer contactpersoon
 function handleInformeerConfirm({ person }) {
-  show('Contactpersoon geïnformeerd', `Contactpersoon van ${person.naam} is geïnformeerd.`)
+  show(null, `Contactpersoon van ${person.naam} is geïnformeerd.`)
 }
 
 // Bevestig credential activeren
 function handleActiverenConfirm({ person, credentialType, pasnummer }) {
   personenStore.activeerCredential(person.id, credentialType, pasnummer)
-  show('Credential geactiveerd', `Credential is geactiveerd voor ${person.naam}.`)
+  show(null, `Credential is geactiveerd voor ${person.naam}.`)
   if (detailPerson.value?.id === person.id) {
     detailPerson.value = personenStore.personen.find(p => p.id === person.id)
   }
@@ -242,13 +242,13 @@ function handleActiverenConfirm({ person, credentialType, pasnummer }) {
 
 // Bevestig credential mailen
 function handleMailenConfirm({ person }) {
-  show('Credential verstuurd', `Credential is gemaild naar ${person.naam}.`)
+  show(null, `Credential is gemaild naar ${person.naam}.`)
 }
 
 // Bevestig credential ontkoppelen
 function handleOntkoppelenConfirm({ person }) {
   personenStore.updateCredentialStatus(person.id, 'niet-actief')
-  show('Credential ontkoppeld', `Credential is ontkoppeld van ${person.naam}.`)
+  show(null, `Credential is ontkoppeld van ${person.naam}.`)
   if (detailPerson.value?.id === person.id) {
     detailPerson.value = personenStore.personen.find(p => p.id === person.id)
   }
@@ -257,7 +257,7 @@ function handleOntkoppelenConfirm({ person }) {
 // Bevestig afmelden
 function handleAfmeldenConfirm({ person }) {
   personenStore.updateStatus(person.id, 'Afgemeld')
-  show('Afgemeld', `${person.naam} is afgemeld.`)
+  show(null, `${person.naam} is afgemeld.`)
   if (detailPerson.value?.id === person.id) {
     detailPerson.value = personenStore.personen.find(p => p.id === person.id)
   }
@@ -343,7 +343,7 @@ onMounted(() => {
       @confirm="handleInformeerConfirm"
     />
 
-    <!-- Credential activeren modal -->
+    <!-- Credential koppelen modal -->
     <CredentialActiverenModal
       v-model:open="activerenOpen"
       :person="activerenPerson"

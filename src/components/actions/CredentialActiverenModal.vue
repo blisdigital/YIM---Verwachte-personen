@@ -44,7 +44,7 @@ const isScenarioA = computed(() => showForm.value && activeOptie.value?.categori
 const isScenarioB = computed(() => showForm.value && activeOptie.value?.categorie === 'fysiek')
 
 const title = computed(() =>
-  activeOptie.value?.categorie === 'printbaar' ? 'Credential activeren' : 'Credential koppelen'
+  activeOptie.value?.categorie === 'printbaar' ? 'Credential koppelen' : 'Credential koppelen'
 )
 
 // ── Scenario A state ─────────────────────────────────────────
@@ -132,7 +132,7 @@ function handleKoppelen() {
 <template>
   <ActionPopup :open="open" :title="title" width="560px" @update:open="emit('update:open', $event)">
 
-    <p class="intro-text">Je gaat de volgende credential activeren:</p>
+    <p class="intro-text">Je gaat de volgende credential koppelen:</p>
 
     <!-- ── Credential field: editable (Scenario C step 1) ── -->
     <div v-if="scenario === 'C' && step === 1" class="form-group">
